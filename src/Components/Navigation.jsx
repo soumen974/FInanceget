@@ -304,7 +304,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           <Wallet className="h-6 w-6 text-blue-600 flex-shrink-0" />
           {!isCollapsed && (
             <Link to="/" className="font-semibold text-gray-800 truncate">
-              FinanceTracker
+              FinanceGet
             </Link>
           )}
           <button
@@ -321,7 +321,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         <div className="p-4 border-b space-y-2">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
-            <span className="truncate font-medium">monikawebdev</span>
+            <span className="truncate font-medium">soumen</span>
           </div>
         </div>
       )}

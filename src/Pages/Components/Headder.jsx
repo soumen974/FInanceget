@@ -19,7 +19,7 @@ import {
 const Headder = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [currentUser] = useState('monikawebdev');
+  const [currentUser] = useState("soumen");
 
   // Update time every minute
   useEffect(() => {
@@ -68,7 +68,7 @@ const Headder = () => {
           <div className="flex items-center">
             <Wallet className="h-8 w-8 text-blue-600" />
             <Link to={'/'} className="ml-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
-              FinanceTracker
+              FinanceGet
             </Link>
           </div>
 
