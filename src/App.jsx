@@ -13,9 +13,10 @@ import {
   UserProfile,
   CategorySettings,
   NotificationSettings,
-  LoginForm,
+
   RegisterForm
 } from './Components/Components';
+import LoginForm from './Auth/Components/Login'
 // Pages
 const Dashboard = () => {
   return (
