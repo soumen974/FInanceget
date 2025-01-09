@@ -7,7 +7,8 @@ import {
     TrendingDown, 
     Activity ,Calendar, Tag, FileText
   } from 'react-feather';
-// Mock data
+import Logout from "../Auth/Components/Logout";
+import { authCheck } from "../Auth/Components/ProtectedCheck";
 const mockTransactions = [
   { id: 1, type: 'expense', category: 'Food', amount: 25.50, date: '2024-12-27' },
   { id: 2, type: 'income', category: 'Salary', amount: 3000, date: '2024-12-25' }
@@ -271,8 +272,8 @@ const TransactionForm = () => {
 
 // Navigation Component
 const Navigation = ({isCollapsed,setIsCollapsed}) => {
-   
-
+   const {handleLogout} = Logout();
+     const { name }= authCheck();
    const  SideBarTogle = ()=>{ 
     if(isCollapsed){
       localStorage.setItem('isCollapsed', 'false');
@@ -297,7 +298,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
   return (
     <aside className={`fixed left-0 top-0 h-screen bg-white border-r transition-all duration-300 
-                      ${isCollapsed ? 'w-20' : 'w-62'}`}>
+                      ${isCollapsed ? 'w-16' : 'w-62'}`}>
       {/* Header Section */}
       <div className="p-4 border-b">
         <div className="flex items-center gap-3">
@@ -309,7 +310,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           )}
           <button
             onClick={()=>SideBarTogle()}
-            className="ml-auto p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
+            className="ml-auto p-1.5 rounded-lg bg-white border hover:bg-gray-100 text-gray-500"
           >
             {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
@@ -321,7 +322,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         <div className="p-4 border-b space-y-2">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
-            <span className="truncate font-medium">soumen</span>
+            <span className="truncate font-medium">{name}</span>
           </div>
         </div>
       )}
@@ -340,7 +341,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
             key={item.label}
             to={item.to}
             className={({ isActive }) => `
-              flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+              flex items-center gap-3 px-3  py-2 rounded-lg text-sm font-medium
               transition-colors relative
               ${isActive 
                 ? 'text-blue-600 bg-blue-50' 
@@ -365,9 +366,9 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       {/* Logout Button */}
       <div className="absolute bottom-0 w-full p-2">
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className={`
-            w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+            w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium
             text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors
             ${isCollapsed ? 'justify-center' : ''}
           `}

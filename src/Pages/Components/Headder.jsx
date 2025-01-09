@@ -15,8 +15,12 @@ import {
   CalendarDays,
   Home
 } from 'lucide-react';
+import Logout from "../../Auth/Components/Logout";
+import { authCheck } from "../../Auth/Components/ProtectedCheck"
 
 const Headder = () => {
+  const { handleLogout }=Logout();
+  const { name }= authCheck();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [currentUser] = useState("soumen");
@@ -60,7 +64,7 @@ const Headder = () => {
   ];
 
   return (
-    <nav className=" fixed w-full z-30 md:hidden bg-white shadow-sm">
+    <nav className=" fixed w-full z-30 lg:hidden bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">
@@ -79,7 +83,7 @@ const Headder = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-50 
+            className=" p-2 rounded-md text-gray-600 hover:bg-gray-50 
                      hover:text-blue-600 transition-colors"
             aria-label="Toggle menu"
           >
@@ -89,13 +93,13 @@ const Headder = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden pb-3 pt-2">
+          <div className=" pb-3 pt-2">
             {/* DateTime & User Info - Mobile */}
             <div className="px-4 py-2 space-y-2 border-b border-gray-100 mb-2 bg-gray-50 rounded-lg">
              
               <div className="flex items-center text-gray-600">
                 <User size={16} className="mr-2" />
-                <span className="text-sm font-medium">{currentUser}</span>
+                <span className="text-sm font-medium">{name}</span>
               </div>
             </div>
 
@@ -121,7 +125,7 @@ const Headder = () => {
               <button
                 onClick={() => {
                   setIsMenuOpen(false);
-                  logout();
+                  handleLogout();
                 }}
                 className="flex items-center space-x-3 px-4 py-3 rounded-md w-full
                          text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all"

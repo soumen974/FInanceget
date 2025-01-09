@@ -1,12 +1,10 @@
 import React ,{useState} from "react";
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true
-});
+import { api } from "../../AxiosMeta/ApiAxios";
+import { authCheck } from "../Components/ProtectedCheck";
 
 const Login = () => {
+  const { auth } = authCheck();
+  // console.log(auth);
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -20,11 +18,12 @@ const Login = () => {
     try{
       const response = await api.post('/api/auth/login', { email, password});
       setMessage(response.data);
-      console.log(message)
+      // console.log(message)
+      response.then(window.location.href='/');
       
     } catch (err){
       setError(err.response?.data || err.message || 'Something went wrong');
-      console.log(error);
+      // console.log(error);
     }
     
   }
@@ -33,17 +32,20 @@ return (
   <>
     <form onSubmit={handleloginSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Email</label>
-        <input autoComplete='email' id="email" type="email" required value={email} onChange={(e)=>{setEmail(e.target.value)}} className="w-full p-2 border rounded" />
+        <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+        <input  autoComplete='email' id="email" type="email" required value={email} onChange={(e)=>{setEmail(e.target.value)}} className="w-full p-2 border rounded" />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Password</label>
-        <input type="password" required value={password} onChange={(e)=>{setPassword(e.target.value)}} className="w-full p-2 border rounded" />
+        <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+        <input autoComplete='current-password' type="password" required id="password" value={password} onChange={(e)=>{setPassword(e.target.value)}} className="w-full p-2 border rounded" />
       </div>
       <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded">
         Login
       </button>
+      
+      
     </form>
+    
   </>
 )};
 export default Login;

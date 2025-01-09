@@ -13,10 +13,14 @@ import {
   UserProfile,
   CategorySettings,
   NotificationSettings,
-  LoginForm,
+  // LoginForm,
   RegisterForm
 } from './Components/Components';
-//import LoginForm from './Auth/Components/Login'
+import LoginForm from './Auth/Components/Login'
+import { authCheck } from "./Auth/Components/ProtectedCheck";
+
+  // const { auth } = authCheck();
+
 // Pages
 const Dashboard = () => {
   return (
@@ -521,10 +525,7 @@ const useAuth = () => {
 
 // Auth Provider component
 const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage for existing auth state
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
+  const { auth: isAuthenticated, loading, error } = authCheck();
   const login = (credentials) => {
     // Add your login logic here
     localStorage.setItem('isAuthenticated', 'true');
@@ -584,10 +585,8 @@ const PublicRoute = ({ children }) => {
 // App Component
 const App = () => {
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check localStorage for existing auth state
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
+  const { auth: isAuthenticated, loading, error } = authCheck();
+
 
   return (
     <AuthProvider>
@@ -663,9 +662,6 @@ const App = () => {
   );
 };
 
-// Protected Route Component
-const ProtectedRoute1 = ({ isAuthenticated, children }) => {
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
+
 
 export default App;
