@@ -1,5 +1,6 @@
 import React from 'react'
-
+import TransactionForm from "../Pages/Components/Income/TransactionForm";
+import TransactionList from "../Pages/Components/Income/TransactionList";
 export default function  Expenses ()  {
     return (
       <div className="p-6">

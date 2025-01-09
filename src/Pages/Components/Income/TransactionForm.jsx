@@ -23,6 +23,9 @@ export default function TransactionForm({ type }) {
     note: ''
   });
 
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,11 +38,14 @@ export default function TransactionForm({ type }) {
     try {
       if (type === 'income') {
         await api.post('/api/income', formData);
+        setMessage('Income added successfully');
       } else {
         console.log('coming soon');
+        // await api.post('/api/expense', formData);
       }
     } catch (err) {
       console.error(err);
+      setError(err.response?.data || err.message || 'Something went wrong');
     }
   };
 
@@ -65,6 +71,7 @@ export default function TransactionForm({ type }) {
             type="text"
             className="w-full p-2 border rounded"
             placeholder="Enter description"
+            required
           />
         </div>
         <div>
@@ -74,6 +81,7 @@ export default function TransactionForm({ type }) {
             value={formIncome.source}
             onChange={handleOnChange}
             className="w-full p-2 border rounded"
+            required
           >
             <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
             {categories.map(category => (
@@ -86,7 +94,7 @@ export default function TransactionForm({ type }) {
         <div>
           <label htmlFor="amount" className="block text-sm font-medium mb-1">Amount</label>
           <div className="relative z-0">
-            <span className="absolute left-3 top-2.5">$</span>
+            <span className="absolute left-3 top-2.5">₹</span>
             <input
               name="amount"
               type="number"
@@ -94,9 +102,10 @@ export default function TransactionForm({ type }) {
               onChange={handleOnChange}
               id="amount"
               className="w-full p-2 pl-6 border rounded"
-              placeholder="0.00"
+              placeholder="1000.20"
               min="0"
-              step="0.01"
+              step="1.0"
+              required
             />
           </div>
         </div>
@@ -129,6 +138,8 @@ export default function TransactionForm({ type }) {
         >
           Add {type === 'income' ? 'Income' : 'Expense'}
         </button>
+        {error && <div className="text-red-500">{error}</div>}
+        {message && <div className="text-green-500">{message}</div>}
       </form>
     </div>
   );
