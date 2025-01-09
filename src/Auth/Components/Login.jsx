@@ -18,12 +18,12 @@ const Login = () => {
     try{
       const response = await api.post('/api/auth/login', { email, password});
       setMessage(response.data);
-      // console.log(message)
+      console.log(message)
       response.then(window.location.href='/');
       
     } catch (err){
       setError(err.response?.data || err.message || 'Something went wrong');
-      // console.log(error);
+      console.log(error);
     }
     
   }

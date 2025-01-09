@@ -18,9 +18,11 @@ export  function authCheck() {
             setMessage(response.data);
             setName(response.data.name);
             setAuth(true);
+            console.log(message);
         }    
         catch(err){
             setError(err.response?.data || err.message || 'Something went wrong');
+            console.log(error);
         }
     }
     

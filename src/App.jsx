@@ -4,6 +4,8 @@ import {Navigation} from './Components/Navigation';
 import Layout from "./Components/Layout";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import Landing from "./Pages/Landing";
+import { Link } from 'react-router-dom';
+
 import {
   RecentTransactions,
   BudgetList,
@@ -611,6 +613,15 @@ const App = () => {
             </PublicRoute>
           } />
         
+        <Route path='*' element={
+               <div className="text-center  h-screen justify-center items-center flex jus py-12">
+                <div className="">
+                  <h2 className="text-2xl font-bold text-gray-800">404 - Page Not Found</h2>
+                  <p className="mt-2 text-gray-600">The page you're looking for doesn't exist.</p>
+                  <Link to='/' className='text-indigo-600 underline hover:no-underline '>Go Back to Home</Link>
+               </div>
+             </div>
+            }/>
 
 
           {/* Protected Routes with Layout */}
@@ -624,7 +635,7 @@ const App = () => {
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             <Route path='*' element={
-               <div className="text-center py-12">
+               <div className="text-center h-screen py-12">
                <h2 className="text-2xl font-bold text-gray-800">404 - Page Not Found</h2>
                <p className="mt-2 text-gray-600">The page you're looking for doesn't exist.</p>
              </div>
