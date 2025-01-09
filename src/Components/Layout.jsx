@@ -19,7 +19,7 @@ const Layout = () => {
         <Navigation setIsCollapsed={setIsCollapsed} isCollapsed={isCollapsed} />
       </div>
        
-      <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'md:ml-[14rem]'}`}>
+      <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-[14rem]'}`}>
       <Headder/>
       <div className="max-md:pt-16">
         <Outlet />

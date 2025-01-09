@@ -20,23 +20,12 @@ import {
 } from './Components/Components';
 import LoginForm from './Auth/Components/Login'
 import { authCheck } from "./Auth/Components/ProtectedCheck";
-
+import Income from "./Pages/Income";
+import Dashboard from "./Pages/Dashboard";
   // const { auth } = authCheck();
 
-// Pages
-const Dashboard = () => {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard title="Total Balance" amount="5,234.50" type="balance" />
-        <StatCard title="Income" amount="8,234.50" type="income" />
-        <StatCard title="Expenses" amount="3,000.00" type="expense" />
-      </div>
-      <RecentTransactions />
-    </div>
-  );
-};
+
+
 
 const Expenses = () => {
   return (
@@ -54,21 +43,7 @@ const Expenses = () => {
   );
 };
 
-const Income = () => {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Income</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <TransactionList type="income" />
-        </div>
-        <div>
-          <TransactionForm type="income" />
-        </div>
-      </div>
-    </div>
-  );
-};
+
 
 const Budget = () => {
   return (
@@ -334,18 +309,7 @@ const Register = () => {
 };
 
 // Components
-const StatCard = ({ title, amount, type }) => (
-  <div className={`p-6 rounded-lg shadow ${
-    type === 'balance' ? 'bg-blue-50' :
-    type === 'income' ? 'bg-green-50' : 'bg-red-50'
-  }`}>
-    <h3 className="text-lg font-semibold mb-2">{title}</h3>
-    <p className={`text-2xl font-bold ${
-      type === 'income' ? 'text-green-600' :
-      type === 'expense' ? 'text-red-600' : 'text-blue-600'
-    }`}>${amount}</p>
-  </div>
-);
+
 
 const TransactionList = ({ type }) => {
   const transactions = [
@@ -531,12 +495,12 @@ const AuthProvider = ({ children }) => {
   const login = (credentials) => {
     // Add your login logic here
     localStorage.setItem('isAuthenticated', 'true');
-    setIsAuthenticated(true);
+    
   };
 
   const logout = () => {
     localStorage.removeItem('isAuthenticated');
-    setIsAuthenticated(false);
+    
   };
 
   return (
