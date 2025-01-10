@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 
-export default function TransactionList({ type }) {
-  const transactions = [
+export default function TransactionList({ type ,action ,setAction ,setEditId ,editId}) {
+  const [transactions, setTransactions] = useState([
     { 
-      id: 1, 
+      _id: 1, 
       description: 'Grocery Shopping',
       category: 'Food',
       amount: 120.50,
@@ -12,7 +12,7 @@ export default function TransactionList({ type }) {
       type: 'expense'
     },
     { 
-      id: 2, 
+      _id: 2, 
       description: 'Salary Deposit',
       category: 'Salary',
       amount: 3000.00,
@@ -20,7 +20,7 @@ export default function TransactionList({ type }) {
       type: 'income'
     },
     { 
-      id: 3, 
+      _id: 3, 
       description: 'Freelance Work',
       category: 'Side Income',
       amount: 500.00,
@@ -28,19 +28,21 @@ export default function TransactionList({ type }) {
       type: 'income'
     },
     { 
-      id: 4, 
+      _id: 4, 
       description: 'Internet Bill',
       category: 'Utilities',
       amount: 89.99,
       date: '2024-12-23',
       type: 'expense'
     }
-  ];
+  ]);
   const [incomeData, setIncomeData] = useState([]);
+   const [error, setError] = useState('');
+   const [message, setMessage] = useState('');
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [action]);
 
   const getData = async () => {
     try {
@@ -58,6 +60,30 @@ export default function TransactionList({ type }) {
     }
   };
 
+  const handleDelete = async (id) =>{
+    try{
+      console.log(id);
+      if(type ==='income'){
+        const response = await api.delete(`/api/income/${id}`);
+        setIncomeData(incomeData.filter(income => income._id !==id));
+        setMessage('Deleted Successfully');
+        console.log(response.data);
+        setError('');
+
+      }else{
+        setTransactions(transactions.filter(transaction => transaction._id !==id))
+        setMessage('Deleted Successfully');
+        console.log(message);
+        setError('');
+
+      }
+    }catch(err){
+      console.error(err);
+      setError(err.response?.data || err.message || 'Something went wrong');
+    }
+
+  }
+
   // Filter transactions based on type
   const filteredTransactions = type === 'income' ? incomeData : transactions;
 
@@ -72,13 +98,13 @@ export default function TransactionList({ type }) {
         ) : (
           filteredTransactions.map(transaction => (
             <div
-              key={transaction._id || transaction.id}
+              key={transaction._id}
               className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="flex-1">
                 <p className="font-medium">{transaction.description}</p>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span>{transaction.source}</span>
+                  <span>{transaction.source || transaction.category}</span>
                   <span>•</span>
                   <span>{new Date(transaction.date).toLocaleDateString()}</span>
                 </div>
@@ -88,8 +114,8 @@ export default function TransactionList({ type }) {
                   ₹{transaction.amount.toFixed(2)}
                 </p>
                 <div className="flex gap-2 mt-1">
-                  <button className="text-xs text-blue-600 hover:underline">Edit</button>
-                  <button className="text-xs text-red-600 hover:underline">Delete</button>
+                  <button onClick={()=>{setEditId(transaction._id)}} className="text-xs text-blue-600 hover:underline">Edit</button>
+                  <button onClick={()=>handleDelete(transaction._id)} className="text-xs text-red-600 hover:underline">Delete</button>
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 
-export default function TransactionForm({ type }) {
+export default function TransactionForm({ type , setAction ,action ,editId,setEditId}) {
   const categories = type === 'income' ? [
     { id: 1, name: 'Salary' },
     { id: 2, name: 'Freelance' },
@@ -14,6 +14,9 @@ export default function TransactionForm({ type }) {
     { id: 4, name: 'Entertainment' },
     { id: 5, name: 'Healthcare' }
   ];
+
+  // Convert Date object to date string
+ 
 
   const [formIncome, setFormIncome] = useState({
     amount: '',
@@ -29,16 +32,44 @@ export default function TransactionForm({ type }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Convert the date to a JavaScript Date object
-    const formData = {
-      ...formIncome,
-      date: new Date(formIncome.date)
-    };
+    // Convert the date to Date object for data send to backend 
+     const formData = {
+        ...formIncome,
+        date: new Date(formIncome.date)
+      };
 
     try {
       if (type === 'income') {
-        await api.post('/api/income', formData);
-        setMessage('Income added successfully');
+        if(!editId){
+          // add income
+         
+          await api.post('/api/income', formData);
+          setMessage('Income added successfully');
+          setFormIncome((prevState) => ({
+            ...prevState,
+            amount: '',
+            source: '',
+            date: '',
+            description: '',
+            note: ''
+          }));    
+          setAction('add'); 
+        }else{
+          // // update income
+          console.log(editId);
+          await api.put(`/api/income/${editId}`, formData);
+          setMessage('Income updated successfully');
+          setFormIncome((prevState) => ({
+            ...prevState,
+            amount: '',
+            source: '',
+            date: '',
+            description: '',
+            note: ''
+          }));    
+          setAction('update');
+          setEditId(null);
+        } 
       } else {
         console.log('coming soon');
         // await api.post('/api/expense', formData);
@@ -48,6 +79,48 @@ export default function TransactionForm({ type }) {
       setError(err.response?.data || err.message || 'Something went wrong');
     }
   };
+
+  const formatDateToString = (date) => {
+    return new Date(date).toISOString().split('T')[0]
+  }
+
+
+  const getDatatoEdit = async (editId)=>{
+     try{
+      
+      if(type === 'income' ){
+        if(!editId) return;
+        console.log(editId);
+        const response = await api.get(`/api/income/${editId}`);
+        setFormIncome(response.data);
+        setFormIncome(formIncome.date=formatDateToString(formIncome.date));
+
+        const formGetData = {
+          ...formIncome,
+          date: formatDateToString(formIncome.date)
+        };
+
+        setFormIncome(formGetData);
+        
+
+        console.log(response.data);
+      }else{
+        console.log('coming soon');
+      }
+
+     }catch (err){
+      console.log(err);
+     }
+  }
+
+  useEffect(() => {
+    if (editId) {
+      console.log(editId);
+      getDatatoEdit(editId);
+    }
+    console.log(formIncome.date);
+  }, [editId,formIncome.date])
+  
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -114,7 +187,8 @@ export default function TransactionForm({ type }) {
           <input
             name="date"
             type="date"
-            value={formIncome.date}
+            value={formIncome.date }
+            
             onChange={handleOnChange}
             id="date"
             className="w-full p-2 border rounded"
@@ -136,7 +210,7 @@ export default function TransactionForm({ type }) {
           type="submit"
           className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
         >
-          Add {type === 'income' ? 'Income' : 'Expense'}
+          {editId? 'Update' :'Add'} {type === 'income' ? 'Income' : 'Expense'}
         </button>
         {error && <div className="text-red-500">{error}</div>}
         {message && <div className="text-green-500">{message}</div>}
