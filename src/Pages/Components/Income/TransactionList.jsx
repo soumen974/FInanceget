@@ -73,10 +73,11 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         console.log(response.data);
         setError('');
 
-      }else{
-        setTransactions(transactions.filter(transaction => transaction._id !==id))
+      }else if(type ==='expense'){
+        const response = await api.delete(`/api/expenses/${id}`);
+        setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
-        console.log(message);
+        console.log(response.data);
         setError('');
 
       }
@@ -176,7 +177,7 @@ export const useGlobalTransactionData = (type) => {
   }, [type]);
 
   let totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
-  const totalExpense = 3000; //hard coded
+  const totalExpense = expenseData.reduce((acc, expense) => acc + expense.amount, 0);
 
   return { totalIncome, incomeData, error, message, loading ,totalExpense, expenseData};
 };

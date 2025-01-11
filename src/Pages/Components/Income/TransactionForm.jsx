@@ -77,14 +77,14 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
         } 
       } else if(type === 'expense'){
         if(!editId){
-          console.log('coming soon');
+          // console.log('coming soon');
           await api.post('/api/expenses', updformData);
           setMessage('Expense added successfully');
           setAction('add'); 
           emptyform(); 
           setLoading(false);
         }else{
-          console.log('coming soon');
+          // console.log('coming soon');
           await api.put(`/api/expenses/${editId}`, updformData);
           setMessage('Expense updated successfully');
           emptyform();    
@@ -125,7 +125,14 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
         // console.log('coming soon');
         if(!editId) return;
         const response = await api.get(`/api/expenses/${editId}`);
-        
+        const formGetData = {
+          ...response.data,
+          date: formatDateToString(response.data.date)
+        };
+        console.log(response.data);
+        setFormDate(formGetData);
+        setLoading(false);
+
       }
 
      }catch (err){
