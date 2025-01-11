@@ -64,7 +64,7 @@ const Headder = () => {
   ];
 
   return (
-    <nav className=" fixed w-full z-30 lg:hidden bg-white shadow-sm">
+    <nav className=" fixed w-full z-30 lg:hidden bg-white border ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">

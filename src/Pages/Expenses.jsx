@@ -5,7 +5,7 @@ export default function  Expenses ()  {
    const [action, setAction] = useState('');
     const [editId, setEditId] = useState(null);
     return (
-      <div className="p-6">
+      <div className="">
         <h1 className="text-3xl font-bold mb-6">Expenses</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">

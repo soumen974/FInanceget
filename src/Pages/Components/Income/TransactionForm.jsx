@@ -241,7 +241,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
           disabled={loading}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
         >
-          {editId? 'Update' :'Add'} {type === 'income' ? 'Income' : 'Expense'}
+           {type === 'income' ? (editId? 'Update' :'Add Income') : (editId? 'Update' :'Add Expense')}
         </button>
         {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors" >Cancel</button> :null}
         </div>

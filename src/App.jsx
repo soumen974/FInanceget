@@ -18,37 +18,16 @@ import {
   // LoginForm,
   RegisterForm
 } from './Components/Components';
-import LoginForm from './Auth/Components/Login'
+import Login from './Auth/Components/Login'
 import { authCheck } from "./Auth/Components/ProtectedCheck";
 import Income from "./Pages/Income";
 import Dashboard from "./Pages/Dashboard";
 import Expenses from "./Pages/Expenses";
-  // const { auth } = authCheck();
-
-
-
-
-// const Expenses = () => {
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-3xl font-bold mb-6">Expenses</h1>
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         <div className="lg:col-span-2">
-//           <TransactionList type="expense" />
-//         </div>
-//         <div>
-//           <TransactionForm type="expense" />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-
+import Reports from "./Pages/Reports";
 
 const Budget = () => {
   return (
-    <div className="p-6">
+    <div className="">
       <h1 className="text-3xl font-bold mb-6">Budget</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <BudgetList />
@@ -58,119 +37,119 @@ const Budget = () => {
   );
 };
 
-const Reports = () => {
-  const [dateRange, setDateRange] = useState('month');
-  const [reportType, setReportType] = useState('expenses');
+// const Reports = () => {
+//   const [dateRange, setDateRange] = useState('month');
+//   const [reportType, setReportType] = useState('expenses');
 
-  // Sample data for charts
-  const expenseData = [
-    { name: 'Jan', amount: 2400 },
-    { name: 'Feb', amount: 1398 },
-    { name: 'Mar', amount: 9800 },
-    { name: 'Apr', amount: 3908 },
-    { name: 'May', amount: 4800 },
-    { name: 'Jun', amount: 3800 }
-  ];
+//   // Sample data for charts
+//   const expenseData = [
+//     { name: 'Jan', amount: 2400 },
+//     { name: 'Feb', amount: 1398 },
+//     { name: 'Mar', amount: 9800 },
+//     { name: 'Apr', amount: 3908 },
+//     { name: 'May', amount: 4800 },
+//     { name: 'Jun', amount: 3800 }
+//   ];
 
-  const categoryData = [
-    { name: 'Food', value: 400 },
-    { name: 'Transport', value: 300 },
-    { name: 'Entertainment', value: 300 },
-    { name: 'Utilities', value: 200 }
-  ];
+//   const categoryData = [
+//     { name: 'Food', value: 400 },
+//     { name: 'Transport', value: 300 },
+//     { name: 'Entertainment', value: 300 },
+//     { name: 'Utilities', value: 200 }
+//   ];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+//   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-  return (
-    <div className="p-6">
-      <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Financial Reports</h1>
-        <div className="flex  gap-4">
-          <select 
-            className="p-2 border rounded"
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-          >
-            <option value="week">Last Week</option>
-            <option value="month">Last Month</option>
-            <option value="year">Last Year</option>
-          </select>
-          <select 
-            className="p-2 border rounded"
-            value={reportType}
-            onChange={(e) => setReportType(e.target.value)}
-          >
-            <option value="expenses">Expenses</option>
-            <option value="income">Income</option>
-            <option value="both">Income & Expenses</option>
-          </select>
-        </div>
-      </div>
+//   return (
+//     <div className="">
+//       <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
+//         <h1 className="text-3xl font-bold">Financial Reports</h1>
+//         <div className="flex  gap-4">
+//           <select 
+//             className="p-2 border rounded"
+//             value={dateRange}
+//             onChange={(e) => setDateRange(e.target.value)}
+//           >
+//             <option value="week">Last Week</option>
+//             <option value="month">Last Month</option>
+//             <option value="year">Last Year</option>
+//           </select>
+//           <select 
+//             className="p-2 border rounded"
+//             value={reportType}
+//             onChange={(e) => setReportType(e.target.value)}
+//           >
+//             <option value="expenses">Expenses</option>
+//             <option value="income">Income</option>
+//             <option value="both">Income & Expenses</option>
+//           </select>
+//         </div>
+//       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Expense Trends Chart */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Expense Trends</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={expenseData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+//         {/* Expense Trends Chart */}
+//         <div className="bg-white p-6 rounded-lg shadow">
+//           <h2 className="text-xl font-semibold mb-4">Expense Trends</h2>
+//           <div className="h-80">
+//             <ResponsiveContainer width="100%" height="100%">
+//               <LineChart data={expenseData}>
+//                 <CartesianGrid strokeDasharray="3 3" />
+//                 <XAxis dataKey="name" />
+//                 <YAxis />
+//                 <Tooltip />
+//                 <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+//               </LineChart>
+//             </ResponsiveContainer>
+//           </div>
+//         </div>
 
-        {/* Category Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Category Distribution</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categoryData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {categoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+//         {/* Category Distribution */}
+//         <div className="bg-white p-6 rounded-lg shadow">
+//           <h2 className="text-xl font-semibold mb-4">Category Distribution</h2>
+//           <div className="h-80">
+//             <ResponsiveContainer width="100%" height="100%">
+//               <PieChart>
+//                 <Pie
+//                   data={categoryData}
+//                   cx="50%"
+//                   cy="50%"
+//                   outerRadius={100}
+//                   fill="#8884d8"
+//                   dataKey="value"
+//                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+//                 >
+//                   {categoryData.map((entry, index) => (
+//                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+//                   ))}
+//                 </Pie>
+//                 <Tooltip />
+//               </PieChart>
+//             </ResponsiveContainer>
+//           </div>
+//         </div>
 
-        {/* Summary Stats */}
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Summary Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600">Total Expenses</p>
-              <p className="text-2xl font-bold text-blue-600">$25,306</p>
-            </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600">Total Income</p>
-              <p className="text-2xl font-bold text-green-600">$42,150</p>
-            </div>
-            <div className="p-4 bg-purple-50 rounded-lg">
-              <p className="text-sm text-gray-600">Net Savings</p>
-              <p className="text-2xl font-bold text-purple-600">$16,844</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+//         {/* Summary Stats */}
+//         <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
+//           <h2 className="text-xl font-semibold mb-4">Summary Statistics</h2>
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//             <div className="p-4 bg-blue-50 rounded-lg">
+//               <p className="text-sm text-gray-600">Total Expenses</p>
+//               <p className="text-2xl font-bold text-blue-600">$25,306</p>
+//             </div>
+//             <div className="p-4 bg-green-50 rounded-lg">
+//               <p className="text-sm text-gray-600">Total Income</p>
+//               <p className="text-2xl font-bold text-green-600">$42,150</p>
+//             </div>
+//             <div className="p-4 bg-purple-50 rounded-lg">
+//               <p className="text-sm text-gray-600">Net Savings</p>
+//               <p className="text-2xl font-bold text-purple-600">$16,844</p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -184,7 +163,7 @@ const Settings = () => {
   });
 
   return (
-    <div className="p-6">
+    <div className="">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
       
       <div className="bg-white rounded-lg shadow">
@@ -287,115 +266,12 @@ const Settings = () => {
   );
 };
 
-const Login = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-center">Login</h2>
-        <LoginForm />
-      </div>
-    </div>
-  );
-};
-
 const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
         <h2 className="text-2xl font-bold text-center">Register</h2>
         <RegisterForm />
-      </div>
-    </div>
-  );
-};
-
-// Components
-
-
-const TransactionList = ({ type }) => {
-  const transactions = [
-    { 
-      id: 1, 
-      description: 'Grocery Shopping',
-      category: 'Food',
-      amount: 120.50,
-      date: '2024-12-26',
-      type: 'expense'
-    },
-    { 
-      id: 2, 
-      description: 'Salary Deposit',
-      category: 'Salary',
-      amount: 3000.00,
-      date: '2024-12-25',
-      type: 'income'
-    },
-    { 
-      id: 3, 
-      description: 'Freelance Work',
-      category: 'Side Income',
-      amount: 500.00,
-      date: '2024-12-24',
-      type: 'income'
-    },
-    { 
-      id: 4, 
-      description: 'Internet Bill',
-      category: 'Utilities',
-      amount: 89.99,
-      date: '2024-12-23',
-      type: 'expense'
-    }
-  ];
-
-  // Filter transactions based on type
-  const filteredTransactions = transactions.filter(t => t.type === type);
-
-  return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
-      <div className="space-y-4">
-        {filteredTransactions.length === 0 ? (
-          <div className="text-center py-4 text-gray-500">
-            No {type} transactions found
-          </div>
-        ) : (
-          filteredTransactions.map(transaction => (
-            <div 
-              key={transaction.id} 
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex-1">
-                <p className="font-medium">{transaction.description}</p>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span>{transaction.category}</span>
-                  <span>•</span>
-                  <span>{new Date(transaction.date).toLocaleDateString()}</span>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className={`font-bold ${type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                  ${transaction.amount.toFixed(2)}
-                </p>
-                <div className="flex gap-2 mt-1">
-                  <button className="text-xs text-blue-600 hover:underline">Edit</button>
-                  <button className="text-xs text-red-600 hover:underline">Delete</button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-      <div className="mt-4 flex justify-between items-center">
-        <select className="p-2 border rounded">
-          <option>Sort by Date</option>
-          <option>Sort by Amount</option>
-          <option>Sort by Category</option>
-        </select>
-        <div className="flex gap-2">
-          <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">Previous</button>
-          <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">Next</button>
-        </div>
       </div>
     </div>
   );
@@ -535,21 +411,6 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-// const Layout = ({ children }) => {
-//   const { logout } = useAuth();
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <Navigation onLogout={logout} />
-//       <main className="p-6">
-//         {children}
-//       </main>
-//     </div>
-//   );
-// };
-
-
-// App Component
 const App = () => {
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
   const { auth: isAuthenticated, loading, error } = authCheck();
@@ -578,7 +439,7 @@ const App = () => {
             </PublicRoute>
           } />
         
-        <Route path='*' element={
+           <Route path='*' element={
                <div className="text-center  h-screen justify-center items-center flex jus py-12">
                 <div className="">
                   <h2 className="text-2xl font-bold text-gray-800">404 - Page Not Found</h2>

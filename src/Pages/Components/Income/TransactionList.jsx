@@ -95,7 +95,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   const filteredTransactions =  GetData; 
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow  sm:p-6 p-2">
       <h2 className="text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
       <div className="space-y-4">
         {loading? <div className="text-center py-4">Loading...</div> : ''}
@@ -130,7 +130,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
           ))
         )}
       </div>
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
         <select className="p-2 border rounded">
           <option>Sort by Date</option>
           <option>Sort by Amount</option>
@@ -176,10 +176,31 @@ export const useGlobalTransactionData = (type) => {
     getData();
   }, [type]);
 
-  let totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
+  const totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
+
+  const totalIncomeFortheCurrentMonth = incomeData.reduce((acc, income) => {
+    const incomeDate = new Date(income.date);
+    const currentMonth = new Date().getMonth();
+    const incomeMonth = incomeDate.getMonth();
+    if (incomeMonth === currentMonth) {
+      return acc + income.amount;
+    }
+    return acc;
+  }, 0);
+
   const totalExpense = expenseData.reduce((acc, expense) => acc + expense.amount, 0);
 
-  return { totalIncome, incomeData, error, message, loading ,totalExpense, expenseData};
+  const totalExpenseFortheCurrentMonth = expenseData.reduce((acc, expense) => {
+    const expenseDate = new Date(expense.date);
+    const currentMonth = new Date().getMonth();
+    const expenseMonth = expenseDate.getMonth();
+    if (expenseMonth === currentMonth) {
+      return acc + expense.amount;
+    }
+    return acc;
+  }, 0);
+
+  return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData};
 };
 
 
