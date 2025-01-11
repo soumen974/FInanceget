@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
+import {formatCurrency} from "../Income/formatCurrency";
 
 export default function TransactionList({ type ,action ,setAction ,setEditId ,editId}) {
   const [transactions, setTransactions] = useState([
@@ -36,9 +37,10 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       type: 'expense'
     }
   ]);
-  const [incomeData, setIncomeData] = useState([]);
+  const [GetData, setGetData] = useState([]);
    const [error, setError] = useState('');
    const [message, setMessage] = useState('');
+   const [loading,setLoading] = useState(true);
 
   useEffect(() => {
     getData();
@@ -48,12 +50,13 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
     try {
       if (type === 'income') {
         const response = await api.get('/api/income');
-        setIncomeData(response.data);
+        setGetData(response.data);
         // console.log(response.data);
-      } else {
-        // Fetch expense data if needed
-        // const response = await api.get('/api/expense');
-        // setTransactions(response.data);
+        setLoading(false);
+      } else if (type === 'expense') {
+        const response = await api.get('/api/expenses');
+        setGetData(response.data);
+        setLoading(false);
       }
     } catch (err) {
       console.error(err);
@@ -65,7 +68,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       console.log(id);
       if(type ==='income'){
         const response = await api.delete(`/api/income/${id}`);
-        setIncomeData(incomeData.filter(income => income._id !==id));
+        setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
         console.log(response.data);
         setError('');
@@ -84,13 +87,17 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
   }
 
+  // to use it in other files
+ 
+
   // Filter transactions based on type
-  const filteredTransactions = type === 'income' ? incomeData : transactions;
+  const filteredTransactions =  GetData; 
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
       <div className="space-y-4">
+        {loading? <div className="text-center py-4">Loading...</div> : ''}
         {filteredTransactions.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
             No {type} transactions found
@@ -111,7 +118,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
               </div>
               <div className="text-right">
                 <p className={`font-bold ${type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                  ₹{transaction.amount.toFixed(2)}
+                  {formatCurrency(transaction.amount)} 
                 </p>
                 <div className="flex gap-2 mt-1">
                   <button onClick={()=>{setEditId(transaction._id)}} className="text-xs text-blue-600 hover:underline">Edit</button>
@@ -134,5 +141,44 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         </div>
       </div>
     </div>
+   
   );
 }
+
+
+export const useGlobalTransactionData = (type) => {
+  const [incomeData, setIncomeData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        if (type === 'income') {
+          const response = await api.get('/api/income');
+          setIncomeData(response.data);
+          setLoading(false);
+        } else if (type === 'expense') {
+          const response = await api.get('/api/expenses');
+          setExpenseData(response.data);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error(err);
+        setError(err.response?.data || err.message || 'Something went wrong');
+        setLoading(false);
+      }
+    };
+
+    getData();
+  }, [type]);
+
+  let totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
+  const totalExpense = 3000; //hard coded
+
+  return { totalIncome, incomeData, error, message, loading ,totalExpense, expenseData};
+};
+
+

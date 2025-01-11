@@ -12,67 +12,87 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     { id: 2, name: 'Transportation' },
     { id: 3, name: 'Utilities' },
     { id: 4, name: 'Entertainment' },
-    { id: 5, name: 'Healthcare' }
+    { id: 5, name: 'Healthcare' },
+    { id: 6, name: 'Other Miscellaneous' }
   ];
 
   // Convert Date object to date string
  
+  const formatDateToString = (date) => {
+    return new Date(date).toISOString().split('T')[0]
+  }
 
-  const [formIncome, setFormIncome] = useState({
+  const [formData, setFormDate] = useState({
     amount: '',
     source: '',
-    date: '',
+    date: formatDateToString(new Date()),
     description: '',
     note: ''
   });
 
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
+    const [loading,setLoading] = useState(false);
+    
+
+  const emptyform = ()=>{
+    setFormDate((prevState) => ({
+      ...prevState,
+      amount: '',
+      source: '',
+      date: formatDateToString(new Date()),
+      description: '',
+      note: ''
+    }));  
+  }
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     // Convert the date to Date object for data send to backend 
-     const formData = {
-        ...formIncome,
-        date: new Date(formIncome.date)
+     const updformData = {
+        ...formData,
+        date: new Date(formData.date)
       };
 
     try {
       if (type === 'income') {
         if(!editId){
           // add income
-         
-          await api.post('/api/income', formData);
+          await api.post('/api/income', updformData);
           setMessage('Income added successfully');
-          setFormIncome((prevState) => ({
-            ...prevState,
-            amount: '',
-            source: '',
-            date: '',
-            description: '',
-            note: ''
-          }));    
+          emptyform();
           setAction('add'); 
+          setLoading(false);
         }else{
           // // update income
-          console.log(editId);
-          await api.put(`/api/income/${editId}`, formData);
+         // console.log(editId);
+          await api.put(`/api/income/${editId}`, updformData);
           setMessage('Income updated successfully');
-          setFormIncome((prevState) => ({
-            ...prevState,
-            amount: '',
-            source: '',
-            date: '',
-            description: '',
-            note: ''
-          }));    
+          emptyform();    
           setAction('update');
           setEditId(null);
+          setLoading(false);
         } 
-      } else {
-        console.log('coming soon');
-        // await api.post('/api/expense', formData);
+      } else if(type === 'expense'){
+        if(!editId){
+          console.log('coming soon');
+          await api.post('/api/expenses', updformData);
+          setMessage('Expense added successfully');
+          setAction('add'); 
+          emptyform(); 
+          setLoading(false);
+        }else{
+          console.log('coming soon');
+          await api.put(`/api/expenses/${editId}`, updformData);
+          setMessage('Expense updated successfully');
+          emptyform();    
+          setAction('update');
+          setEditId(null);
+          setLoading(false);
+        }
+        // amount, category, date , description , note}
       }
     } catch (err) {
       console.error(err);
@@ -80,32 +100,32 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     }
   };
 
-  const formatDateToString = (date) => {
-    return new Date(date).toISOString().split('T')[0]
-  }
+ 
 
 
   const getDatatoEdit = async (editId)=>{
      try{
-      
+      setLoading(true);
       if(type === 'income' ){
         if(!editId) return;
-        console.log(editId);
+        // console.log(editId);
         const response = await api.get(`/api/income/${editId}`);
-        setFormIncome(response.data);
-        setFormIncome(formIncome.date=formatDateToString(formIncome.date));
-
+        // converting the object date to normal date 
         const formGetData = {
-          ...formIncome,
-          date: formatDateToString(formIncome.date)
+          ...response.data,
+          date: formatDateToString(response.data.date)
         };
-
-        setFormIncome(formGetData);
+        setFormDate(formGetData);
+        setLoading(false);
         
 
-        console.log(response.data);
-      }else{
-        console.log('coming soon');
+       // console.log(response.data);
+      }else if (type === 'expense'){
+        //  console.log(editId);
+        // console.log('coming soon');
+        if(!editId) return;
+        const response = await api.get(`/api/expenses/${editId}`);
+        
       }
 
      }catch (err){
@@ -115,16 +135,16 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
 
   useEffect(() => {
     if (editId) {
-      console.log(editId);
+     // console.log(editId);
       getDatatoEdit(editId);
     }
-    console.log(formIncome.date);
-  }, [editId,formIncome.date])
+  //  console.log(formData.date);
+  }, [editId])
   
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    setFormIncome((prev) => ({
+    setFormDate((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -133,12 +153,13 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4">Add {type === 'income' ? 'Income' : 'Expense'}</h2>
+      {loading ? 'Loading...' : ''}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
           <input
             name="description"
-            value={formIncome.description}
+            value={formData.description}
             onChange={handleOnChange}
             id="description"
             type="text"
@@ -151,7 +172,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
           <label className="block text-sm font-medium mb-1">{type === 'income' ? 'Source' : 'Category'}</label>
           <select
             name="source"
-            value={formIncome.source}
+            value={formData.source}
             onChange={handleOnChange}
             className="w-full p-2 border rounded"
             required
@@ -171,7 +192,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
             <input
               name="amount"
               type="number"
-              value={formIncome.amount}
+              value={formData.amount}
               onChange={handleOnChange}
               id="amount"
               className="w-full p-2 pl-6 border rounded"
@@ -187,7 +208,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
           <input
             name="date"
             type="date"
-            value={formIncome.date }
+            value={formData.date }
             
             onChange={handleOnChange}
             id="date"
@@ -198,7 +219,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
           <label htmlFor="note" className="block text-sm font-medium mb-1">Notes (Optional)</label>
           <textarea
             name="note"
-            value={formIncome.note}
+            value={formData.note}
             onChange={handleOnChange}
             id="note"
             className="w-full p-2 border rounded"
@@ -206,12 +227,18 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
             placeholder="Add any additional notes..."
           />
         </div>
-        <button
+
+        <div className="flex space-x-4">
+           <button
           type="submit"
+          disabled={loading}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
         >
           {editId? 'Update' :'Add'} {type === 'income' ? 'Income' : 'Expense'}
         </button>
+        {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors" >Cancel</button> :null}
+        </div>
+       
         {error && <div className="text-red-500">{error}</div>}
         {message && <div className="text-green-500">{message}</div>}
       </form>
