@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useGlobalTransactionData } from "./Components/Income/TransactionList";
 import {formatCurrency} from "./Components/Income/formatCurrency";
 
@@ -9,16 +9,16 @@ export default function Reports() {
   const { totalIncome, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpense } = useGlobalTransactionData('expense');
   const [dateRange, setDateRange] = useState('current_year');
-  const [reportType, setReportType] = useState('expenses');
+  const [reportType, setReportType] = useState('whole');
 
   // Sample data for charts
-  const expenseData = [
-    { name: 'Jan', amount: 2400 },
-    { name: 'Feb', amount: 1398 },
-    { name: 'Mar', amount: 9800 },
-    { name: 'Apr', amount: 3908 },
-    { name: 'May', amount: 4800 },
-    { name: 'Jun', amount: 3800 }
+  const TransactionData = [
+    { name: 'Jan', income: 2400 ,expense: 1000,Net_Savings:1400},
+    { name: 'Feb', income: 2000 ,expense: 1398,Net_Savings:1198},
+    { name: 'Mar', income: 9800 ,expense: 2000,Net_Savings:7800},
+    { name: 'Apr', income: 3908 ,expense: 2000,Net_Savings:1908},
+    { name: 'May', income: 4800 ,expense: 3000,Net_Savings:1800},
+    { name: 'Jun', income: 4500 ,expense: 3800,Net_Savings:700},
   ];
 
   const categoryData = [
@@ -50,9 +50,10 @@ export default function Reports() {
             value={reportType}
             onChange={(e) => setReportType(e.target.value)}
           >
-            <option value="expenses">Expenses</option>
-            <option value="income">Income</option>
-            <option value="both">Income & Expenses</option>
+            <option value="Expenses">Expenses</option>
+            <option value="Income">Income</option>
+            <option value="Net Savings">Net Savings</option>
+            <option value="whole">Whole</option>
           </select>
         </div>
       </div>
@@ -60,23 +61,32 @@ export default function Reports() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense Trends Chart */}
         <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
-          <h2 className="text-md sm:text-xl font-semibold mb-4">Expense Trends</h2>
+          <h2 className="text-md sm:text-xl font-semibold mb-4">{reportType} Trends</h2>
           <div className="sm:h-80 h-[12rem]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={expenseData}>
+              <LineChart data={TransactionData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+                <Legend />
+                {reportType === 'whole' ? (<>
+                <Line type="monotone" dataKey="income" stroke="#8884d8" />
+                <Line type="monotone" dataKey="expense" stroke="orange" />
+                <Line type="monotone" dataKey="Net_Savings" stroke="green" />
+                </>): null}
+                {reportType === 'Income' ? (<><Line type="monotone" dataKey="income" stroke="#8884d8" /></>): null}
+                {reportType === 'Expenses' ? (<><Line type="monotone" dataKey="expense" stroke="orange" /></>): null}
+                {reportType === 'Net Savings' ? (<><Line type="monotone" dataKey="Net_Savings" stroke="green" /></>): null}
               </LineChart>
             </ResponsiveContainer>
+    
           </div>
         </div>
 
         {/* Category Distribution */}
         <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
-          <h2 className="sm:text-xl text-md font-semibold mb-4">Category Distribution</h2>
+          <h2 className="sm:text-xl text-md font-semibold mb-4">Category {reportType} Distribution</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

@@ -3,7 +3,7 @@ import React from 'react'
 export default function  RecentTransactions ()  {
     return (
     <div className="bg-white rounded-lg shadow p-6 mt-6">
-      <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
+      <h2 className="text-md sm:text-xl font-semibold mb-4">Recent Transactions</h2>
       <div className="space-y-4">
         {[
           { id: 1, type: 'expense', category: 'Food', amount: 25.50, date: '2024-12-27' },

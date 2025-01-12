@@ -66,19 +66,19 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
   const handleDelete = async (id) =>{
     try{
-      console.log(id);
+      // console.log(id);
       if(type ==='income'){
         const response = await api.delete(`/api/income/${id}`);
         setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
-        console.log(response.data);
+        // console.log(response.data);
         setError('');
 
       }else if(type ==='expense'){
         const response = await api.delete(`/api/expenses/${id}`);
         setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
-        console.log(response.data);
+        // console.log(response.data);
         setError('');
 
       }
@@ -98,7 +98,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
   return (
     <div className="bg-white rounded-lg shadow  sm:p-6 p-2">
-      <h2 className="text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
+      <h2 className="text-md sm:text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
       <div className="space-y-4">
         {loading? 
         <>
