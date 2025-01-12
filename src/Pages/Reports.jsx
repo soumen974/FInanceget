@@ -35,8 +35,8 @@ export default function Reports() {
   return (
     <div className="">
       <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Financial Reports</h1>
-        <div className="flex  gap-4">
+        <h1 className="sm:text-3xl text-xl font-bold">Financial Reports</h1>
+        <div className="flex  flex-wrap gap-4">
           <select 
             className="p-2 border rounded"
             value={dateRange}
@@ -59,9 +59,9 @@ export default function Reports() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expense Trends Chart */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Expense Trends</h2>
-          <div className="h-80">
+        <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
+          <h2 className="text-md sm:text-xl font-semibold mb-4">Expense Trends</h2>
+          <div className="sm:h-80 h-[12rem]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={expenseData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -75,8 +75,8 @@ export default function Reports() {
         </div>
 
         {/* Category Distribution */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Category Distribution</h2>
+        <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
+          <h2 className="sm:text-xl text-md font-semibold mb-4">Category Distribution</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -101,7 +101,7 @@ export default function Reports() {
 
         {/* Summary Stats */}
         <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Summary Statistics</h2>
+          <h2 className="sm:text-xl text-md  font-semibold mb-4">Summary Statistics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-gray-600">Total Expenses</p>

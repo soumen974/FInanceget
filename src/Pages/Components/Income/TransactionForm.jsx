@@ -6,7 +6,8 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     { id: 1, name: 'Salary' },
     { id: 2, name: 'Freelance' },
     { id: 3, name: 'Investments' },
-    { id: 4, name: 'Other Income' }
+    { id: 4, name: 'Saving' },
+    { id: 5, name: 'Other Income' }
   ] : [
     { id: 1, name: 'Food & Dining' },
     { id: 2, name: 'Transportation' },

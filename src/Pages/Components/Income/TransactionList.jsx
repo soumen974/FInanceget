@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import {formatCurrency} from "../Income/formatCurrency";
+import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
 
 export default function TransactionList({ type ,action ,setAction ,setEditId ,editId}) {
   const [transactions, setTransactions] = useState([
@@ -94,12 +95,20 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   // Filter transactions based on type
   const filteredTransactions =  GetData; 
 
+
   return (
     <div className="bg-white rounded-lg shadow  sm:p-6 p-2">
       <h2 className="text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
       <div className="space-y-4">
-        {loading? <div className="text-center py-4">Loading...</div> : ''}
-        {filteredTransactions.length === 0 ? (
+        {loading? 
+        <>
+                <ListBoxScalLoadder/>
+                <ListBoxScalLoadder/>
+
+        </>
+        : ''}
+
+        {filteredTransactions.length === 0 && !loading ? (
           <div className="text-center py-4 text-gray-500">
             No {type} transactions found
           </div>
