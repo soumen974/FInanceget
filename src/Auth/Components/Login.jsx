@@ -42,7 +42,8 @@ return (
       <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded">
         Login
       </button>
-      
+      {error && <div className="text-red-500">{error}</div>}
+      {message && <div className="text-green-500">{message}</div>}
       
     </form>
     

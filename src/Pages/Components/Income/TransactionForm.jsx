@@ -205,8 +205,6 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
               id="amount"
               className="w-full p-2 pl-6 border rounded"
               placeholder="1000.20"
-              min="0"
-              step="1.0"
               required
             />
           </div>
