@@ -14,20 +14,29 @@ export default function Reports() {
       { name: 'Apr', income: 3908 ,expense: 2000,Net_Savings:1908},
       { name: 'May', income: 4800 ,expense: 3000,Net_Savings:1800},
       { name: 'Jun', income: 4500 ,expense: 3800,Net_Savings:700},
+      { name: 'Jul', income: 4500 ,expense: 3800,Net_Savings:700},
     ];
 
   let TransactionData = ReportsData();
   const loadingReport = ReportsData();
   const messageReports = ReportsData()
-  const errorReports =ReportsData()
+  const Availableyears =ReportsData()
+
+  const current_year = new Date().getFullYear();
+  const lastYear = new Date().getFullYear() - 1;
   TransactionData =TransactionData.TransactionData;
 
   const { totalIncome, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpense } = useGlobalTransactionData('expense');
-  const [dateRange, setDateRange] = useState('current_year');
+  const [dateRange, setDateRange] = useState(current_year);
+  const searchYear =ReportsData()
+  // searchYear(dateRange);
   const [reportType, setReportType] = useState('Income');
+  const years =[
+    2023,2024,2025
+  ]
 
-    // console.log(TransactionData);
+    // console.log(Availableyears);
 
 
 // api/reports/LineChartData
@@ -39,22 +48,27 @@ export default function Reports() {
   ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-  const current_year = new Date().getFullYear();
-  const lastYear = new Date().getFullYear() - 1;
+ 
 
   return (
     <div className="">
       <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <h1 className="sm:text-3xl text-xl font-bold">Financial Reports</h1>
         <div className="flex  flex-wrap gap-4">
-          <select 
-            className="p-2 border rounded"
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-          >
-            <option value="current_year">Year : {current_year}</option>
-            <option value="last_year">Year : {lastYear}</option>
-          </select>
+        <select
+        id="dateRangeSelect"
+        className="p-2 border rounded"
+        value={dateRange}
+        onChange={(e) => setDateRange(e.target.value)}
+      >
+        {years.map((year) => (
+          <option key={year} value={year}>
+            Year: {year}
+          </option>
+        ))}
+        {/* <option value="current_year">Year: {current_year}</option>
+        <option value="last_year">Year: {lastYear}</option> */}
+      </select>
           <select 
             className="p-2 border rounded"
             value={reportType}
