@@ -13,6 +13,7 @@ export function ReportsData() {
     setLoadingReport(true);
     GetTransactionData();
     GetTheYears();
+    fetchData();
   }, [searchYear]);
 
   const GetTransactionData = async () => {
@@ -39,10 +40,28 @@ export function ReportsData() {
     }
   };
 
-  // Log the updated Availableyears state whenever it changes
-  useEffect(() => {
-    // console.log(Availableyears);
-  }, [Availableyears]);
+  const [categoryData, setCategoryData] = useState({ categoryIncomeData: [], categoryExpenseData: [] });
+ const [month,setMonth] =useState(0);
 
-  return { TransactionData, errorReports, messageReports, loadingReport, Availableyears, searchYear, setsearchYear };
+  // useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/api/reports/categoryData/${searchYear}/${month}`);
+        setCategoryData(response.data);
+      } catch (error) {
+        console.error('Error fetching category data', error);
+      }
+    };
+
+    // fetchData();
+  // }, [categoryData, searchYear, month]);
+  // console.log(categoryData.categoryIncomeData);
+
+
+  // Log the updated Availableyears state whenever it changes
+  // useEffect(() => {
+  //   // console.log(Availableyears);
+  // }, [Availableyears]);
+
+  return { TransactionData, errorReports, messageReports, loadingReport, Availableyears, searchYear, setsearchYear,setMonth,categoryData };
 }

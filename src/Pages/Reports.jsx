@@ -37,6 +37,8 @@ export default function Reports() {
     Availableyears,
     searchYear,
     setsearchYear,
+    setMonth,
+    categoryData
   } = ReportsData();
 
   const currentYear = new Date().getFullYear();
@@ -46,21 +48,30 @@ export default function Reports() {
   const { totalExpense } = useGlobalTransactionData('expense');
 
   const [dateRange, setDateRange] = useState(currentYear);
+  const [dateRangeMonth, setDateRangeMonth] = useState(0);
   const [reportType, setReportType] = useState('Income');
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
+  const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
+  const totalIncomePerYear = TransactionData.reduce((acc, income) => acc + income.income, 0);
+  const totalNetSavingsPerYear = TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0);
 
   useEffect(() => {
     setsearchYear(dateRange);
-  }, [dateRange, setsearchYear]);
+    setMonth(dateRangeMonth);
+    // console.log(dateRangeMonth);
+  }, [dateRange, setsearchYear,dateRangeMonth]);
 
-  const categoryData = [
+  const DemocategoryData = [
     { name: 'Food', value: 400 },
     { name: 'Transport', value: 300 },
     { name: 'Entertainment', value: 300 },
     { name: 'Utilities', value: 200 },
   ];
 
+// const Data = (categoryData?.categoryIncomeData?.length === 0) ? DemocategoryData : categoryData;
+// console.log(categoryData.categoryIncomeData);
+const Data = DemocategoryData;
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
@@ -118,18 +129,28 @@ export default function Reports() {
             </ResponsiveContainer>
           </div>
           <h2 className="text-md sm:text-xl font-semibold flex justify-center">
-            {TransactionData.length === 0 ? 'No Transactions' : null}
+            {TransactionData.length === 0 ? 'No Transactions' : dateRange}
           </h2>
         </div>
 
         {/* Category Distribution */}
         <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
           <h2 className="sm:text-xl text-md font-semibold mb-4">Category {reportType} Distribution</h2>
+          <select
+            className="p-2 border rounded"
+            value={dateRangeMonth}
+            onChange={(e) => setDateRangeMonth(e.target.value)}
+          >
+            <option value={0}>Jan</option>
+            <option value={1}>Feb</option>
+            <option value={2}>March</option>
+            <option value={3}>April</option>
+          </select>
           <div className="sm:h-80 h-[12rem]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={categoryData}
+                  data={Data}
                   cx="50%"
                   cy="50%"
                   outerRadius={isSm ? 50 : 80}
@@ -137,7 +158,7 @@ export default function Reports() {
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
-                  {categoryData.map((entry, index) => (
+                  {Data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -153,16 +174,16 @@ export default function Reports() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-gray-600">Total Expenses</p>
-              <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalExpense)}</p>
+              <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalExpensePerYear)}</p>
             </div>
             <div className="p-4 bg-green-50 rounded-lg">
               <p className="text-sm text-gray-600">Total Income</p>
-              <p className="text-2xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
+              <p className="text-2xl font-bold text-green-600">{formatCurrency(totalIncomePerYear)}</p>
             </div>
             <div className="p-4 bg-purple-50 rounded-lg">
               <p className="text-sm text-gray-600">Net Savings</p>
               <p className="text-2xl font-bold text-purple-600">
-                {formatCurrency(totalIncome - totalExpense)}
+                {formatCurrency(totalNetSavingsPerYear)}
               </p>
             </div>
           </div>
