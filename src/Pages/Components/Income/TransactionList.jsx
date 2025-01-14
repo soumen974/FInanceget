@@ -2,6 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import {formatCurrency} from "../Income/formatCurrency";
 import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
+// import DialogBox from "../../../popups/DialogBox";
+
+
+const Popupbox = ({title ,HidePopup, setHidePopup,currentId,taskFunction}) =>{
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  return(
+  <>
+  <div  className="">
+    <div className={`${HidePopup ===currentId?  'flex' : 'hidden'} z-20 md:absolute fixed inset-0 bg-zinc-00/95 backdrop-blur-sm rounded-lg flex items-center justify-center p-6 `}>
+      <div className="text-center">
+        <p className="text-zinc-900/95 mb-1">Are you sure you want to delete these {title} data ?</p>
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={() => setHidePopup(true)}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => taskFunction(currentId)}
+            className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-all"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </>)
+};
 
 export default function TransactionList({ type ,action ,setAction ,setEditId ,editId}) {
   const [transactions, setTransactions] = useState([
@@ -64,6 +94,8 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
     }
   };
 
+  const [HidePopup, setHidePopup] = useState(null);
+
   const handleDelete = async (id) =>{
     try{
       // console.log(id);
@@ -89,6 +121,10 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
   }
 
+  const handlePopupopner = (id) => {
+    setHidePopup(HidePopup === id ? null : id);
+  };
+
   // to use it in other files
  
 
@@ -102,11 +138,11 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       <div className="space-y-4">
         {loading? 
         <>
-                <ListBoxScalLoadder/>
-                <ListBoxScalLoadder/>
-
+        <ListBoxScalLoadder/>
+        <ListBoxScalLoadder/>
         </>
         : ''}
+        
 
         {filteredTransactions.length === 0 && !loading ? (
           <div className="text-center py-4 text-gray-500">
@@ -116,8 +152,13 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
           filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex md:relative items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
             >
+              {/* <div className="relative"> */}
+                <Popupbox HidePopup={HidePopup} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={type} />
+              {/* </div> */}
+
+              
               <div className="flex-1">
                 <p className="font-medium">{transaction.description}</p>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -132,7 +173,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                 </p>
                 <div className="flex gap-2 mt-1">
                   <button onClick={()=>{setEditId(transaction._id)}} className="text-xs text-blue-600 hover:underline">Edit</button>
-                  <button onClick={()=>handleDelete(transaction._id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                  <button onClick={()=>{handlePopupopner(transaction._id)}} className="text-xs text-red-600 hover:underline">Delete</button>
                 </div>
               </div>
             </div>
@@ -150,6 +191,17 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
           <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">Next</button>
         </div>
       </div>
+
+      {/* <DialogBox Loading={Loading} 
+  open={openDiologBox}
+  IconName={IconName}
+    title={'Save changes Permanently'} 
+    message={'Are you sure you want to save the changes?'}
+      ActionButtonName={'Save Changes'}
+      ActionButtonColorRed={false} 
+      setOpen={setOpenDiologBox} 
+      handleLogic={handleSaveChanges}
+  /> */}
     </div>
    
   );
@@ -211,5 +263,7 @@ export const useGlobalTransactionData = (type) => {
 
   return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData};
 };
+
+
 
 

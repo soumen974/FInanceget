@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {Wallet}from 'lucide-react';
 
 const LandingPage = () => {
   const features = [
@@ -147,7 +148,13 @@ const LandingPage = () => {
       <footer className="bg-gray-900 text-gray-400 py-12 px-4">
         <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">FinanceFlow</h3>
+            {/* <h3 className="text-white text-lg font-semibold mb-4">FinanceGet</h3> */}
+            <div className="flex items-center">
+            <Wallet className="h-8 w-8 text-blue-600" />
+            <Link to={'/'} className="ml-2 text-xl font-bold text-gray-100 hover:text-blue-600 transition-colors">
+              FinanceGet
+            </Link>
+          </div>
             <p>Your personal finance companion for a better financial future.</p>
           </div>
           <div>

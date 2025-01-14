@@ -238,11 +238,11 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
            <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+          className="w-full bg-blue-700  hover:bg-blue-600 text-md font-medium text-white py-2 px-4 rounded-md  transition-colors"
         >
            {type === 'income' ? (editId? 'Update' :'Add Income') : (editId? 'Update' :'Add Expense')}
         </button>
-        {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors" >Cancel</button> :null}
+        {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-500 rounded-md text-white py-2 px-4 text-md font-medium  hover:bg-red-600 transition-colors" >Cancel</button> :null}
         </div>
        
         {error && <div className="text-red-500">{error}</div>}
