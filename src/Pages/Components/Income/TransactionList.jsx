@@ -228,7 +228,7 @@ export const useGlobalTransactionData = (type) => {
           setLoading(false);
         }
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         setError(err.response?.data || err.message || 'Something went wrong');
         setLoading(false);
       }

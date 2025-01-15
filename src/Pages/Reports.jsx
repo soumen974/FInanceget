@@ -29,6 +29,7 @@ export default function Reports() {
     { name: 'Jul', income: 4500, expense: 3800, Net_Savings: 700 },
   ];
 
+
   const {
     TransactionData,
     errorReports,
@@ -38,7 +39,7 @@ export default function Reports() {
     searchYear,
     setsearchYear,
     setMonth,
-    categoryData
+    categoryData = { categoryIncomeData: [], categoryExpenseData: [] }
   } = ReportsData();
 
   const currentYear = new Date().getFullYear();
@@ -59,21 +60,30 @@ export default function Reports() {
   useEffect(() => {
     setsearchYear(dateRange);
     setMonth(dateRangeMonth);
-    // console.log(dateRangeMonth);
-  }, [dateRange, setsearchYear,dateRangeMonth]);
+    // console.log("Date Range Month:", dateRangeMonth);
+  }, [dateRange, setsearchYear, dateRangeMonth]);
 
   const DemocategoryData = [
-    { name: 'Food', value: 400 },
-    { name: 'Transport', value: 300 },
-    { name: 'Entertainment', value: 300 },
-    { name: 'Utilities', value: 200 },
+    // { name: 'Food', value: 400 },
+    // { name: 'Transport', value: 300 },
+    // { name: 'Entertainment', value: 300 },
+    // { name: 'Utilities', value: 200 },
+    // { name: 'another-1', value: 200 },
+    // { name: 'another-2', value: 200 },
+    { name: 'No data found', value: 404 },
+
   ];
 
-// const Data = (categoryData?.categoryIncomeData?.length === 0) ? DemocategoryData : categoryData;
-// console.log(categoryData.categoryIncomeData);
-const Data = DemocategoryData;
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  // Ensure actualData is defined before checking its length
+  const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;  const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
+  // console.log("Category Data: ", categoryData);
+  // console.log("Data used: ", Data);
+  const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income')?month.income:month.expense)  > 0).map(month => month.name);
 
+  const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
+  
   return (
     <div className="">
       <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
@@ -85,9 +95,9 @@ const Data = DemocategoryData;
             value={dateRange}
             onChange={(e) => setDateRange(Number(e.target.value))}
           >
-            {years.map((year,i) => (
+            {years.map((year, i) => (
               <option className='' key={year} value={year}>
-                Year: {year} {i>0? 'premium':"normal"}
+                Year: {year} {i > 0 ? 'premium' : "normal"}
               </option>
             ))}
           </select>
@@ -139,12 +149,11 @@ const Data = DemocategoryData;
           <select
             className="p-2 border rounded"
             value={dateRangeMonth}
-            onChange={(e) => setDateRangeMonth(e.target.value)}
+            onChange={(e) => setDateRangeMonth(Number(e.target.value))}
           >
-            <option value={0}>Jan</option>
-            <option value={1}>Feb</option>
-            <option value={2}>March</option>
-            <option value={3}>April</option>
+            {monthsForIncome.map((month, index) => (
+              <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+            ))}
           </select>
           <div className="sm:h-80 h-[12rem]">
             <ResponsiveContainer width="100%" height="100%">
