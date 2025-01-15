@@ -21,7 +21,7 @@ const Layout = () => {
        
       <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-[12rem]'}`}>
       <Headder/>
-      <div className=" md:px-6 lg:py-6 p-3   max-lg:pt-[5rem] ">
+      <div className=" md:px-6 lg:py-6 p-2   max-lg:pt-[5rem] ">
         <Outlet />
       </div>
       

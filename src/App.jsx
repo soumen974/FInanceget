@@ -41,11 +41,11 @@ const Settings = () => {
 
   return (
     <div className="">
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <h1 className="sm:text-3xl text-xl font-bold sm:mb-6 mb-3 max-sm:pl-2">Settings</h1>
       
       <div className="bg-white rounded-lg shadow">
         <div className="border-b">
-          <div className="flex space-x-6 px-6">
+          <div className="flex sm:space-x-6 space-x-2 sm:px-6 px-2">
             {['Profile', 'Preferences', 'Notifications'].map((tab) => (
               <button
                 key={tab}
@@ -62,7 +62,7 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 ">
           {activeTab === 'profile' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold">Profile Settings</h2>
@@ -325,6 +325,8 @@ const App = () => {
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/budget" element={<Budget />} />
+
             <Route path='*' element={
                <div className="text-center h-screen py-12">
                <h2 className="text-2xl font-bold text-gray-800">404 - Page Not Found</h2>

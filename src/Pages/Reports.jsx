@@ -97,7 +97,7 @@ export default function Reports() {
           >
             {years.map((year, i) => (
               <option className='' key={year} value={year}>
-                Year: {year} {i > 0 ? 'premium' : "normal"}
+                Year: {year} {i > 0 ? 'Premium' : 'Free'}
               </option>
             ))}
           </select>

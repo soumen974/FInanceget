@@ -7,7 +7,7 @@ export default function  Dashboard () {
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
     return (
       <div className="">
-        <h1 className="sm:text-3xl text-xl font-bold mb-6">Dashboard</h1>
+        <h1 className="sm:text-3xl text-xl font-bold mb-6 max-sm:pl-2">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard title="Total Balance " amount={totalIncomeFortheCurrentMonth-totalExpenseFortheCurrentMonth} type="balance" />
           <StatCard title="Income" amount={totalIncomeFortheCurrentMonth} type="income" />

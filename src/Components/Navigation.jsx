@@ -1,5 +1,5 @@
 import React, { useState ,useLocation, useEffect } from 'react';
-import { User,Home,PlusCircle, Wallet,ChevronRight,ChevronLeft,Clock, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
+import { User,Home,PlusCircle,CreditCard , Wallet,ChevronRight,ChevronLeft,Clock, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import { 
     DollarSign, 
@@ -334,8 +334,10 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           { icon: <PlusCircle size={18} />, label: 'Add', to: '/add' },
           { icon: <ArrowUpCircle size={18} />, label: 'Income', to: '/income' },
           { icon: <ArrowDownCircle size={18} />, label: 'Expenses', to: '/expenses' },
+          { icon: <CreditCard  size={18} />, label: 'budget', to: '/budget' },
           { icon: <PieChart size={18} />, label: 'Reports', to: '/reports' },
           { icon: <Settings size={18} />, label: 'Settings', to: '/settings' },
+
         ].map((item) => (
           <NavLink
             key={item.label}

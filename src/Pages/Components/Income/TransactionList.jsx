@@ -95,6 +95,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   };
 
   const [HidePopup, setHidePopup] = useState(null);
+  const [updating5,setupdating5] = useState(0);
 
   const handleDelete = async (id) =>{
     try{
@@ -104,18 +105,26 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
         // console.log(response.data);
+        action('delete');
         setError('');
+        if(id==GetData[GetData.length-1]._id){
+          setupdating5((prev)=>prev-5)
+        }
 
       }else if(type ==='expense'){
         const response = await api.delete(`/api/expenses/${id}`);
         setGetData(GetData.filter(income => income._id !==id));
         setMessage('Deleted Successfully');
+        action('delete');
         // console.log(response.data);
         setError('');
+        if(id==GetData[GetData.length-1]._id){
+          setupdating5((prev)=>prev-5)
+        }
 
       }
     }catch(err){
-      console.error(err);
+      // console.error(err);
       setError(err.response?.data || err.message || 'Something went wrong');
     }
 
@@ -129,7 +138,9 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
  
 
   // Filter transactions based on type
-  const filteredTransactions =  GetData; 
+  // console.log(updating5);
+  const filteredTransactions =  GetData.slice(updating5,updating5+5 ); 
+  // show only 5 transactions from the list
 
 
   return (
@@ -187,8 +198,8 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
           <option>Sort by Category</option>
         </select>
         <div className="flex gap-2">
-          <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">Previous</button>
-          <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">Next</button>
+          <button disabled={updating5==0} onClick={()=>setupdating5((prev)=>prev-5)} className={` ${updating5==0? 'bg-gray-50 text-gray-300':'hover:bg-gray-50'} px-3 py-1 text-sm border rounded `}>Previous</button>
+          <button disabled={updating5>(GetData.length-6)} onClick={()=>setupdating5((prev)=>prev+5)} className={` ${updating5>(GetData.length-6)? 'bg-gray-50 text-gray-300':'hover:bg-gray-50'} px-3 py-1 text-sm border rounded hover:bg-gray-50`}>Next</button>
         </div>
       </div>
 
