@@ -4,29 +4,46 @@ import {formatCurrency} from "../Income/formatCurrency";
 import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
 // import DialogBox from "../../../popups/DialogBox";
 
+import { TriangleAlert ,ArrowUpCircle,ArrowDownCircle,Edit2,Trash2 } from 'lucide-react'
 
-const Popupbox = ({title ,HidePopup, setHidePopup,currentId,taskFunction}) =>{
+const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction,type}) =>{
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   return(
   <>
-  <div  className="">
-    <div className={`${HidePopup ===currentId?  'flex' : 'hidden'} z-20 md:absolute fixed inset-0 bg-zinc-00/95 backdrop-blur-sm rounded-lg flex items-center justify-center p-6 `}>
-      <div className="text-center">
-        <p className="text-zinc-900/95 mb-1">Are you sure you want to delete these {title} data ?</p>
-        <div className="flex justify-center gap-3">
-          <button
-            onClick={() => setHidePopup(true)}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all"
+  <div  className={`${HidePopup ===currentId?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
+  <div className="fixed inset-0 bg-gray-500 bg-opacity-75" onClick={() => setHidePopup(true)}></div>
+    <div className={` z-20 relative bg-white rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
+     
+      <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div
+            className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10`}
           >
-            Cancel
-          </button>
-          <button
-            onClick={() => taskFunction(currentId)}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-all"
-          >
-            Delete
-          </button>
+            
+              <TriangleAlert className="h-6 w-6 text-red-600" aria-hidden="true" />
+
+          </div>
+          <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">Delete {title}</h3>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">Are you sure you want to delete this {type} data ?</p>
+            </div>
+          </div>
         </div>
+      </div>
+      <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+        <button
+          className={`inline-flex w-full justify-center rounded-md bg-red-600 hover:bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto`}
+          onClick={() => taskFunction(currentId)}
+        >
+          Delete {loading&& "Loading..."}
+        </button>
+        <button
+          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+          onClick={() => setHidePopup(true)}
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>
@@ -97,7 +114,13 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   const [HidePopup, setHidePopup] = useState(null);
   const [updating5,setupdating5] = useState(0);
 
+  const handlePopupopner = (id) => {
+    setHidePopup(HidePopup === id ? null : id);
+  };
+
   const handleDelete = async (id) =>{
+    setLoading(true);
+
     try{
       // console.log(id);
       if(type ==='income'){
@@ -107,9 +130,11 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         // console.log(response.data);
         action('delete');
         setError('');
-        if(id==GetData[GetData.length-1]._id){
-          setupdating5((prev)=>prev-5)
-        }
+
+        // if(id==GetData[GetData.length-1]._id){
+        //   setupdating5((prev)=>prev-5)
+        // }
+        setLoading(false);
 
       }else if(type ==='expense'){
         const response = await api.delete(`/api/expenses/${id}`);
@@ -118,21 +143,22 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         action('delete');
         // console.log(response.data);
         setError('');
-        if(id==GetData[GetData.length-1]._id){
-          setupdating5((prev)=>prev-5)
-        }
+
+        // if(id==GetData[GetData.length-1]._id){
+        //   setupdating5((prev)=>prev-5)
+        // }
+        setLoading(false);
 
       }
     }catch(err){
       // console.error(err);
+      setLoading(false);
       setError(err.response?.data || err.message || 'Something went wrong');
     }
 
   }
 
-  const handlePopupopner = (id) => {
-    setHidePopup(HidePopup === id ? null : id);
-  };
+ 
 
   // to use it in other files
  
@@ -144,38 +170,74 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
 
   return (
-    <div className="bg-white rounded-lg shadow  sm:p-6 p-2">
-      <h2 className="text-md sm:text-xl font-semibold mb-4">Recent {type === 'income' ? 'Income' : 'Expenses'}</h2>
-      <div className="space-y-4">
-        {loading? 
-        <>
-        <ListBoxScalLoadder/>
-        <ListBoxScalLoadder/>
-        </>
-        : ''}
-        
-
-        {filteredTransactions.length === 0 && !loading ? (
-          <div className="text-center py-4 text-gray-500">
-            No {type} transactions found
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+    {/* Header Section with Refined Design */}
+    <div className="border-b border-gray-100 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
+          Recent {type === 'income' ? (
+            <>
+              Income
+              <ArrowUpCircle className="w-5 h-5 text-green-500" />
+            </>
+          ) : (
+            <>
+              Expenses
+              <ArrowDownCircle className="w-5 h-5 text-red-500" />
+            </>
+          )}
+        </h2>
+        <select className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option>Sort by Date</option>
+          <option>Sort by Amount</option>
+          <option>Sort by Category</option>
+        </select>
+      </div>
+    </div>
+  
+    {/* Main Content Area */}
+    <div className="p-4 sm:p-6">
+      <div className="space-y-3 md:min-h-[55.5vh]">
+        {/* Loading State with Smooth Animation */}
+        {loading && filteredTransactions.length === 0 && (
+          <div className="space-y-3">
+            {[...Array(5)].map((_, index) => (
+              <div key={index} className="animate-pulse" style={{ animationDelay: `${index * 150}ms` }}>
+                <ListBoxScalLoadder />
+              </div>
+            ))}
           </div>
-        ) : (
-          filteredTransactions.map(transaction => (
+        )}
+  
+        {filteredTransactions.length === 0 && !loading && (
+          <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+            <div className="h-16 w-16 mb-4">
+              {type === 'income' ? (
+                <ArrowUpCircle className="w-full h-full text-gray-300" />
+              ) : (
+                <ArrowDownCircle className="w-full h-full text-gray-300" />
+              )}
+            </div>
+            <p className="text-gray-500 font-medium">No {type} transactions found</p>
+            <p className="text-sm text-gray-400 mt-1">Transactions will appear here</p>
+          </div>
+        )}
+  
+        { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="flex md:relative items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {/* <div className="relative"> */}
-                <Popupbox HidePopup={HidePopup} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={type} />
-              {/* </div> */}
+              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-200 bg-white"
+              >
+                <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
 
               
               <div className="flex-1">
-                <p className="font-medium">{transaction.description}</p>
+                <p className="font-medium text-gray-900 truncate">{transaction.description}</p>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <span>{transaction.source || transaction.category}</span>
                   <span>•</span>
-                  <span>{new Date(transaction.date).toLocaleDateString()}</span>
+                  <span className=''>{(new Date(transaction.date).toLocaleDateString()=== new Date().toLocaleDateString()? 'Today': new Date(transaction.date).toLocaleDateString())}</span>
+                  {/* <span>{new (Date()-1).toLocaleDateString()}</span> */}
                 </div>
               </div>
               <div className="text-right">
@@ -183,37 +245,68 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                   {formatCurrency(transaction.amount)} 
                 </p>
                 <div className="flex gap-2 mt-1">
-                  <button onClick={()=>{setEditId(transaction._id)}} className="text-xs text-blue-600 hover:underline">Edit</button>
-                  <button onClick={()=>{handlePopupopner(transaction._id)}} className="text-xs text-red-600 hover:underline">Delete</button>
+                  <button
+                    onClick={() => setEditId(transaction._id)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                    title="Edit transaction"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => handlePopupopner(transaction._id)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    title="Delete transaction"
+                  >
+                    <Trash2 size={16} />
+                  </button> 
                 </div>
+                 
               </div>
             </div>
-          ))
-        )}
+          ))}
+        
+        
       </div>
-      <div className="mt-4 flex flex-wrap gap-2 justify-between items-center">
-        <select className="p-2 border rounded">
-          <option>Sort by Date</option>
-          <option>Sort by Amount</option>
-          <option>Sort by Category</option>
-        </select>
-        <div className="flex gap-2">
-          <button disabled={updating5==0} onClick={()=>setupdating5((prev)=>prev-5)} className={` ${updating5==0? 'bg-gray-50 text-gray-300':'hover:bg-gray-50'} px-3 py-1 text-sm border rounded `}>Previous</button>
-          <button disabled={updating5>(GetData.length-6)} onClick={()=>setupdating5((prev)=>prev+5)} className={` ${updating5>(GetData.length-6)? 'bg-gray-50 text-gray-300':'hover:bg-gray-50'} px-3 py-1 text-sm border rounded hover:bg-gray-50`}>Next</button>
+  
+      {/* Pagination Footer */}
+      <div className="mt-6 border-t border-gray-100 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-500">
+            Showing {updating5 + 1} to {Math.min(updating5 + 5, GetData.length)} of {GetData.length} entries
+          </p>
+  
+          <div className="flex gap-2">
+            <button
+              disabled={updating5 === 0}
+              onClick={() => setupdating5(prev => prev - 5)}
+              className={`
+                px-4 py-2 text-sm font-medium rounded-lg
+                ${updating5 === 0
+                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
+                border border-gray-200 transition-all duration-200
+              `}
+            >
+              Previous
+            </button>
+            <button
+              disabled={updating5 > (GetData.length - 6)}
+              onClick={() => setupdating5(prev => prev + 5)}
+              className={`
+                px-4 py-2 text-sm font-medium rounded-lg
+                ${updating5 > (GetData.length - 6)
+                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
+                border border-gray-200 transition-all duration-200
+              `}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* <DialogBox Loading={Loading} 
-  open={openDiologBox}
-  IconName={IconName}
-    title={'Save changes Permanently'} 
-    message={'Are you sure you want to save the changes?'}
-      ActionButtonName={'Save Changes'}
-      ActionButtonColorRed={false} 
-      setOpen={setOpenDiologBox} 
-      handleLogic={handleSaveChanges}
-  /> */}
     </div>
+  </div>
    
   );
 }
@@ -275,6 +368,7 @@ export const useGlobalTransactionData = (type) => {
   return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData};
 };
 
+ 
 
 
 

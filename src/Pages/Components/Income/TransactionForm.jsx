@@ -17,12 +17,15 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     { id: 6, name: 'Other Miscellaneous' }
   ];
 
-  // Convert Date object to date string
  
   const formatDateToString = (date) => {
-    return new Date(date).toISOString().split('T')[0]
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   }
-
   const [formData, setFormDate] = useState({
     amount: '',
     source: '',
@@ -30,6 +33,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     description: '',
     note: ''
   });
+
 
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
@@ -96,7 +100,8 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
         // amount, category, date , description , note}
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
+      setLoading(false);
       setError(err.response?.data || err.message || 'Something went wrong');
     }
   };
@@ -241,6 +246,7 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
           className="w-full bg-blue-700  hover:bg-blue-600 text-md font-medium text-white py-2 px-4 rounded-md  transition-colors"
         >
            {type === 'income' ? (editId? 'Update' :'Add Income') : (editId? 'Update' :'Add Expense')}
+           {loading && <span className="ml-2">Loading...</span>}
         </button>
         {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-500 rounded-md text-white py-2 px-4 text-md font-medium  hover:bg-red-600 transition-colors" >Cancel</button> :null}
         </div>
