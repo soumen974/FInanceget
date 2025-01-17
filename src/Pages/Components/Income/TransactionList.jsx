@@ -170,9 +170,9 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
     {/* Header Section with Refined Design */}
-    <div className="border-b border-gray-100 p-4 sm:p-6">
+    <div className="border-b border-gray-200 p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
           Recent {type === 'income' ? (
@@ -226,7 +226,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-200 bg-white"
+              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-gray-100 hover:shadow-sm transition-all duration-200 bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
 
@@ -269,7 +269,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       </div>
   
       {/* Pagination Footer */}
-      <div className="mt-6 border-t border-gray-100 pt-4">
+      <div className="mt-6 border-t border-gray-200 pt-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             Showing {updating5 + 1} to {Math.min(updating5 + 5, GetData.length)} of {GetData.length} entries

@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell
 } from 'recharts';
 import { useGlobalTransactionData } from './Components/Income/TransactionList';
 import { formatCurrency } from './Components/Income/formatCurrency';
 import { useMediaQuery } from 'react-responsive';
 import { ReportsData } from './Components/Reports/ReportsData';
+import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
 
 export default function Reports() {
+  // Your existing state and hooks...
+
   const isSm = useMediaQuery({ query: '(max-width: 640px)' });
 
   const DemoTransactionData = [
@@ -85,115 +80,180 @@ export default function Reports() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
   
   return (
-    <div className="">
-      <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
-        <h1 className="sm:text-3xl text-xl font-bold">Financial Reports</h1>
-        <div className="flex flex-wrap gap-4">
-          <select
-            id="dateRangeSelect"
-            className="p-2 border rounded"
-            value={dateRange}
-            onChange={(e) => setDateRange(Number(e.target.value))}
-          >
-            {years.map((year, i) => (
-              <option className='' key={year} value={year}>
-                Year: {year} {i > 0 ? 'Premium' : 'Free'}
-              </option>
-            ))}
-          </select>
-          <select
-            className="p-2 border rounded"
-            value={reportType}
-            onChange={(e) => setReportType(e.target.value)}
-          >
-            <option value="Income">Income</option>
-            <option value="Expenses">Expenses</option>
-            <option value="Net Savings">Net Savings</option>
-            <option value="whole">Whole</option>
-          </select>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Financial Reports
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              Track your financial performance and trends
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <select
+              id="dateRangeSelect"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              value={dateRange}
+              onChange={(e) => setDateRange(Number(e.target.value))}
+            >
+              {years.map((year, i) => (
+                <option key={year} value={year} title={i > 0 ? 'Premium' : 'Normal'} className="py-2">
+                  {year} {i > 0 ? '💎' : ''}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              value={reportType}
+              onChange={(e) => setReportType(e.target.value)}
+            >
+              <option value="Income">Income Analysis</option>
+              <option value="Expenses">Expense Analysis</option>
+              <option value="Net Savings">Savings Analysis</option>
+              <option value="whole">Combined Analysis</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Expense Trends Chart */}
-        <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
-          <h2 className="text-md sm:text-xl font-semibold mb-4">{reportType} Trends</h2>
-          <div className="sm:h-80 h-[12rem]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                {reportType === 'whole' ? (
-                  <>
-                    <Line type="monotone" dataKey="income" stroke="#8884d8" />
-                    <Line type="monotone" dataKey="expense" stroke="orange" />
-                    <Line type="monotone" dataKey="Net_Savings" stroke="green" />
-                  </>
-                ) : null}
-                {reportType === 'Income' ? <Line type="monotone" dataKey="income" stroke="#8884d8" /> : null}
-                {reportType === 'Expenses' ? <Line type="monotone" dataKey="expense" stroke="orange" /> : null}
-                {reportType === 'Net Savings' ? <Line type="monotone" dataKey="Net_Savings" stroke="green" /> : null}
-              </LineChart>
-            </ResponsiveContainer>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                <TrendingUp size={20} />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {reportType} Trends
+              </h2>
+            </div>
           </div>
-          <h2 className="text-md sm:text-xl font-semibold flex justify-center">
-            {TransactionData.length === 0 ? 'No Transactions' : dateRange}
-          </h2>
+
+          <div className="p-6">
+            <div className="h-[300px] sm:h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="name" stroke="#666" />
+                  <YAxis stroke="#666" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #f0f0f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}
+                  />
+                  {reportType === 'whole' && (
+                    <>
+                      <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} />
+                      <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} />
+                      <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} />
+                    </>
+                  )}
+                  {reportType === 'Income' && <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} />}
+                  {reportType === 'Expenses' && <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} />}
+                  {reportType === 'Net Savings' && <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} />}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
         {/* Category Distribution */}
-        <div className="bg-white p-2 sm:p-6 rounded-lg shadow">
-          <h2 className="sm:text-xl text-md font-semibold mb-4">Category {reportType} Distribution</h2>
-          <select
-            className="p-2 border rounded"
-            value={dateRangeMonth}
-            onChange={(e) => setDateRangeMonth(Number(e.target.value))}
-          >
-            {monthsForIncome.map((month, index) => (
-              <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
-            ))}
-          </select>
-          <div className="sm:h-80 h-[12rem]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={Data}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={isSm ? 50 : 80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {Data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-50 text-purple-600">
+                  <PieChartIcon size={20} />
+                </div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Category Distribution
+                </h2>
+              </div>
+              <select
+                className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                value={dateRangeMonth}
+                onChange={(e) => setDateRangeMonth(Number(e.target.value))}
+              >
+                {monthsForIncome.map((month, index) => (
+                  <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <div className="h-[300px] sm:h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={Data}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={isSm ? 100 : 150}
+                    innerRadius={isSm ? 60 : 100}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {Data.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
-        {/* Summary Stats */}
-        <div className="bg-white p-2 sm:p-6 rounded-lg shadow lg:col-span-2">
-          <h2 className="sm:text-xl text-md font-semibold mb-4">Summary Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600">Total Expenses</p>
-              <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalExpensePerYear)}</p>
+        {/* Summary Statistics */}
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-50">
+                <BarChart2 className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Expenses</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(totalExpensePerYear)}
+                </p>
+              </div>
             </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600">Total Income</p>
-              <p className="text-2xl font-bold text-green-600">{formatCurrency(totalIncomePerYear)}</p>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-green-50">
+                <TrendingUp className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Income</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(totalIncomePerYear)}
+                </p>
+              </div>
             </div>
-            <div className="p-4 bg-purple-50 rounded-lg">
-              <p className="text-sm text-gray-600">Net Savings</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {formatCurrency(totalNetSavingsPerYear)}
-              </p>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-purple-50">
+                <Calendar className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Net Savings</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(totalNetSavingsPerYear)}
+                </p>
+              </div>
             </div>
           </div>
         </div>

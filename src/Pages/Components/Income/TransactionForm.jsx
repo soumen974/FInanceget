@@ -1,20 +1,21 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
-
-export default function TransactionForm({ type , setAction ,action ,editId,setEditId}) {
+import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
+import { ReceiptIndianRupee  } from "lucide-react";
+export default function TransactionForm({ type, setAction, action, editId, setEditId }) {
   const categories = type === 'income' ? [
-    { id: 1, name: 'Salary' },
-    { id: 2, name: 'Freelance' },
-    { id: 3, name: 'Investments' },
-    { id: 4, name: 'Saving' },
-    { id: 5, name: 'Other Income' }
+    { id: 1, name: 'Salary', icon: '💰' },
+    { id: 2, name: 'Freelance', icon: '💻' },
+    { id: 3, name: 'Investments', icon: '📈' },
+    { id: 4, name: 'Saving', icon: '🏦' },
+    { id: 5, name: 'Other Income', icon: '💵' }
   ] : [
-    { id: 1, name: 'Food & Dining' },
-    { id: 2, name: 'Transportation' },
-    { id: 3, name: 'Utilities' },
-    { id: 4, name: 'Entertainment' },
-    { id: 5, name: 'Healthcare' },
-    { id: 6, name: 'Other Miscellaneous' }
+    { id: 1, name: 'Food & Dining', icon: '🍽️' },
+    { id: 2, name: 'Transportation', icon: '🚗' },
+    { id: 3, name: 'Utilities', icon: '💡' },
+    { id: 4, name: 'Entertainment', icon: '🎬' },
+    { id: 5, name: 'Healthcare', icon: '⚕️' },
+    { id: 6, name: 'Other Miscellaneous', icon: '📦' }
   ];
 
  
@@ -163,96 +164,157 @@ export default function TransactionForm({ type , setAction ,action ,editId,setEd
     }));
   };
 
+
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">Add {type === 'income' ? 'Income' : 'Expense'}</h2>
-      {loading ? 'Loading...' : ''}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
+    <div className="bg-white rounded-xl  border border-gray-200 max-w-2xl mx-auto">
+      <div className="border-b border-gray-200 p-6">
+        <div className="flex items-center gap-3">
+          <div className={`p-2.5 rounded-xl ${
+            type === 'income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+          }`}>
+            {type === 'income' ? <ArrowUpCircle size={24} /> : <ArrowDownCircle size={24} />}
+          </div>
+          <h2 className="text-xl font-semibold text-gray-800">
+            {editId ? `Edit ${type}` : `Add New ${type}`}
+          </h2>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <div className="space-y-2">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <input
             name="description"
             value={formData.description}
             onChange={handleOnChange}
             id="description"
             type="text"
-            className="w-full p-2 border rounded"
-            placeholder="Enter description"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+            placeholder={`What is this ${type} for?`}
             required
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">{type === 'income' ? 'Source' : 'Category'}</label>
-          <select
-            name="source"
-            value={formData.source}
-            onChange={handleOnChange}
-            className="w-full p-2 border rounded"
-            required
-          >
-            <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium mb-1">Amount</label>
-          <div className="relative z-0">
-            <span className="absolute left-3 top-2.5">₹</span>
-            <input
-              name="amount"
-              type="number"
-              value={formData.amount}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              {type === 'income' ? 'Source' : 'Category'}
+            </label>
+            <select
+              name="source"
+              value={formData.source}
               onChange={handleOnChange}
-              id="amount"
-              className="w-full p-2 pl-6 border rounded"
-              placeholder="1000.20"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
               required
-            />
+            >
+              <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.name}>
+                   {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+              Amount
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2">
+              <ReceiptIndianRupee size={18} className="text-gray-400" />
+              </span>
+              <input
+                name="amount"
+                type="number"
+                value={formData.amount}
+                onChange={handleOnChange}
+                id="amount"
+                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                placeholder="0.00"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
           </div>
         </div>
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium mb-1">Date</label>
-          <input
-            name="date"
-            type="date"
-            value={formData.date }
-            
-            onChange={handleOnChange}
-            id="date"
-            className="w-full p-2 border rounded"
-          />
+
+        <div className="space-y-2">
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+            Date
+          </label>
+          <div className="relative">
+            <input
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleOnChange}
+              id="date"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+            />
+            {/* <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} /> */}
+          </div>
         </div>
-        <div>
-          <label htmlFor="note" className="block text-sm font-medium mb-1">Notes (Optional)</label>
+
+        <div className="space-y-2">
+          <label htmlFor="note" className="block text-sm font-medium text-gray-700">
+            Notes <span className="text-gray-400 text-xs">(Optional)</span>
+          </label>
           <textarea
             name="note"
             value={formData.note}
             onChange={handleOnChange}
             id="note"
-            className="w-full p-2 border rounded"
-            rows="3"
-            placeholder="Add any additional notes..."
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 resize-none"
+            rows="1"
+            placeholder="Add any additional details..."
           />
         </div>
 
-        <div className="flex space-x-4">
-           <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-700  hover:bg-blue-600 text-md font-medium text-white py-2 px-4 rounded-md  transition-colors"
-        >
-           {type === 'income' ? (editId? 'Update' :'Add Income') : (editId? 'Update' :'Add Expense')}
-           {loading && <span className="ml-2">Loading...</span>}
-        </button>
-        {editId!=null ? <button onClick={()=>{emptyform();setEditId(null)}} className="w-full bg-red-500 rounded-md text-white py-2 px-4 text-md font-medium  hover:bg-red-600 transition-colors" >Cancel</button> :null}
+        <div className="flex gap-3 pt-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {loading ? (
+              <Loader className="w-5 h-5 animate-spin" />
+            ) : editId ? (
+              <Save className="w-5 h-5" />
+            ) : (
+              <Plus className="w-5 h-5" />
+            )}
+            <span>
+              {loading ? 'Processing...' : type === 'income'
+                ? (editId ? 'Update Income' : 'Add Income')
+                : (editId ? 'Update Expense' : 'Add Expense')}
+            </span>
+          </button>
+
+          {editId && (
+            <button
+              type="button"
+              onClick={() => { emptyform(); setEditId(null); }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-all duration-200"
+            >
+              <X className="w-5 h-5" />
+              <span>Cancel</span>
+            </button>
+          )}
         </div>
-       
-        {error && <div className="text-red-500">{error}</div>}
-        {message && <div className="text-green-500">{message}</div>}
+
+        {/* Status Messages */}
+        {(error || message) && (
+          <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
+            error ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
+          }`}>
+            {error ? <AlertCircle className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
+            <p className="text-sm font-medium">{error || message}</p>
+          </div>
+        )}
       </form>
     </div>
   );

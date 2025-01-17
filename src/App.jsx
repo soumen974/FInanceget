@@ -15,6 +15,7 @@ import Dashboard from "./Pages/Dashboard";
 import Expenses from "./Pages/Expenses";
 import Reports from "./Pages/Reports";
 import Register from "./Auth/Pages/Register";
+import Settings from "./Pages/Settings";
 
 const Budget = () => {
   return (
@@ -28,120 +29,120 @@ const Budget = () => {
   );
 };
 
-const Settings = () => {
-  const [activeTab, setActiveTab] = useState('profile');
-  const [currency, setCurrency] = useState('USD');
-  const [darkMode, setDarkMode] = useState(false);
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    weekly: true,
-    monthly: true
-  });
+// const Settings = () => {
+//   const [activeTab, setActiveTab] = useState('profile');
+//   const [currency, setCurrency] = useState('USD');
+//   const [darkMode, setDarkMode] = useState(false);
+//   const [notifications, setNotifications] = useState({
+//     email: true,
+//     push: false,
+//     weekly: true,
+//     monthly: true
+//   });
 
-  return (
-    <div className="">
-      <h1 className="sm:text-3xl text-xl font-bold sm:mb-6 mb-3 max-sm:pl-2">Settings</h1>
+//   return (
+//     <div className="">
+//       <h1 className="sm:text-3xl text-xl font-bold sm:mb-6 mb-3 max-sm:pl-2">Settings</h1>
       
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b">
-          <div className="flex sm:space-x-6 space-x-2 sm:px-6 px-2">
-            {['Profile', 'Preferences', 'Notifications'].map((tab) => (
-              <button
-                key={tab}
-                className={`py-4 px-2 font-medium ${
-                  activeTab === tab.toLowerCase()
-                    ? 'border-b-2 border-blue-600 text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-                onClick={() => setActiveTab(tab.toLowerCase())}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-        </div>
+//       <div className="bg-white rounded-lg shadow">
+//         <div className="border-b">
+//           <div className="flex sm:space-x-6 space-x-2 sm:px-6 px-2">
+//             {['Profile', 'Preferences', 'Notifications'].map((tab) => (
+//               <button
+//                 key={tab}
+//                 className={`py-4 px-2 font-medium ${
+//                   activeTab === tab.toLowerCase()
+//                     ? 'border-b-2 border-blue-600 text-blue-600'
+//                     : 'text-gray-500 hover:text-gray-700'
+//                 }`}
+//                 onClick={() => setActiveTab(tab.toLowerCase())}
+//               >
+//                 {tab}
+//               </button>
+//             ))}
+//           </div>
+//         </div>
 
-        <div className="p-6 ">
-          {activeTab === 'profile' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold">Profile Settings</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Full Name</label>
-                  <input type="text" className="w-full p-2 border rounded" defaultValue="John Doe" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
-                  <input type="email" className="w-full p-2 border rounded" defaultValue="john@example.com" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Phone</label>
-                  <input type="tel" className="w-full p-2 border rounded" defaultValue="+1 234 567 8900" />
-                </div>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          )}
+//         <div className="p-6 ">
+//           {activeTab === 'profile' && (
+//             <div className="space-y-6">
+//               <h2 className="text-xl font-semibold">Profile Settings</h2>
+//               <div className="space-y-4">
+//                 <div>
+//                   <label className="block text-sm font-medium mb-1">Full Name</label>
+//                   <input type="text" className="w-full p-2 border rounded" defaultValue="John Doe" />
+//                 </div>
+//                 <div>
+//                   <label className="block text-sm font-medium mb-1">Email</label>
+//                   <input type="email" className="w-full p-2 border rounded" defaultValue="john@example.com" />
+//                 </div>
+//                 <div>
+//                   <label className="block text-sm font-medium mb-1">Phone</label>
+//                   <input type="tel" className="w-full p-2 border rounded" defaultValue="+1 234 567 8900" />
+//                 </div>
+//                 <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+//                   Save Changes
+//                 </button>
+//               </div>
+//             </div>
+//           )}
 
-          {activeTab === 'preferences' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold">Preferences</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Currency</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                  >
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                  </select>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Dark Mode</span>
-                  <button 
-                    className={`w-12 h-6 rounded-full ${darkMode ? 'bg-blue-600' : 'bg-gray-200'}`}
-                    onClick={() => setDarkMode(!darkMode)}
-                  >
-                    <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      darkMode ? 'translate-x-7' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+//           {activeTab === 'preferences' && (
+//             <div className="space-y-6">
+//               <h2 className="text-xl font-semibold">Preferences</h2>
+//               <div className="space-y-4">
+//                 <div>
+//                   <label className="block text-sm font-medium mb-1">Currency</label>
+//                   <select 
+//                     className="w-full p-2 border rounded"
+//                     value={currency}
+//                     onChange={(e) => setCurrency(e.target.value)}
+//                   >
+//                     <option value="USD">USD ($)</option>
+//                     <option value="EUR">EUR (€)</option>
+//                     <option value="GBP">GBP (£)</option>
+//                   </select>
+//                 </div>
+//                 <div className="flex items-center justify-between">
+//                   <span className="font-medium">Dark Mode</span>
+//                   <button 
+//                     className={`w-12 h-6 rounded-full ${darkMode ? 'bg-blue-600' : 'bg-gray-200'}`}
+//                     onClick={() => setDarkMode(!darkMode)}
+//                   >
+//                     <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+//                       darkMode ? 'translate-x-7' : 'translate-x-1'
+//                     }`} />
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           )}
 
-          {activeTab === 'notifications' && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold">Notification Settings</h2>
-              <div className="space-y-4">
-                {Object.entries(notifications).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <span className="font-medium capitalize">{key} Notifications</span>
-                    <button 
-                      className={`w-12 h-6 rounded-full ${value ? 'bg-blue-600' : 'bg-gray-200'}`}
-                      onClick={() => setNotifications(prev => ({...prev, [key]: !prev[key]}))}
-                    >
-                      <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                        value ? 'translate-x-7' : 'translate-x-1'
-                      }`} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+//           {activeTab === 'notifications' && (
+//             <div className="space-y-6">
+//               <h2 className="text-xl font-semibold">Notification Settings</h2>
+//               <div className="space-y-4">
+//                 {Object.entries(notifications).map(([key, value]) => (
+//                   <div key={key} className="flex items-center justify-between">
+//                     <span className="font-medium capitalize">{key} Notifications</span>
+//                     <button 
+//                       className={`w-12 h-6 rounded-full ${value ? 'bg-blue-600' : 'bg-gray-200'}`}
+//                       onClick={() => setNotifications(prev => ({...prev, [key]: !prev[key]}))}
+//                     >
+//                       <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+//                         value ? 'translate-x-7' : 'translate-x-1'
+//                       }`} />
+//                     </button>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const TransactionForm = ({ type }) => {
   const categories = type === 'income' ? [
