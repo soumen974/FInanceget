@@ -4,7 +4,8 @@ export  function authCheck() {
 
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
-    const [name , setName] =useState('Soumen Bhunia');
+    const [name , setName] =useState('');
+    const [userEmail, setUserEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [auth, setAuth] = useState(false);
 
@@ -17,6 +18,7 @@ export  function authCheck() {
            const response = await api.get('/api/auth/protected');
             setMessage(response.data);
             setName(response.data.name);
+            setUserEmail(response.data.email);
             setAuth(true);
             // console.log('Response Data:', response.data);
         }    
@@ -26,5 +28,5 @@ export  function authCheck() {
         }
     }
     
-  return { auth ,loading, error, message ,name };
+  return { auth ,loading, error, message ,name ,userEmail};
 };

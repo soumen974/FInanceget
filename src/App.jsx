@@ -4,10 +4,7 @@ import Layout from "./Components/Layout";
 import Landing from "./Pages/Landing";
 import { Link } from 'react-router-dom';
 
-import {
-  BudgetList,
-  BudgetForm
-} from './Components/Components';
+
 import Login from './Auth/Pages/Login'
 import { authCheck } from "./Auth/Components/ProtectedCheck";
 import Income from "./Pages/Income";
@@ -16,18 +13,7 @@ import Expenses from "./Pages/Expenses";
 import Reports from "./Pages/Reports";
 import Register from "./Auth/Pages/Register";
 import Settings from "./Pages/Settings";
-
-const Budget = () => {
-  return (
-    <div className="">
-      <h1 className="text-3xl font-bold mb-6">Budget</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <BudgetList />
-        <BudgetForm />
-      </div>
-    </div>
-  );
-};
+import Budget from "./Pages/Budget";
 
 // const Settings = () => {
 //   const [activeTab, setActiveTab] = useState('profile');

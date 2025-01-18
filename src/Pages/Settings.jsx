@@ -4,14 +4,17 @@ import {
   Save, AlertCircle, Mail, Phone, Calendar, 
   Moon, Sun, CheckCircle, X, Globe
 } from 'react-feather';
+import { authCheck } from "../Auth/Components/ProtectedCheck";
+
 
 export default function Settings() {
+    const { name ,userEmail }= authCheck();
   const [activeTab, setActiveTab] = useState('profile');
   const [currency, setCurrency] = useState('INR');
   const [darkMode, setDarkMode] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState('');
-  const currentUser = 'soumen974';
+  const currentUser = name;
 
   // Update current time every minute
   useEffect(() => {
@@ -122,13 +125,13 @@ export default function Settings() {
                   <FormField
                     label="Full Name"
                     type="text"
-                    defaultValue="Soumen Bhunia"
+                    defaultValue={currentUser}
                     icon={<User size={18} />}
                   />
                   <FormField
                     label="Email"
                     type="email"
-                    defaultValue="soumen@example.com"
+                    defaultValue={userEmail}
                     icon={<Mail size={18} />}
                   />
                   <FormField
@@ -215,7 +218,8 @@ const FormField = ({ label, type, defaultValue, icon }) => (
       <input
         type={type}
         defaultValue={defaultValue}
-        className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+        disabled={type==='email'&& defaultValue}
+        className={` ${type==='email'&& 'cursor-not-allowed'} w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200`}
       />
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
         {icon}

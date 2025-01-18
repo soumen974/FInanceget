@@ -15,7 +15,8 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     { id: 3, name: 'Utilities', icon: '💡' },
     { id: 4, name: 'Entertainment', icon: '🎬' },
     { id: 5, name: 'Healthcare', icon: '⚕️' },
-    { id: 6, name: 'Other Miscellaneous', icon: '📦' }
+    { id: 6, name: 'Housing', icon: '⚕️' },
+    { id: 7, name: 'Other Miscellaneous', icon: '📦' }
   ];
 
  

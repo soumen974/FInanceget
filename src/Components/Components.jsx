@@ -26,31 +26,7 @@ const RecentTransactions = () => (
   );
   
   // Budget Components
-  const BudgetList = () => (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">Budget Categories</h2>
-      {/* Add budget categories list */}
-      comming soon
-    </div>
-  );
-  
-  const BudgetForm = () => (
-    <form className="bg-white rounded-lg shadow p-6">
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Category</label>
-          <input type="text" className="w-full p-2 border rounded" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Budget Amount</label>
-          <input type="number" className="w-full p-2 border rounded" />
-        </div>
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded">
-          Set Budget
-        </button>
-      </div>
-    </form>
-  );
+
   
   // Chart Components
   const ExpenseChart = () => (
@@ -134,8 +110,6 @@ const RecentTransactions = () => (
   
   export {
     RecentTransactions,
-    BudgetList,
-    BudgetForm,
     ExpenseChart,
     CategoryDistribution,
     UserProfile,
