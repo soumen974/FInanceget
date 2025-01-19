@@ -27,12 +27,12 @@ export default function Settings() {
     return () => clearInterval(interval);
   }, []);
 
-  const notifications = {
+  const [notifications,setNotifications] = useState({
     email: { enabled: true, description: 'Get email updates about your account' },
     push: { enabled: false, description: 'Receive push notifications' },
-    weekly: { enabled: true, description: 'Weekly transaction summary' },
+    weekly: { enabled: false, description: 'Weekly transaction summary' },
     monthly: { enabled: true, description: 'Monthly financial report' }
-  };
+  });
 
   const handleSave = () => {
     setShowSuccess(true);
@@ -119,7 +119,7 @@ export default function Settings() {
 
           {/* Tab Content */}
           <div className="p-4 sm:p-6">
-            {activeTab === 'profile' && (
+            {activeTab === 'profile' && (//
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <FormField
@@ -188,14 +188,15 @@ export default function Settings() {
 
             {activeTab === 'notifications' && (
               <div className="space-y-4">
-                {Object.entries(notifications).map(([key, { enabled, description }]) => (
-                  <NotificationSetting
-                    key={key}
-                    name={key}
-                    enabled={enabled}
-                    description={description}
-                  />
-                ))}
+                 {Object.entries(notifications).map(([key, { enabled, description }]) => (
+                    <NotificationSetting
+                      key={key}
+                      name={key}
+                      enabled={enabled}
+                      description={description}
+                      onToggle={() => toggleNotification(key)}
+                    />
+                  ))}
 
                 <div className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 text-blue-600 text-sm">
                   <AlertCircle size={20} />
@@ -258,13 +259,14 @@ const ThemeToggle = ({ darkMode, setDarkMode }) => (
   </div>
 );
 
-const NotificationSetting = ({ name, enabled, description }) => (
+const NotificationSetting = ({ name, enabled, description, onToggle }) => (
   <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200">
     <div>
       <p className="font-medium text-gray-900 capitalize">{name}</p>
       <p className="text-sm text-gray-500">{description}</p>
     </div>
     <button
+      onClick={onToggle}
       className={`relative w-14 h-7 rounded-full transition-colors duration-200 ${
         enabled ? 'bg-blue-600' : 'bg-gray-200'
       }`}
