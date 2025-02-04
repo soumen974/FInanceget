@@ -170,9 +170,9 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
 
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-gray-200 dark:border-[#ffffff24]">
     {/* Header Section with Refined Design */}
-    <div className="border-b border-gray-200 p-4 sm:p-6">
+    <div className="border-b border-gray-200 dark:border-[#ffffff24] p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
           Recent {type === 'income' ? (
@@ -187,7 +187,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
             </>
           )}
         </h2>
-        <select className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <select className="px-3 py-2 text-sm border border-gray-200 dark:border-[#ffffff24] rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           <option>Sort by Date</option>
           <option>Sort by Amount</option>
           <option>Sort by Category</option>
@@ -226,7 +226,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-gray-100 hover:shadow-sm transition-all duration-200 bg-white"
+              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
 
@@ -269,7 +269,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       </div>
   
       {/* Pagination Footer */}
-      <div className="mt-6 border-t border-gray-200 pt-4">
+      <div className="mt-6 border-t border-gray-200 dark:border-[#ffffff24] pt-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             Showing {updating5 + 1} to {Math.min(updating5 + 5, GetData.length)} of {GetData.length} entries
@@ -284,7 +284,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                 ${updating5 === 0
                   ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
                   : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
-                border border-gray-200 transition-all duration-200
+                border border-gray-200 dark:border-[#ffffff24] transition-all duration-200
               `}
             >
               Previous
@@ -297,7 +297,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                 ${updating5 > (GetData.length - 6)
                   ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
                   : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
-                border border-gray-200 transition-all duration-200
+                border border-gray-200 dark:border-[#ffffff24] transition-all duration-200
               `}
             >
               Next

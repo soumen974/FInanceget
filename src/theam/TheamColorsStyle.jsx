@@ -1,30 +1,41 @@
-import React, {useEffect,useState} from 'react'
+import React, { createContext, useContext, useState,useEffect } from 'react';
 
-export default function TheamColorsStyle() {
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const saved = localStorage.getItem('theme');
-        return saved ? JSON.parse(saved) : window.matchMedia('(prefers-color-scheme: dark)').matches;
-      });
-      
-      
-      useEffect(() => {
-        localStorage.setItem('theme', JSON.stringify(isDarkMode));
-        document.documentElement.classList.toggle('dark', isDarkMode);
-      }, [isDarkMode]);
-    
-      useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleChange = (e) => {
-          if (!localStorage.getItem('theme')) {
-            setIsDarkMode(e.matches);
-          }
-        };
-        mediaQuery.addEventListener('change', handleChange);
-        return () => mediaQuery.removeEventListener('change', handleChange);
-      }, []);
+// Create a context for dark mode
+const DarkModeContext = createContext();
 
-      const baseStyles = {
-        heading: `text-3xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-slate-900'}`
-      };
-  return {baseStyles, isDarkMode, setIsDarkMode};
-}
+// Create a custom hook to use the DarkModeContext
+export const useDarkMode = () => useContext(DarkModeContext);
+
+// Create a provider component
+export const DarkModeProvider = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem('theme');
+    return storedTheme === 'dark';
+  });
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.removeItem('theme');
+    }
+  };
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+  
+  return (
+    <DarkModeContext.Provider value={{ darkMode, setDarkMode }}>
+      {children}
+    </DarkModeContext.Provider>
+  );
+};

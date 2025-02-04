@@ -11,10 +11,37 @@ export default function Settings() {
     const { name ,userEmail }= authCheck();
   const [activeTab, setActiveTab] = useState('profile');
   const [currency, setCurrency] = useState('INR');
-  const [darkMode, setDarkMode] = useState(false);
+  // const [darkMode, setDarkMode] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState('');
   const currentUser = name;
+  // const {darkMode} = TheamColorsStyle();
+  // const {setDarkMode} = TheamColorsStyle();
+
+   const [darkMode, setDarkMode] = useState(() => {
+      const storedTheme = localStorage.getItem('theme');
+      return storedTheme === 'dark';
+    });
+  
+    const toggleDarkMode = () => {
+      const newMode = !darkMode;
+      setDarkMode(newMode);
+      if (newMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.removeItem('theme');
+      }
+    };
+  
+    useEffect(() => {
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }, [darkMode]);
 
   // Update current time every minute
   useEffect(() => {
@@ -45,21 +72,49 @@ export default function Settings() {
     { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> }
   ];
 
+
+   const baseStyles = {
+    container: `min-h-screen transition-colors duration-300 ${
+      darkMode ? 'bg-[#0a0a0a] text-slate-100' : 'bg-[#fff] text-slate-900'
+    }`,
+    headding: ` ${ darkMode ?'text-gray-100':'text-gray-900'}`,
+    card: `rounded-lg ${
+      darkMode ? 'bg-[#0a0a0a] border border-[#ffffff24]' : 'bg-white border border-[#00000014]'
+    }`,
+    button: `px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 ${
+      darkMode 
+        ? 'bg-[#0a0a0a] hover:bg-[#ffffff17] border border-[#ffffff24] text-white' 
+        : 'bg-[#fff] hover:bg-[#f2f2f2] border border-[#00000014] text-slate-900'
+    }`,
+    activeButton: `px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 ${
+      darkMode
+        ? 'bg-indigo-600 hover:bg-indigo-500 text-white'
+        : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+    }`,
+    input: `w-full px-4 py-2 rounded-lg border ${
+      darkMode
+        ? 'bg-[#0a0a0a] border-[#ffffff24] text-white focus:border-indigo-500'
+        : 'bg-white border-slate-300 text-slate-900 focus:border-indigo-500'
+    }`,
+    tabs: `hidden sm:block border-b transition-all duration-200 ${
+      darkMode ? 'border-[#ffffff24]' : 'border-gray-100'
+    }`
+  };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`${baseStyles.container}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
-              <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+              <h1 className="text-2xl sm:text-3xl font-bold">Settings</h1>
+              <div className="mt-2 flex items-center gap-2 text-sm">
                 <Clock size={16} />
                 <span className="hidden sm:inline">Last updated:</span>
                 {currentDateTime}
               </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100">
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
               <User size={16} className="text-gray-500" />
               <span className="text-sm font-medium">{currentUser}</span>
             </div>
@@ -81,7 +136,7 @@ export default function Settings() {
         )}
 
         {/* Main Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className={`${baseStyles.card} overflow-hidden`}>
           {/* Mobile Tab Select */}
           <div className="sm:hidden p-4 border-b border-gray-100">
             <select
@@ -98,7 +153,7 @@ export default function Settings() {
           </div>
 
           {/* Desktop Tabs */}
-          <div className="hidden sm:block border-b border-gray-100">
+          <div className={` ${baseStyles.tabs}`}>
             <div className="flex">
               {tabs.map((tab) => (
                 <button
@@ -106,8 +161,8 @@ export default function Settings() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 py-4 px-6 font-medium transition-all duration-200
                     ${activeTab === tab.id
-                      ? 'border-b-2 border-blue-600 text-blue-600 bg-blue-50/50'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      ? `border-b-2 ${ darkMode? 'border-blue-600 text-blue-600 bg-blue-500 bg-opacity-10':'border-blue-600 text-blue-600 bg-blue-50/50'}`
+                      : `${ darkMode?'hover:bg-[#ffffff17] hover:text-white':'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }`
                     }`}
                 >
                   {tab.icon}
@@ -119,30 +174,34 @@ export default function Settings() {
 
           {/* Tab Content */}
           <div className="p-4 sm:p-6">
-            {activeTab === 'profile' && (//
+            {activeTab === 'profile' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <FormField
                     label="Full Name"
                     type="text"
+                    baseStyles={baseStyles}
                     defaultValue={currentUser}
                     icon={<User size={18} />}
                   />
                   <FormField
                     label="Email"
                     type="email"
+                    baseStyles={baseStyles}
                     defaultValue={userEmail}
                     icon={<Mail size={18} />}
                   />
                   <FormField
                     label="Phone"
                     type="tel"
+                    baseStyles={baseStyles}
                     defaultValue="+91 234 567 8900"
                     icon={<Phone size={18} />}
                   />
                   <FormField
                     label="Date of Birth"
                     type="date"
+                    baseStyles={baseStyles}
                     defaultValue="2000-01-01"
                     icon={<Calendar size={18} />}
                   />
@@ -170,18 +229,19 @@ export default function Settings() {
                       <select
                         value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                        
+                        className={` ${baseStyles.input} appearance-none w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
                       >
                         <option value="INR">Indian Rupee (₹)</option>
                         <option value="USD">US Dollar ($)</option>
                         <option value="EUR">Euro (€)</option>
                         <option value="GBP">British Pound (£)</option>
                       </select>
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400" size={18} />
                     </div>
                   </div>
 
-                  <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+                  <ThemeToggle baseStyles={baseStyles} darkMode={darkMode} setDarkMode={toggleDarkMode} />
                 </div>
               </div>
             )}
@@ -194,14 +254,17 @@ export default function Settings() {
                       name={key}
                       enabled={enabled}
                       description={description}
-                      onToggle={() => toggleNotification(key)}
+                      baseStyles={baseStyles}
+                      darkMode={darkMode}
+                      // onToggle={() => toggleNotification(key)}
                     />
                   ))}
 
-                <div className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 text-blue-600 text-sm">
+                <div className={`flex items-center gap-3 p-4 rounded-lg ${ darkMode? 'dark:bg-[#ffffff17] dark:text-slate-100':'bg-blue-50 text-blue-600 text-sm'}  `}>
                   <AlertCircle size={20} />
                   <p>Changes may take a few minutes to apply</p>
                 </div>
+             
               </div>
             )}
           </div>
@@ -211,8 +274,7 @@ export default function Settings() {
   );
 }
 
-// Reusable Components
-const FormField = ({ label, type, defaultValue, icon }) => (
+const FormField = ({ label, type, defaultValue, icon ,baseStyles }) => (
   <div className="space-y-2">
     <label className="text-sm font-medium text-gray-700">{label}</label>
     <div className="relative">
@@ -220,7 +282,7 @@ const FormField = ({ label, type, defaultValue, icon }) => (
         type={type}
         defaultValue={defaultValue}
         disabled={type==='email'&& defaultValue}
-        className={` ${type==='email'&& 'cursor-not-allowed'} w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200`}
+        className={` ${baseStyles.input} ${type==='email'&& 'cursor-not-allowed'} w-full pl-10 pr-4 py-2.5 rounded-lg border  transition-all duration-200`}
       />
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
         {icon}
@@ -229,13 +291,13 @@ const FormField = ({ label, type, defaultValue, icon }) => (
   </div>
 );
 
-const ThemeToggle = ({ darkMode, setDarkMode }) => (
+const ThemeToggle = ({ darkMode, setDarkMode ,baseStyles }) => (
   <div className="space-y-2">
-    <label className="text-sm font-medium text-gray-700">Theme</label>
-    <div className="p-4 rounded-lg border border-gray-200">
+    <label className={`text-sm font-medium ${baseStyles.headding} `}>Theme</label>
+    <div className={`p-4 rounded-lg border ${ darkMode? 'bg-[#0a0a0a] border-[#ffffff24] text-white': 'border-gray-200'}`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-medium text-gray-900">Dark Mode</p>
+          <p className={`font-medium  ${baseStyles.headding} `}>Dark Mode</p>
           <p className="text-sm text-gray-500">Enable dark theme</p>
         </div>
         <button
@@ -259,16 +321,16 @@ const ThemeToggle = ({ darkMode, setDarkMode }) => (
   </div>
 );
 
-const NotificationSetting = ({ name, enabled, description, onToggle }) => (
-  <div className="flex items-center justify-between p-4 rounded-lg border border-gray-200">
+const NotificationSetting = ({ name, enabled, description, onToggle,baseStyles ,darkMode}) => (
+  <div className={`flex items-center justify-between p-4 rounded-lg border ${ darkMode? 'bg-[#0a0a0a] border-[#ffffff24] text-white': 'border-gray-200'} `}>
     <div>
-      <p className="font-medium text-gray-900 capitalize">{name}</p>
+      <p className={`font-medium ${baseStyles.headding} capitalize`}>{name}</p>
       <p className="text-sm text-gray-500">{description}</p>
     </div>
     <button
       onClick={onToggle}
       className={`relative w-14 h-7 rounded-full transition-colors duration-200 ${
-        enabled ? 'bg-blue-600' : 'bg-gray-200'
+        enabled ? 'bg-blue-600' : `${ darkMode?'bg-[#ffffff17]':'bg-gray-200'}`
       }`}
     >
       <div className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
@@ -278,7 +340,6 @@ const NotificationSetting = ({ name, enabled, description, onToggle }) => (
   </div>
 );
 
-// Required CSS
 const styles = `
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out;

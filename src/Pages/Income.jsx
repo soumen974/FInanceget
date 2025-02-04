@@ -8,7 +8,7 @@ export default function Income() {
 
 
   return (
-    <div className="">
+    <div className="ml-5 mt-5">
       <h1 className="sm:text-3xl text-xl font-bold mb-6">Income</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">

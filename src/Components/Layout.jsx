@@ -2,26 +2,24 @@ import { Outlet, Navigate } from 'react-router-dom';
 import {Navigation} from './Navigation';
 import Headder from "../Pages/Components/Headder";
 import { useState } from 'react';
+import {useDarkMode } from '../theam/TheamColorsStyle'
 const Layout = () => {
-  const isAuthenticated = true; 
   const [isCollapsed, setIsCollapsed] = useState(() => {
         return localStorage.getItem('isCollapsed') === 'true';
   });
   
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  const {darkMode}  = useDarkMode() ;
+ 
 
   return (
-    <div className="flex min-h-screen">
+    <div className={`flex min-h-screen dark:bg-[#0a0a0a] bg-white transition-all duration-300`}>
       <div className="max-lg:hidden">
         <Navigation setIsCollapsed={setIsCollapsed} isCollapsed={isCollapsed} />
       </div>
        
       <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-[12rem]'}`}>
       <Headder/>
-      <div className=" md:px-6 lg:py-6 p-2   max-lg:pt-[5rem] ">
+      <div className="   max-lg:pt-[5rem] ">
         <Outlet />
       </div>
       
