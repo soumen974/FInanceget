@@ -10,8 +10,6 @@ import { ReportsData } from './Components/Reports/ReportsData';
 import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
 
 export default function Reports() {
-  // Your existing state and hooks...
-
   const isSm = useMediaQuery({ query: '(max-width: 640px)' });
 
   const DemoTransactionData = [
@@ -80,7 +78,7 @@ export default function Reports() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
   
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto ">
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

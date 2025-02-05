@@ -56,7 +56,7 @@ const Headder = () => {
 
   const navItems = [
     { icon: <Home size={20} />, label: 'Dashboard', to: '/' },
-    { icon: <PlusCircle size={20} />, label: 'Add', to: '/add' },
+    // { icon: <PlusCircle size={20} />, label: 'Add', to: '/add' },
     { icon: <ArrowUpCircle size={20} />, label: 'Income', to: '/income' },
     { icon: <ArrowDownCircle size={20} />, label: 'Expenses', to: '/expenses' },
     { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },

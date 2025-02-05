@@ -324,7 +324,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       <nav className="p-2 space-y-1">
         {[
           { icon: <Home size={18} />, label: 'Dashboard', to: '/' },
-          { icon: <PlusCircle size={18} />, label: 'Add', to: '/add' },
+          // { icon: <PlusCircle size={18} />, label: 'Add', to: '/add' },
           { icon: <ArrowUpCircle size={18} />, label: 'Income', to: '/income' },
           { icon: <ArrowDownCircle size={18} />, label: 'Expenses', to: '/expenses' },
           { icon: <CreditCard  size={18} />, label: 'budget', to: '/budget' },
