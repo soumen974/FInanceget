@@ -12,7 +12,7 @@ const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction
   <>
   <div  className={`${HidePopup ===currentId?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
   <div className="fixed inset-0 bg-gray-500 bg-opacity-75" onClick={() => setHidePopup(true)}></div>
-    <div className={` z-20 relative bg-white rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
+    <div className={` z-20 relative bg-white dark:bg-[#0a0a0a]  rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
      
       <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
         <div className="sm:flex sm:items-start">
@@ -24,9 +24,9 @@ const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction
 
           </div>
           <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-            <h3 className="text-base font-semibold leading-6 text-gray-900">Delete {title}</h3>
+            <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Delete {title}</h3>
             <div className="mt-2">
-              <p className="text-sm text-gray-500">Are you sure you want to delete this {type} data ?</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to delete this {type} data ?</p>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
     {/* Header Section with Refined Design */}
     <div className="border-b border-gray-200 dark:border-[#ffffff24] p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           Recent {type === 'income' ? (
             <>
               Income
@@ -187,7 +187,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
             </>
           )}
         </h2>
-        <select className="px-3 py-2 text-sm border border-gray-200 dark:border-[#ffffff24] rounded-lg bg-gray-50 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <select className="px-3 py-2 text-sm border border-[#00000014] dark:border-[#ffffff24] rounded-lg bg-gray-50 dark:bg-black dark:text-white hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           <option>Sort by Date</option>
           <option>Sort by Amount</option>
           <option>Sort by Category</option>
@@ -226,14 +226,14 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 bg-white"
+              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
 
               
               <div className="flex-1">
-                <p className="font-medium text-gray-900 truncate">{transaction.description}</p>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <p className="font-medium text-gray-900 dark:text-white truncate">{transaction.description}</p>
+                <div className="flex items-center gap-2 text-sm text-gray-500 truncate">
                   <span>{transaction.source || transaction.category}</span>
                   <span>•</span>
                   <span className=''>{(new Date(transaction.date).toLocaleDateString()=== new Date().toLocaleDateString()? 'Today': new Date(transaction.date).toLocaleDateString())}</span>
@@ -247,14 +247,14 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                 <div className="flex gap-2 mt-1">
                   <button
                     onClick={() => setEditId(transaction._id)}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                    className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20 transition-colors"
                     title="Edit transaction"
                   >
                     <Edit2 size={16} />
                   </button>
                   <button
                     onClick={() => handlePopupopner(transaction._id)}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20 transition-colors"
                     title="Delete transaction"
                   >
                     <Trash2 size={16} />
@@ -263,7 +263,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                  
               </div>
             </div>
-          ))}
+        ))}
         
         
       </div>
@@ -282,10 +282,10 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
               className={`
                 px-4 py-2 text-sm font-medium rounded-lg
                 ${updating5 === 0
-                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
-                  : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
-                border border-gray-200 dark:border-[#ffffff24] transition-all duration-200
-              `}
+                ? 'bg-gray-50 dark:bg-black dark:text-[#ffffff24] text-gray-300 cursor-not-allowed'
+                : 'text-gray-700 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-[#ffffff17] hover:bg-gray-50 active:bg-gray-100'}
+              border border-gray-200 dark:border-[#ffffff24] transition-all duration-200
+            `}
             >
               Previous
             </button>
@@ -295,8 +295,8 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
               className={`
                 px-4 py-2 text-sm font-medium rounded-lg
                 ${updating5 > (GetData.length - 6)
-                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
-                  : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'}
+                  ? 'bg-gray-50 dark:bg-black dark:text-[#ffffff24] text-gray-300 cursor-not-allowed'
+                  : 'text-gray-700 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-[#ffffff17] hover:bg-gray-50 active:bg-gray-100'}
                 border border-gray-200 dark:border-[#ffffff24] transition-all duration-200
               `}
             >

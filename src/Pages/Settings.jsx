@@ -94,7 +94,7 @@ export default function Settings() {
     input: `w-full px-4 py-2 rounded-lg border ${
       darkMode
         ? 'bg-[#0a0a0a] border-[#ffffff24] text-white focus:border-indigo-500'
-        : 'bg-white border-slate-300 text-slate-900 focus:border-indigo-500'
+        : 'bg-white border-[#00000014] text-slate-900 focus:border-indigo-500'
     }`,
     tabs: `hidden sm:block border-b transition-all duration-200 ${
       darkMode ? 'border-[#ffffff24]' : 'border-gray-100'
@@ -138,11 +138,11 @@ export default function Settings() {
         {/* Main Content */}
         <div className={`${baseStyles.card} overflow-hidden`}>
           {/* Mobile Tab Select */}
-          <div className="sm:hidden p-4 border-b border-gray-100">
+          <div className="sm:hidden p-4 border-b border-[#00000014] dark:border-[#ffffff24]">
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full p-2 border border-gray-200 rounded-lg"
+              className={` ${baseStyles.input} appearance-none w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
             >
               {tabs.map(tab => (
                 <option key={tab.id} value={tab.id}>

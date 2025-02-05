@@ -84,10 +84,10 @@ export default function Reports() {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               Financial Reports
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Track your financial performance and trends
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function Reports() {
           <div className="flex flex-wrap gap-3">
             <select
               id="dateRangeSelect"
-              className="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              className="px-4 py-2 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               value={dateRange}
               onChange={(e) => setDateRange(Number(e.target.value))}
             >
@@ -107,7 +107,7 @@ export default function Reports() {
             </select>
 
             <select
-              className="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              className="px-4 py-2 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
             >
@@ -121,13 +121,13 @@ export default function Reports() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-          <div className="p-6 border-b border-gray-100">
+        <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+              <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-600 dark:bg-opacity-20 text-blue-600">
                 <TrendingUp size={20} />
               </div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
                 {reportType} Trends
               </h2>
             </div>
@@ -165,19 +165,19 @@ export default function Reports() {
         </div>
 
         {/* Category Distribution */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-          <div className="p-6 border-b border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm border dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-50 text-purple-600">
+                <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-600 dark:bg-opacity-25 text-purple-600">
                   <PieChartIcon size={20} />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
                   Category Distribution
                 </h2>
               </div>
               <select
-                className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                className="px-3 py-2 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 value={dateRangeMonth}
                 onChange={(e) => setDateRangeMonth(Number(e.target.value))}
               >
@@ -215,42 +215,42 @@ export default function Reports() {
 
         {/* Summary Statistics */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-blue-50">
+              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-600 dark:bg-opacity-20">
                 <BarChart2 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Total Expenses</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-gray-500 ">Total Expenses</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">
                   {formatCurrency(totalExpensePerYear)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-green-50">
+              <div className="p-3 rounded-xl bg-green-50 dark:bg-green-600 dark:bg-opacity-20">
                 <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Income</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">
                   {formatCurrency(totalIncomePerYear)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-purple-50">
+              <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-600 dark:bg-opacity-20">
                 <Calendar className="w-6 h-6 text-purple-600" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Net Savings</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">
                   {formatCurrency(totalNetSavingsPerYear)}
                 </p>
               </div>

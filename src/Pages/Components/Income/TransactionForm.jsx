@@ -167,15 +167,15 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
 
 
   return (
-    <div className="bg-white rounded-xl  border border-gray-200 max-w-2xl mx-auto">
-      <div className="border-b border-gray-200 p-6">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl  border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
+      <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl ${
-            type === 'income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+            type === 'income' ? 'bg-green-50 text-green-600 dark:bg-green-600/10 dark:bg-opacity-10' : 'bg-red-50 text-red-600 dark:text-red-500 dark:bg-red-600/10 dark:bg-opacity-10'
           }`}>
             {type === 'income' ? <ArrowUpCircle size={24} /> : <ArrowDownCircle size={24} />}
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
             {editId ? `Edit ${type}` : `Add New ${type}`}
           </h2>
         </div>
@@ -183,7 +183,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
         <div className="space-y-2">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description
           </label>
           <input
@@ -192,7 +192,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             onChange={handleOnChange}
             id="description"
             type="text"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             placeholder={`What is this ${type} for?`}
             required
           />
@@ -200,14 +200,14 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               {type === 'income' ? 'Source' : 'Category'}
             </label>
             <select
               name="source"
               value={formData.source}
               onChange={handleOnChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
               required
             >
               <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
@@ -220,12 +220,12 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Amount
             </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2">
-              <ReceiptIndianRupee size={18} className="text-gray-400" />
+              <ReceiptIndianRupee size={18} className="text-gray-400 " />
               </span>
               <input
                 name="amount"
@@ -233,7 +233,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
                 value={formData.amount}
                 onChange={handleOnChange}
                 id="amount"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                className="w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                 placeholder="0.00"
                 required
                 min="0"
@@ -244,7 +244,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Date
           </label>
           <div className="relative">
@@ -254,22 +254,22 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               value={formData.date}
               onChange={handleOnChange}
               id="date"
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             />
             {/* <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} /> */}
           </div>
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="note" className="block text-sm font-medium text-gray-700">
-            Notes <span className="text-gray-400 text-xs">(Optional)</span>
+          <label htmlFor="note" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Notes <span className="text-gray-400  text-xs">(Optional)</span>
           </label>
           <textarea
             name="note"
             value={formData.note}
             onChange={handleOnChange}
             id="note"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 resize-none"
+            className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 resize-none"
             rows="1"
             placeholder="Add any additional details..."
           />
@@ -279,7 +279,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           <button
             type="submit"
             disabled={loading}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 bg-blue-600 dark:text-blue-500 dark:bg-blue-600/10 dark:bg-opacity-10 hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 text-white disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {loading ? (
               <Loader className="w-5 h-5 animate-spin" />
@@ -299,7 +299,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             <button
               type="button"
               onClick={() => { emptyform(); setEditId(null); }}
-              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-all duration-200"
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-red-600  dark:text-red-500 dark:bg-red-600/10 dark:bg-opacity-10 bg-red-50 transition-all duration-200"
             >
               <X className="w-5 h-5" />
               <span>Cancel</span>
