@@ -366,7 +366,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           className={`
             w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium
             text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-600 
-            hover:bg-red-50 dark:hover:bg-[#ffffff17] transition-colors
+            dark:hover:bg-red-600 dark:hover:bg-opacity-20 transition-colors
             ${isCollapsed ? 'justify-center' : ''}
           `}
         >

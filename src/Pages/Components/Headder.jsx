@@ -64,14 +64,14 @@ const Headder = () => {
   ];
 
   return (
-    <nav className=" fixed w-full z-30 lg:hidden bg-white border ">
+    <nav className=" fixed w-full z-30 lg:hidden bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-b ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <div className="flex items-center">
             <Wallet className="h-8 w-8 text-blue-600" />
-            <Link to={'/'} className="ml-2 text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
+            <Link to={'/'} className="ml-2 text-xl font-bold text-gray-800 dark:text-white dark:hover:text-blue-600 hover:text-blue-600 transition-colors">
               FinanceGet
             </Link>
           </div>
@@ -83,7 +83,7 @@ const Headder = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className=" p-2 rounded-md text-gray-600 hover:bg-gray-50 
+            className=" p-2 rounded-md text-gray-600 dark:hover:bg-[#ffffff17] hover:bg-gray-50 
                      hover:text-blue-600 transition-colors"
             aria-label="Toggle menu"
           >
@@ -95,11 +95,11 @@ const Headder = () => {
         {isMenuOpen && (
           <div className=" pb-3 pt-2">
             {/* DateTime & User Info - Mobile */}
-            <div className="px-4 py-2 space-y-2 border-b border-gray-100 mb-2 bg-gray-50 rounded-lg">
+            <div className="px-4 py-2 space-y-2  mb-2 bg-gray-100 dark:bg-[#ffffff17] rounded-lg">
              
               <div className="flex items-center text-gray-600">
-                <User size={16} className="mr-2" />
-                <span className="text-sm font-medium">{name}</span>
+                <User size={16} className="mr-2 text-gray-400" />
+                <span className="text-sm font-medium text-gray-400">{name}</span>
               </div>
             </div>
 
@@ -113,8 +113,8 @@ const Headder = () => {
                   className={({ isActive }) =>
                     `flex items-center space-x-3 px-4 py-3 rounded-md w-full transition-all
                     ${isActive 
-                      ? 'bg-blue-50 text-blue-600 shadow-sm' 
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
+                      ? 'text-blue-600   bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10 shadow-sm' 
+                      : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50'
                     }`
                   }
                 >
@@ -128,7 +128,8 @@ const Headder = () => {
                   handleLogout();
                 }}
                 className="flex items-center space-x-3 px-4 py-3 rounded-md w-full
-                         text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all"
+                         text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-600 
+            hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20 transition-all"
               >
                 <LogOut size={20} />
                 <span className="font-medium">Logout</span>
