@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell
+  LineChart,BarChart,Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { useGlobalTransactionData } from './Components/Income/TransactionList';
 import { formatCurrency } from './Components/Income/formatCurrency';
@@ -21,7 +21,6 @@ export default function Reports() {
     { name: 'Jun', income: 4500, expense: 3800, Net_Savings: 700 },
     { name: 'Jul', income: 4500, expense: 3800, Net_Savings: 700 },
   ];
-
 
   const {
     TransactionData,
@@ -44,6 +43,7 @@ export default function Reports() {
   const [dateRange, setDateRange] = useState(currentYear);
   const [dateRangeMonth, setDateRangeMonth] = useState(0);
   const [reportType, setReportType] = useState('Income');
+  const [chartType, setChartType] = useState('lineChart');  
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
   const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
@@ -53,30 +53,20 @@ export default function Reports() {
   useEffect(() => {
     setsearchYear(dateRange);
     setMonth(dateRangeMonth);
-    // console.log("Date Range Month:", dateRangeMonth);
   }, [dateRange, setsearchYear, dateRangeMonth]);
 
   const DemocategoryData = [
-    // { name: 'Food', value: 400 },
-    // { name: 'Transport', value: 300 },
-    // { name: 'Entertainment', value: 300 },
-    // { name: 'Utilities', value: 200 },
-    // { name: 'another-1', value: 200 },
-    // { name: 'another-2', value: 200 },
     { name: 'No data found', value: 404 },
-
   ];
 
-  // Ensure actualData is defined before checking its length
-  const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;  const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
-  // console.log("Category Data: ", categoryData);
-  // console.log("Data used: ", Data);
-  const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income')?month.income:month.expense)  > 0).map(month => month.name);
+  const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;  
+  const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
+  const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
 
   const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
-  
+
   return (
     <div className="max-w-7xl mx-auto ">
       <div className="mb-8">
@@ -91,29 +81,35 @@ export default function Reports() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <select
-              id="dateRangeSelect"
-              className="px-4 py-2 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              value={dateRange}
-              onChange={(e) => setDateRange(Number(e.target.value))}
-            >
-              {years.map((year, i) => (
-                <option key={year} value={year} title={i > 0 ? 'Premium' : 'Normal'} className="py-2">
-                  {year} {i > 0 ? '💎' : ''}
-                </option>
-              ))}
-            </select>
+            <div className='grid' >
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Year</label>
+              <select
+                id="dateRangeSelect"
+                className="lg:w-full mt-1 px-4 py-2.5 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                value={dateRange}
+                onChange={(e) => setDateRange(Number(e.target.value))}
+              >
+                {years.map((year, i) => (
+                  <option key={year} value={year} title={i > 0 ? 'Premium' : 'Normal'} className="py-2">
+                    {year} {i > 0 ? '💎' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <select
-              className="px-4 py-2 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value)}
-            >
-              <option value="Income">Income Analysis</option>
-              <option value="Expenses">Expense Analysis</option>
-              <option value="Net Savings">Savings Analysis</option>
-              <option value="whole">Combined Analysis</option>
-            </select>
+            <div className='grid' >
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Analytics</label>
+              <select
+                className="lg:w-full mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+              >
+                <option value="Income">Income Analysis</option>
+                <option value="Expenses">Expense Analysis</option>
+                <option value="Net Savings">Savings Analysis</option>
+                <option value="whole">Combined Analysis</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -121,18 +117,32 @@ export default function Reports() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
           <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-600 dark:bg-opacity-20 text-blue-600">
-                <TrendingUp size={20} />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-600 dark:bg-opacity-20 text-blue-600">
+                  <TrendingUp size={20} />
+                </div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
+                  {reportType} Trends
+                </h2>
               </div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
-                {reportType} Trends
-              </h2>
+
+              <div className="grid md:w-[20%]">
+                <select
+                  className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  value={chartType}
+                  onChange={(e) => setChartType(e.target.value)}
+                >
+                   <option value="lineChart">Line Chart</option>
+                   <option value="BarChart">Bar Chart</option>
+                </select>
+              </div>
             </div>
           </div>
 
           <div className="p-6">
             <div className="h-[300px] sm:h-[400px]">
+              {chartType==='lineChart'&&
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -146,18 +156,60 @@ export default function Reports() {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                     }}
                   />
+                  <Legend
+                    wrapperStyle={{
+                      paddingTop: '10px',
+                    }}
+                    iconType="circle"
+                  />
                   {reportType === 'whole' && (
                     <>
-                      <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} />
+                      <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>
+                      <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>
+                      <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>
                     </>
                   )}
-                  {reportType === 'Income' && <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} />}
-                  {reportType === 'Expenses' && <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} />}
-                  {reportType === 'Net Savings' && <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} />}
+                  {reportType === 'Income' && <Line type="monotone" dataKey="income" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>}
+                  {reportType === 'Expenses' && <Line type="monotone" dataKey="expense" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>}
+                  {reportType === 'Net Savings' && <Line type="monotone" dataKey="Net_Savings" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }}/>}
                 </LineChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer>}
+              
+              {chartType==='BarChart'&& 
+
+              <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #f0f0f0',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}
+                />
+                <Legend
+                  wrapperStyle={{
+                    paddingTop: '10px',
+                  }}
+                  iconType="circle"
+                />
+                {reportType === 'whole' && (
+                  <>
+                    <Bar dataKey="income" fill="#4f46e5" />
+                    <Bar dataKey="expense" fill="#f97316" />
+                    <Bar dataKey="Net_Savings" fill="#22c55e" />
+                  </>
+                )}
+                {reportType === 'Income' && <Bar dataKey="income" fill="#4f46e5" />}
+                {reportType === 'Expenses' && <Bar dataKey="expense" fill="#f97316" />}
+                {reportType === 'Net Savings' && <Bar dataKey="Net_Savings" fill="#22c55e" />}
+              </BarChart>
+            </ResponsiveContainer>
+            }
+
             </div>
           </div>
         </div>
@@ -174,15 +226,18 @@ export default function Reports() {
                   Category Distribution
                 </h2>
               </div>
-              <select
-                className="px-3 py-2 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                value={dateRangeMonth}
-                onChange={(e) => setDateRangeMonth(Number(e.target.value))}
-              >
-                {monthsForIncome.map((month, index) => (
-                  <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
-                ))}
-              </select>
+
+              <div className="grid md:w-[20%]">
+                <select
+                  className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  value={dateRangeMonth}
+                  onChange={(e) => setDateRangeMonth(Number(e.target.value))}
+                >
+                  {monthsForIncome.map((month, index) => (
+                    <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -207,6 +262,7 @@ export default function Reports() {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
+              
             </div>
           </div>
         </div>

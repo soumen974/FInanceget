@@ -192,7 +192,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             onChange={handleOnChange}
             id="description"
             type="text"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             placeholder={`What is this ${type} for?`}
             required
           />
@@ -207,7 +207,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               name="source"
               value={formData.source}
               onChange={handleOnChange}
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
               required
             >
               <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
@@ -233,7 +233,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
                 value={formData.amount}
                 onChange={handleOnChange}
                 id="amount"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                className="w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
                 placeholder="0.00"
                 required
                 min="0"
@@ -254,7 +254,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               value={formData.date}
               onChange={handleOnChange}
               id="date"
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             />
             {/* <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} /> */}
           </div>
@@ -269,7 +269,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             value={formData.note}
             onChange={handleOnChange}
             id="note"
-            className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 resize-none"
+            className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 resize-none"
             rows="1"
             placeholder="Add any additional details..."
           />
@@ -310,7 +310,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
         {/* Status Messages */}
         {(error || message) && (
           <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
-            error ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
+            error ? 'bg-red-50 text-red-600 dark:bg-red-600 dark:bg-opacity-20' : 'bg-green-50 text-green-600 dark:bg-green-600 dark:bg-opacity-20'
           }`}>
             {error ? <AlertCircle className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
             <p className="text-sm font-medium">{error || message}</p>
