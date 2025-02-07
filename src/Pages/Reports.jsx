@@ -249,8 +249,8 @@ export default function Reports() {
                     data={Data}
                     cx="50%"
                     cy="50%"
-                    outerRadius={isSm ? 100 : 150}
-                    innerRadius={isSm ? 60 : 100}
+                    outerRadius={isSm ? 50 : 100}
+                    innerRadius={isSm ? 30 : 60}
                     fill="#8884d8"
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}

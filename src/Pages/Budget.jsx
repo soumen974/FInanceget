@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { 
   DollarSign, PieChart, Plus, Edit2, Trash2, 
-  AlertCircle, CheckCircle, TrendingUp, Archive,
-  Coffee, Home, ShoppingBag, Smartphone, 
-  Users, Book, Gift, Moon, Sun
+  AlertCircle, CheckCircle, X, Archive,
+  Coffee, Home, Smartphone, 
+  Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
 import { Car } from "lucide-react";
-// import { format } from 'date-fns';
 
 const Budget = () => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -14,18 +13,110 @@ const Budget = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [financeRule,setFinanceRule] =  useState('50/30/20');
 
-  // Sample data - replace with your actual data
-  const budgetCategories = [
-    { id: 1, name: 'Food & Dining', icon: <Coffee />, budget: 15000, spent: 16000 },
-    { id: 2, name: 'Housing', icon: <Home />, budget: 25000, spent: 20000 },
-    { id: 3, name: 'Transportation', icon: <Car />, budget: 8000, spent: 6000 },
-    { id: 4, name: 'Shopping', icon: <ShoppingBag />, budget: 10000, spent: 9500 },
-    { id: 5, name: 'Entertainment', icon: <Smartphone />, budget: 5000, spent: 2500 },
-    { id: 6, name: 'Family', icon: <Users />, budget: 12000, spent: 8000 },
-    { id: 7, name: 'Education', icon: <Book />, budget: 7000, spent: 5000 },
-    { id: 8, name: 'Gifts', icon: <Gift />, budget: 3000, spent: 1000 },
-  ];
+  // Example monthly income in INR
+  const monthlyIncome = 1474;
+ 
+  const budgetPercentages = {
+    Needs: {
+      '50/30/20': 0.50,
+      '80/20': 0.50,
+      '70/20/10': 0.50,
+      '60/20/20': 0.50,
+      'One-Third': 0.3333
+    },
+    Housing: {
+      '50/30/20': 0.25,
+      '80/20': 0.20,
+      '70/20/10': 0.20,
+      '60/20/20': 0.20,
+      'One-Third': 0.15
+    },
+    Utilities: {
+      '50/30/20': 0.05,
+      '80/20': 0.05,
+      '70/20/10': 0.05,
+      '60/20/20': 0.05,
+      'One-Third': 0.05
+    },
+    FoodAndDining: {
+      '50/30/20': 0.15,
+      '80/20': 0.15,
+      '70/20/10': 0.15,
+      '60/20/20': 0.15,
+      'One-Third': 0.10
+    },
+    Healthcare: {
+      '50/30/20': 0.05,
+      '80/20': 0.05,
+      '70/20/10': 0.05,
+      '60/20/20': 0.05,
+      'One-Third': 0.0333
+    },
+    Transportation: {
+      '50/30/20': 0.05,
+      '80/20': 0.05,
+      '70/20/10': 0.05,
+      '60/20/20': 0.05,
+      'One-Third': 0.0333
+    },
+    Insurance: {
+      '50/30/20': 0.05,
+      '80/20': 0.05,
+      '70/20/10': 0.05,
+      '60/20/20': 0.05,
+      'One-Third': 0.0333
+    },
+    Wants: {
+      '50/30/20': 0.30,
+      '80/20': 0.30,
+      '70/20/10': 0.30,
+      '60/20/20': 0.30,
+      'One-Third': 0.3333
+    },
+    Entertainment: {
+      '50/30/20': 0.10,
+      '80/20': 0.15,
+      '70/20/10': 0.10,
+      '60/20/20': 0.10,
+      'One-Third': 0.10
+    },
+    OtherMiscellaneous: {
+      '50/30/20': 0.10,
+      '80/20': 0.15,
+      '70/20/10': 0.10,
+      '60/20/20': 0.05,
+      'One-Third': 0.10
+    },
+    Education: {
+      '50/30/20': 0.10,
+      '80/20': 0.10,
+      '70/20/10': 0.10,
+      '60/20/20': 0.05,
+      'One-Third': 0.05
+    },
+    SavingsInvestments: {
+      '50/30/20': 0.20,
+      '80/20': 0.20,
+      '70/20/10': 0.20,
+      '60/20/20': 0.20,
+      'One-Third': 0.3333
+    }
+  };
+  
+const budgetCategories = [
+  { id: 1, name: 'Housing', icon: <Home />, budget: monthlyIncome * budgetPercentages.Housing[financeRule], spent: 12, type: 'Needs' },
+  { id: 2, name: 'Utilities', icon: <Sun />, budget: monthlyIncome * budgetPercentages.Utilities[financeRule], spent: 20, type: 'Needs' },
+  { id: 3, name: 'Food & Dining', icon: <Coffee />, budget: monthlyIncome * budgetPercentages.FoodAndDining[financeRule], spent: 80, type: 'Needs' },
+  { id: 4, name: 'Healthcare', icon: <Users />, budget: monthlyIncome * budgetPercentages.Healthcare[financeRule], spent: 20, type: 'Needs' },
+  { id: 5, name: 'Transportation', icon: <Car />, budget: monthlyIncome * budgetPercentages.Transportation[financeRule], spent: 20, type: 'Needs' },
+  { id: 6, name: 'Insurance', icon: <Shield />, budget: monthlyIncome * budgetPercentages.Insurance[financeRule], spent: 20, type: 'Needs' },
+  { id: 7, name: 'Entertainment', icon: <Smartphone />, budget: monthlyIncome * budgetPercentages.Entertainment[financeRule], spent: 25, type: 'Wants' },
+  { id: 8, name: 'Other Miscellaneous', icon: <Gift />, budget: monthlyIncome * budgetPercentages.OtherMiscellaneous[financeRule], spent: 20, type: 'Wants' },
+  { id: 9, name: 'Education', icon: <Book />, budget: monthlyIncome * budgetPercentages.Education[financeRule], spent: 130, type: 'Wants' },
+  { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, budget: monthlyIncome * budgetPercentages.SavingsInvestments[financeRule], spent: 80, type: 'Savings' }
+];
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June', 
@@ -33,7 +124,7 @@ const Budget = () => {
   ];
 
   const years = [
-    2025,2024
+    2025, 2024
   ];
 
   return (
@@ -50,10 +141,9 @@ const Budget = () => {
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 dark:text-gray-400">Total Budget:</span>
             <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              ₹{budgetCategories.reduce((acc, cat) => acc + cat.budget, 0).toLocaleString()}
+              ₹{monthlyIncome.toLocaleString()}
             </span>
           </div>
-          
         </div>
       </div>
 
@@ -74,13 +164,32 @@ const Budget = () => {
         <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Year</label>
           <select 
-            value={setSelectedYear} 
+            value={selectedYear} 
             onChange={(e) => setSelectedYear(Number(e.target.value))}
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20  dark:text-gray-300"
           >
             {years.map((year, index) => (
               <option key={index} value={index }>{year}</option>
             ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select finance rule</label>
+          <select 
+            value={financeRule} 
+            onChange={(e) => setFinanceRule(e.target.value)}
+            className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20  dark:text-gray-300"
+          >
+            
+            <option  value='50/30/20'>50/30/20 Rule</option>
+            {/* <option  value='80/20'>80/20 Rule</option>
+            <option  value='70/20/10'>70/20/10 Rule</option>
+            <option  value='60/20/20'>60/20/20 Rule</option>
+            <option  value='One-Third'>One-Third Rule</option> */}
+             <option  value='One-Third'>Personalized 💎</option>
+
+
+            
           </select>
         </div>
       </div>
@@ -141,7 +250,7 @@ const Budget = () => {
                           <span className="text-gray-300 dark:text-gray-500">•</span>
                           <span className="text-gray-500 dark:text-gray-400">Spent:</span>
                           <span className={`font-medium ${
-                            ((category.spent / category.budget)*100)>=95 ? 'text-red-600 dark:text-red-400' : ((category.spent / category.budget)*100)>=80 && ((category.spent / category.budget)*100) <100? 'text-yellow-400 dark:text-yellow-300' :'text-green-400 dark:text-green-300'
+                            ((category.spent / category.budget) * 100) >= 95 ? 'text-red-600 dark:text-red-400' : ((category.spent / category.budget) * 100) >= 80 && ((category.spent / category.budget) * 100) < 100 ? 'text-yellow-400 dark:text-yellow-300' : 'text-green-400 dark:text-green-300'
                           }`}>
                             ₹{category.spent.toLocaleString()}
                           </span>
@@ -166,7 +275,7 @@ const Budget = () => {
                     <div className="w-full bg-gray-100 dark:bg-[#0a0a0a] rounded-full h-2">
                       <div 
                         className={`h-2 rounded-full ${
-                          ((category.spent / category.budget)*100)>=95 ? 'bg-red-500 dark:bg-red-400' : ((category.spent / category.budget)*100)>=80 && ((category.spent / category.budget)*100) <100?  'bg-yellow-400 dark:bg-yellow-300' : 'bg-green-400 dark:bg-green-300'
+                          ((category.spent / category.budget) * 100) >= 95 ? 'bg-red-500 dark:bg-red-400' : ((category.spent / category.budget) * 100) >= 80 && ((category.spent / category.budget) * 100) < 100 ? 'bg-yellow-400 dark:bg-yellow-300' : 'bg-green-400 dark:bg-green-300'
                         }`}
                         style={{ 
                           width: `${Math.min((category.spent / category.budget) * 100, 100)}%`
