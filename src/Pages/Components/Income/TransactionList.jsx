@@ -219,7 +219,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
               )}
             </div>
             <p className="text-gray-500 font-medium">No {type} transactions found</p>
-            <p className="text-sm text-gray-400 mt-1">Transactions will appear here</p>
+            {/* <p className="text-sm text-gray-400 mt-1">Transactions will appear here</p> */}
           </div>
         )}
   

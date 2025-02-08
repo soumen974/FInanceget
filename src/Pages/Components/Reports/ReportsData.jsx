@@ -7,9 +7,9 @@ export function ReportsData() {
   const [errorReports, setError] = useState('');
   const [messageReports, setMessage] = useState('');
   const [loadingReport, setLoadingReport] = useState(false);
-  const [searchYear, setsearchYear] = useState(2025);
+  const [searchYear, setsearchYear] = useState( new Date().getFullYear());
   const [categoryData, setCategoryData] = useState({ categoryIncomeData: [], categoryExpenseData: [] });
-  const [month, setMonth] = useState(0);
+  const [month, setMonth] = useState(new Date().getMonth());
 
   const GetTransactionData = async () => {
     try {

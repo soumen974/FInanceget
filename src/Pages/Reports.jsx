@@ -44,6 +44,8 @@ export default function Reports() {
   const [dateRangeMonth, setDateRangeMonth] = useState(new Date().getMonth());
   const [reportType, setReportType] = useState('Income');
   const [chartType, setChartType] = useState('lineChart');  
+  const [chartTypeCat, setChartTypeCat] = useState('PieChart');  
+
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
   const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
@@ -217,7 +219,7 @@ export default function Reports() {
         {/* Category Distribution */}
         <div className="bg-white rounded-xl shadow-sm border dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-gray-100 transition-all duration-200 hover:shadow-md">
           <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
-            <div className="flex items-center justify-between">
+            <div className="flex max-sm:flex-wrap gap-y-3 items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-600 dark:bg-opacity-25 text-purple-600">
                   <PieChartIcon size={20} />
@@ -226,23 +228,37 @@ export default function Reports() {
                   Category Distribution
                 </h2>
               </div>
+              <div className="flex items-center gap-2 justify-evenly">
+                <div className="grid ">
+                  <select
+                    className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    value={chartTypeCat}
+                    onChange={(e) => setChartTypeCat(e.target.value)}
+                  >
+                     <option value='PieChart'>Pie Chart</option>
+                     <option value='BarChart'>Bar Chart</option>
 
-              <div className="grid md:w-[20%]">
-                <select
-                  className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                  value={dateRangeMonth}
-                  onChange={(e) => setDateRangeMonth(Number(e.target.value))}
-                >
-                  {monthsForIncome.map((month, index) => (
-                    <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
-                  ))}
-                </select>
-              </div>
+                  </select>
+                </div>
+
+                <div className="grid ">
+                  <select
+                    className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    value={dateRangeMonth}
+                    onChange={(e) => setDateRangeMonth(Number(e.target.value))}
+                  >
+                    {monthsForIncome.map((month, index) => (
+                      <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+                    ))}
+                  </select>
+                </div>
+            </div>
             </div>
           </div>
 
           <div className="p-6">
             <div className="h-[300px] sm:h-[400px]">
+              {chartTypeCat==='PieChart'&&
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -261,7 +277,34 @@ export default function Reports() {
                   </Pie>
                   <Tooltip />
                 </PieChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer>}
+              {chartTypeCat==='BarChart'&&
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={Data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #f0f0f0',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}
+                />
+                <Legend
+                  wrapperStyle={{
+                    paddingTop: '10px',
+                  }}
+                  iconType="circle"
+                />
+                  <Bar dataKey="value" fill="#8884d8">
+                    {Data.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>}
               
             </div>
           </div>
