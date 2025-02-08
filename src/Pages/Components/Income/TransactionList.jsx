@@ -318,6 +318,8 @@ export const useGlobalTransactionData = (type) => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [searchYear, setsearchYearForList] = useState(new  Date().getFullYear());
+  const [month, setMonthForList] = useState(new Date().getMonth());
 
   useEffect(() => {
     const getData = async () => {
@@ -342,10 +344,11 @@ export const useGlobalTransactionData = (type) => {
   }, [type]);
 
   const totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
-
+  
+  
   const totalIncomeFortheCurrentMonth = incomeData.reduce((acc, income) => {
     const incomeDate = new Date(income.date);
-    const currentMonth = new Date().getMonth();
+    const currentMonth = month;
     const incomeMonth = incomeDate.getMonth();
     if (incomeMonth === currentMonth) {
       return acc + income.amount;
@@ -357,7 +360,7 @@ export const useGlobalTransactionData = (type) => {
 
   const totalExpenseFortheCurrentMonth = expenseData.reduce((acc, expense) => {
     const expenseDate = new Date(expense.date);
-    const currentMonth = new Date().getMonth();
+    const currentMonth = month;
     const expenseMonth = expenseDate.getMonth();
     if (expenseMonth === currentMonth) {
       return acc + expense.amount;
@@ -365,7 +368,8 @@ export const useGlobalTransactionData = (type) => {
     return acc;
   }, 0);
 
-  return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData};
+  // console.log(month);
+  return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData, setsearchYearForList,setMonthForList};
 };
 
  

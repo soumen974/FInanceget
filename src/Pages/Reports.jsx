@@ -41,7 +41,7 @@ export default function Reports() {
   const { totalExpense } = useGlobalTransactionData('expense');
 
   const [dateRange, setDateRange] = useState(currentYear);
-  const [dateRangeMonth, setDateRangeMonth] = useState(0);
+  const [dateRangeMonth, setDateRangeMonth] = useState(new Date().getMonth());
   const [reportType, setReportType] = useState('Income');
   const [chartType, setChartType] = useState('lineChart');  
 
@@ -63,10 +63,10 @@ export default function Reports() {
   const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
   const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
 
-  const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
-
+// console.log(dateRange);
   return (
     <div className="max-w-7xl mx-auto ">
       <div className="mb-8">
