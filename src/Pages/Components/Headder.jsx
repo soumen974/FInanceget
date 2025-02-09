@@ -13,7 +13,8 @@ import {
   Clock,
   User,
   CalendarDays,
-  Home
+  Home,
+  CreditCard
 } from 'lucide-react';
 import Logout from "../../Auth/Components/Logout";
 import { authCheck } from "../../Auth/Components/ProtectedCheck"
@@ -23,7 +24,7 @@ const Headder = () => {
   const { name }= authCheck();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [currentUser] = useState("soumen");
+  const [currentUser] = useState("FinanceGet User");
 
   // Update time every minute
   useEffect(() => {
@@ -59,6 +60,7 @@ const Headder = () => {
     // { icon: <PlusCircle size={20} />, label: 'Add', to: '/add' },
     { icon: <ArrowUpCircle size={20} />, label: 'Income', to: '/income' },
     { icon: <ArrowDownCircle size={20} />, label: 'Expenses', to: '/expenses' },
+    { icon: <CreditCard  size={20} />, label: 'budget', to: '/budget' },
     { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
   ];
@@ -99,7 +101,7 @@ const Headder = () => {
              
               <div className="flex items-center text-gray-600">
                 <User size={16} className="mr-2 text-gray-400" />
-                <span className="text-sm font-medium text-gray-400">{name}</span>
+                <span className="text-sm  truncate w-full font-medium text-gray-400">{name}</span>
               </div>
             </div>
 

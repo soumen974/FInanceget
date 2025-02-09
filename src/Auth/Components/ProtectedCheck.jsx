@@ -8,9 +8,11 @@ export  function authCheck() {
     const [userEmail, setUserEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [auth, setAuth] = useState(false);
+    const[userType, setUserType] = useState('user');
 
     useEffect(() => {
         checkAuth();
+        userProfile();
     }, [])
 
     const checkAuth = async () => {
@@ -27,6 +29,22 @@ export  function authCheck() {
             console.log(error);
         }
     }
+
+    const userProfile = async () => {
+        try{
+           const response = await api.get('/api/user');
+            setMessage(response.data);
+            setName(response.data.name);
+            setUserEmail(response.data.email);
+            setUserType(response.data.type);
+            setAuth(true);
+            // console.log('Response Data:', response.data);
+        }    
+        catch(err){
+            setError(err.response?.data || err.message || 'Something went wrong');
+            console.log(error);
+        }
+    }
     
-  return { auth ,loading, error, message ,name ,userEmail};
+  return { auth ,loading, error, message ,name ,userEmail,userType};
 };

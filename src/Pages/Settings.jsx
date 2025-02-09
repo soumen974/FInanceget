@@ -8,7 +8,8 @@ import { authCheck } from "../Auth/Components/ProtectedCheck";
 
 
 export default function Settings() {
-    const { name ,userEmail }= authCheck();
+    const { name , userEmail ,userType }= authCheck();
+    
   const [activeTab, setActiveTab] = useState('profile');
   const [currency, setCurrency] = useState('INR');
   // const [darkMode, setDarkMode] = useState(false);
@@ -60,6 +61,16 @@ export default function Settings() {
     weekly: { enabled: false, description: 'Weekly transaction summary' },
     monthly: { enabled: true, description: 'Monthly financial report' }
   });
+
+  const toggleNotification = (type) => {
+    setNotifications((prevNotifications) => ({
+      ...prevNotifications,
+      [type]: {
+        ...prevNotifications[type],
+        enabled: !prevNotifications[type].enabled,
+      },
+    }));
+  };
 
   const handleSave = () => {
     setShowSuccess(true);
@@ -114,9 +125,9 @@ export default function Settings() {
                 {currentDateTime}
               </div>
             </div>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
-              <User size={16} className="text-gray-500" />
-              <span className="text-sm font-medium">{currentUser}</span>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
+              <User size={16} className={`${userType==='premium'? ' text-white': 'text-gray-500'}`} />
+              <span className="text-sm font-medium">{currentUser} </span>
             </div>
           </div>
         </div>
@@ -256,7 +267,7 @@ export default function Settings() {
                       description={description}
                       baseStyles={baseStyles}
                       darkMode={darkMode}
-                      // onToggle={() => toggleNotification(key)}
+                      onToggle={() => toggleNotification(key)}
                     />
                   ))}
 

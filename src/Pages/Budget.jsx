@@ -9,6 +9,7 @@ import { Car ,Crown} from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
+import { authCheck } from "../Auth/Components/ProtectedCheck";
 
 const Budget = () => {
   const {
@@ -20,6 +21,8 @@ const Budget = () => {
     categoryData = { categoryIncomeData: [], categoryExpenseData: [] }
   } = ReportsData();
 
+  const { userType }= authCheck();
+  
   const { totalIncomeFortheCurrentMonth, setsearchYearForList, setMonthForList } = useGlobalTransactionData('income');
 
   const currentYear = new Date().getFullYear();
@@ -49,9 +52,9 @@ const Budget = () => {
 
   const budgetPercentages13rd = {
     Needs: 0.50,
-    Housing: 0.20,
+    Housing: 0.10,
     Utilities: 0.05,
-    FoodAndDining: 0.10,
+    FoodAndDining: 0.05,
     Healthcare: 0.05,
     Transportation: 0.05,
     Insurance: 0.05,
@@ -61,7 +64,7 @@ const Budget = () => {
     Education: 0.10,
     SavingsInvestments: 0.20
   };
-  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 : budgetPercentages13rd;
+  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 :  userType==='premium'? budgetPercentages13rd: budgetPercentages523;
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
   const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
@@ -143,7 +146,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             {years.map((year, index) => (
-              <option key={index} value={year}>{year}</option>
+              <option key={index} value={year}>{year} {index > 0 ? '💎' : ''}</option>
             ))}
           </select>
         </div>
@@ -179,8 +182,8 @@ const Budget = () => {
             <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-900 rounded-lg">
-                    <PieChart className="w-5 h-5 text-blue-600 dark:text-blue-300" />
+                  <div className="p-2 bg-blue-50 dark:bg-opacity-20 dark:bg-blue-600 rounded-lg">
+                    <PieChart className="w-5 h-5 text-blue-600 dark:text-blue-600" />
                   </div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Budget Categories for {MONTH_NAMES[selectedMonth].charAt(0).toUpperCase() + MONTH_NAMES[selectedMonth].slice(1)} {selectedYear}
@@ -189,8 +192,20 @@ const Budget = () => {
               </div>
             </div>
             {monthlyIncome <= 0 ? <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
-
-              <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            
+              <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
+                {(financeRule != '50/30/20' || selectedYear!=currentYear) && userType!='premium' ? (
+                  <div className="absolute inset-0  backdrop-blur-sm  bg-opacity-75">
+                  <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+                    <div className="flex items-center">
+                      <div className="ml-4">
+                        <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+                        <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                      </div>
+                    </div>
+                  </div>
+               </div>):null}
                 {budgetCategories.map((category) => (
                   <div 
                     key={category.id}
@@ -251,7 +266,7 @@ const Budget = () => {
             
             <div className="">
               <div className="space-y-2">
-                <BudgetAllocationTable financeRule={financeRule}/>
+                <BudgetAllocationTable financeRule={financeRule} selectedYear={selectedYear}/>
               </div>
               
             </div>
@@ -286,7 +301,7 @@ export default Budget;
     Needs: 0.50,
     Housing: 0.10,
     Utilities: 0.05,
-    FoodAndDining: 0.10,
+    FoodAndDining: 0.05,
     Healthcare: 0.05,
     Transportation: 0.05,
     Insurance: 0.05,
@@ -297,9 +312,10 @@ export default Budget;
     SavingsInvestments: 0.20
   };
   
-const BudgetAllocationTable = ({financeRule}) => {
-
-  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 : null;
+const BudgetAllocationTable = ({financeRule,selectedYear}) => {
+  const { userType }= authCheck();
+  const currentYear = new Date().getFullYear();
+  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 : userType==='premium'? budgetPercentages13rd: budgetPercentages523;
 
   return (
     <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
@@ -311,18 +327,25 @@ const BudgetAllocationTable = ({financeRule}) => {
           </svg>
         </div>
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Budget Allocation Chart</h2>
+        <h2></h2>
+        {financeRule !='50/30/20' && userType==='premium' ? (<h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+         <div className="p-2 hover:bg-blue-50 dark:hover:bg-opacity-20 dark:hover:bg-blue-900 rounded-lg">
+           <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-600" />
+         </div>
+        </h2>) : null }
+         
       </div>
     </div>
-    {financeRule !== '50/30/20' ? (
-     <div class="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
-     <div class="flex items-center">
-       <div class="flex">
+    {(financeRule != '50/30/20' || selectedYear!=currentYear) && userType!='premium' ? (
+     <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+     <div className="flex items-center">
+       <div className="flex">
           <Crown className='h-14 w-14' />
        </div>
-       <div class="ml-4">
-         <h2 class="text-2xl font-bold">Unlock Premium Features</h2>
-         <p class="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-         <button class="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+       <div className="ml-4">
+         <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+         <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+         <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
        </div>
      </div>
    </div>

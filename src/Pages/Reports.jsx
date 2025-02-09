@@ -8,10 +8,11 @@ import { formatCurrency } from './Components/Income/formatCurrency';
 import { useMediaQuery } from 'react-responsive';
 import { ReportsData } from './Components/Reports/ReportsData';
 import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
+import { authCheck } from "../Auth/Components/ProtectedCheck";
 
 export default function Reports() {
   const isSm = useMediaQuery({ query: '(max-width: 640px)' });
-
+const { userType }= authCheck();
   const DemoTransactionData = [
     { name: 'Jan', income: 2400, expense: 1000, Net_Savings: 1400 },
     { name: 'Feb', income: 2000, expense: 1398, Net_Savings: 1198 },
@@ -53,8 +54,10 @@ export default function Reports() {
   const totalNetSavingsPerYear = TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0);
 
   useEffect(() => {
+    if(dateRange!=currentYear && userType!='premium'){
     setsearchYear(dateRange);
     setMonth(dateRangeMonth);
+    }
   }, [dateRange, setsearchYear, dateRangeMonth]);
 
   const DemocategoryData = [
@@ -135,7 +138,7 @@ export default function Reports() {
                   value={chartType}
                   onChange={(e) => setChartType(e.target.value)}
                 >
-                   <option value="lineChart">Line Chart</option>
+                   <option value="lineChart">Line Chart</option>/
                    <option value="BarChart">Bar Chart</option>
                 </select>
               </div>
@@ -143,7 +146,19 @@ export default function Reports() {
           </div>
 
           <div className="p-6">
-            <div className="h-[300px] sm:h-[400px]">
+            <div className="h-[300px] sm:h-[400px] relative overflow-hidden">
+            {(dateRange!=currentYear && userType!='premium')?
+              ( <div className="absolute inset-0 z-50  backdrop-blur-sm  bg-opacity-75">
+                  <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+                    <div className="flex items-center">
+                      <div className="ml-4">
+                        <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+                        <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>):null}
               {chartType==='lineChart'&&
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
@@ -257,7 +272,20 @@ export default function Reports() {
           </div>
 
           <div className="p-6">
-            <div className="h-[300px] sm:h-[400px]">
+            <div className="h-[300px] sm:h-[400px] relative overflow-hidden">
+            {(dateRange!=currentYear && userType!='premium')?
+              ( <div className="absolute inset-0 z-50  backdrop-blur-sm  bg-opacity-75">
+                  <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+                    <div className="flex items-center">
+                      <div className="ml-4">
+                        <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+                        <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>):null}
+
               {chartTypeCat==='PieChart'&&
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
