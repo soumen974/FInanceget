@@ -5,10 +5,12 @@ import {
   Moon, Sun, CheckCircle, X, Globe
 } from 'react-feather';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
+import { api } from "../AxiosMeta/ApiAxios";
+
 
 
 export default function Settings() {
-    const { name , userEmail ,userType }= authCheck();
+    const { name , userEmail ,userType,setIsAction }= authCheck();
     
   const [activeTab, setActiveTab] = useState('profile');
   const [currency, setCurrency] = useState('INR');
@@ -18,6 +20,28 @@ export default function Settings() {
   const currentUser = name;
   // const {darkMode} = TheamColorsStyle();
   // const {setDarkMode} = TheamColorsStyle();
+   const [formData, setFormDate] = useState({
+      name:  '',
+      email: '',
+      phone:'+91 234 567 8900',
+      date: '2000-01-01'
+    });
+
+    useEffect(() => {
+      setFormDate(prev=>({
+        ...prev,
+        name:  currentUser || 'financeGet User',
+        email: userEmail || 'user@financeGet.vercel.com',
+      }))
+    }, [currentUser, userEmail]);
+
+    const handleOnChange = (e) => {
+      const { name, value } = e.target;
+      setFormDate((prev) => ({
+        ...prev,
+        [name]: value
+      }));
+    };
 
    const [darkMode, setDarkMode] = useState(() => {
       const storedTheme = localStorage.getItem('theme');
@@ -44,7 +68,7 @@ export default function Settings() {
       }
     }, [darkMode]);
 
-  // Update current time every minute
+  
   useEffect(() => {
     const updateDateTime = () => {
       const now = new Date();
@@ -111,6 +135,20 @@ export default function Settings() {
       darkMode ? 'border-[#ffffff24]' : 'border-gray-100'
     }`
   };
+
+  const updateProfileData = async (e)=>{
+    e.preventDefault();
+    try{
+      const name= formData.name;
+     const response = await api.put('/api/user',{ name });
+      handleSave();
+      // console.log(response);
+      setIsAction('reload')
+
+    }catch(err){
+      console.warn('Warning:', err.message);      
+    }
+  }
   return (
     <div className={`${baseStyles.container}`}>
       <div className="max-w-7xl mx-auto ">
@@ -134,12 +172,12 @@ export default function Settings() {
 
         {/* Success Toast */}
         {showSuccess && (
-          <div className="fixed top-4 right-4 z-50 bg-green-50 text-green-600 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md">
+          <div className="fixed md:top-4 top-20 right-4 md:right-[40vw] z-50 bg-blue-50 dark:bg-blue-900 dark:bg-opacity-20 text-blue-600 px-4 py-3 rounded-lg  dark:shadow-opacity-20  flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md">
             <CheckCircle size={20} />
             <span>Settings updated successfully!</span>
             <button 
               onClick={() => setShowSuccess(false)}
-              className="ml-auto hover:bg-green-100 p-1 rounded-full"
+              className="ml-auto hover:bg-blue-100 dark:hover:bg-blue-600 dark:hover:bg-opacity-20 p-1 rounded-full"
             >
               <X size={16} />
             </button>
@@ -186,41 +224,50 @@ export default function Settings() {
           {/* Tab Content */}
           <div className="p-4 sm:p-6">
             {activeTab === 'profile' && (
-              <div className="space-y-6">
+              <form onSubmit={updateProfileData} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <FormField
                     label="Full Name"
                     type="text"
+                    id='name'
                     baseStyles={baseStyles}
-                    defaultValue={currentUser}
+                    handleOnChange={handleOnChange}
+                    defaultValue={formData.name}
                     icon={<User size={18} />}
                   />
                   <FormField
                     label="Email"
                     type="email"
+                    id='email'
                     baseStyles={baseStyles}
-                    defaultValue={userEmail}
+                    handleOnChange={handleOnChange}
+                    defaultValue={formData.email}
                     icon={<Mail size={18} />}
                   />
                   <FormField
                     label="Phone"
                     type="tel"
+                    id='phone'
                     baseStyles={baseStyles}
-                    defaultValue="+91 234 567 8900"
+                    handleOnChange={handleOnChange}
+                    defaultValue={formData.phone}
                     icon={<Phone size={18} />}
                   />
                   <FormField
                     label="Date of Birth"
                     type="date"
+                    id='date'
                     baseStyles={baseStyles}
-                    defaultValue="2000-01-01"
+                    handleOnChange={handleOnChange}
+                    defaultValue={formData.date}
                     icon={<Calendar size={18} />}
                   />
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4">
                   <button
-                    onClick={handleSave}
+                    // onClick={handleSave}
+                    type="submit"
                     className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                   >
                     <Save size={18} />
@@ -228,7 +275,7 @@ export default function Settings() {
                   </button>
                   
                 </div>
-              </div>
+              </form>
             )}
 
             {activeTab === 'preferences' && (
@@ -285,13 +332,17 @@ export default function Settings() {
   );
 }
 
-const FormField = ({ label, type, defaultValue, icon ,baseStyles }) => (
+const FormField = ({ id, label,handleOnChange, type, defaultValue, icon ,baseStyles }) => (
   <div className="space-y-2">
     <label className="text-sm font-medium text-gray-700">{label}</label>
     <div className="relative">
       <input
         type={type}
-        defaultValue={defaultValue}
+        value={defaultValue}
+        onChange={handleOnChange}
+        id={id}
+        name={id}
+        placeholder={'Enter your '+label}
         disabled={type==='email'&& defaultValue}
         className={` ${baseStyles.input} ${type==='email'&& 'cursor-not-allowed'} w-full pl-10 pr-4 py-2.5 rounded-lg border  transition-all duration-200`}
       />

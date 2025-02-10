@@ -54,10 +54,8 @@ const { userType }= authCheck();
   const totalNetSavingsPerYear = TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0);
 
   useEffect(() => {
-    if(dateRange!=currentYear && userType!='premium'){
     setsearchYear(dateRange);
     setMonth(dateRangeMonth);
-    }
   }, [dateRange, setsearchYear, dateRangeMonth]);
 
   const DemocategoryData = [
@@ -66,7 +64,7 @@ const { userType }= authCheck();
 
   const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;  
   const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
-  const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
+  const monthsForIncome =  TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
 
   const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -96,7 +94,7 @@ const { userType }= authCheck();
               >
                 {years.map((year, i) => (
                   <option key={year} value={year} title={i > 0 ? 'Premium' : 'Normal'} className="py-2">
-                    {year} {i > 0 ? '💎' : ''}
+                    {year} {i > 0 ? userType!=='premium'?  '💎' : '' : ''}
                   </option>
                 ))}
               </select>
@@ -148,7 +146,7 @@ const { userType }= authCheck();
           <div className="p-6">
             <div className="h-[300px] sm:h-[400px] relative overflow-hidden">
             {(dateRange!=currentYear && userType!='premium')?
-              ( <div className="absolute inset-0 z-50  backdrop-blur-sm  bg-opacity-75">
+              ( <div className="absolute inset-0 z-20  backdrop-blur-sm  bg-opacity-75">
                   <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
                     <div className="flex items-center">
                       <div className="ml-4">
@@ -274,7 +272,7 @@ const { userType }= authCheck();
           <div className="p-6">
             <div className="h-[300px] sm:h-[400px] relative overflow-hidden">
             {(dateRange!=currentYear && userType!='premium')?
-              ( <div className="absolute inset-0 z-50  backdrop-blur-sm  bg-opacity-75">
+              ( <div className="absolute inset-0 z-20  backdrop-blur-sm  bg-opacity-75">
                   <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
                     <div className="flex items-center">
                       <div className="ml-4">

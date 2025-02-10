@@ -277,6 +277,12 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
   const { darkMode }  = useDarkMode() ;
    const {handleLogout} = Logout();
      const { name }= authCheck();
+     const [currentUser, setCurrentUser] = useState(name);
+     
+     useEffect(() => {
+      setCurrentUser(name);
+      }, [name]);
+
    const  SideBarTogle = ()=>{ 
     if(isCollapsed){
       localStorage.setItem('isCollapsed', 'false');
@@ -314,7 +320,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         <div className="p-4 border-b dark:border-[#ffffff24] space-y-2">
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-            <span className="truncate w-32 font-medium">{name}</span>
+            <span className="truncate w-32 font-medium">{currentUser}</span>
           </div>
         </div>
       )}

@@ -9,24 +9,25 @@ export  function authCheck() {
     const [loading, setLoading] = useState(false);
     const [auth, setAuth] = useState(false);
     const[userType, setUserType] = useState('user');
-
+    const [isAction,setIsAction]= useState('');
     useEffect(() => {
         checkAuth();
         userProfile();
-    }, [])
+    }, [isAction])
+    // console.log(isAction);
 
     const checkAuth = async () => {
         try{
            const response = await api.get('/api/auth/protected');
             setMessage(response.data);
-            setName(response.data.name);
+            // setName(response.data.name);
             setUserEmail(response.data.email);
             setAuth(true);
             // console.log('Response Data:', response.data);
         }    
         catch(err){
             setError(err.response?.data || err.message || 'Something went wrong');
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -46,5 +47,5 @@ export  function authCheck() {
         }
     }
     
-  return { auth ,loading, error, message ,name ,userEmail,userType};
+  return { auth ,loading, error, message ,name ,userEmail,userType,setIsAction};
 };

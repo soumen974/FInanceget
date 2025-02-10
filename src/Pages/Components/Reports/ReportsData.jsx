@@ -16,8 +16,9 @@ export function ReportsData() {
       const response = await api.post(`api/reports/LineChartData/${searchYear}`);
       setTransactionData(response.data);
       setMessage(response.data?.msg);
-    } catch (err) {
+    } catch (error) {
       setError('Error fetching transaction data');
+      console.warn('Warning:', error.message);
     } finally {
       setLoadingReport(false);
     }
@@ -29,6 +30,7 @@ export function ReportsData() {
       setAvailableyears(response.data);
     } catch (err) {
       setError('Error fetching available years');
+      console.warn('Warning:', error.message);
     }
   };
 
@@ -38,6 +40,7 @@ export function ReportsData() {
       setCategoryData(response.data);
     } catch (error) {
      setError('Error fetching ',error);
+     console.warn('Warning:', error.message);
     }
   };
 

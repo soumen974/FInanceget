@@ -146,7 +146,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             {years.map((year, index) => (
-              <option key={index} value={year}>{year} {index > 0 ? '💎' : ''}</option>
+              <option key={index} value={year}>{year} {index > 0 ? userType!=='premium'? '💎': '' : ''}</option>
             ))}
           </select>
         </div>
@@ -158,7 +158,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             <option value='50/30/20'>50/30/20 Rule</option>
-            <option value='One-Third'>Personalized 💎</option>
+            <option value='One-Third'>Personalized {userType!=='premium'?  '💎':''}</option>
           </select>
         </div>
       </div>
@@ -182,7 +182,7 @@ const Budget = () => {
             <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-50 dark:bg-opacity-20 dark:bg-blue-600 rounded-lg">
+                  <div className="p-2 bg-blue-50 dark:bg-opacity-20 dark:bg-blue-900 rounded-lg">
                     <PieChart className="w-5 h-5 text-blue-600 dark:text-blue-600" />
                   </div>
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">

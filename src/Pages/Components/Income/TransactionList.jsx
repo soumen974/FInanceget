@@ -348,21 +348,24 @@ export const useGlobalTransactionData = (type) => {
   
   const totalIncomeFortheCurrentMonth = incomeData.reduce((acc, income) => {
     const incomeDate = new Date(income.date);
+    const incomeYear = incomeDate.getFullYear();
     const currentMonth = month;
     const incomeMonth = incomeDate.getMonth();
-    if (incomeMonth === currentMonth) {
+    if (incomeYear === searchYear && incomeMonth === currentMonth) {
       return acc + income.amount;
     }
     return acc;
   }, 0);
+
 
   const totalExpense = expenseData.reduce((acc, expense) => acc + expense.amount, 0);
 
   const totalExpenseFortheCurrentMonth = expenseData.reduce((acc, expense) => {
     const expenseDate = new Date(expense.date);
     const currentMonth = month;
+    const expenseYear = expenseDate.getFullYear();
     const expenseMonth = expenseDate.getMonth();
-    if (expenseMonth === currentMonth) {
+    if (expenseYear === searchYear && expenseMonth === currentMonth) {
       return acc + expense.amount;
     }
     return acc;
