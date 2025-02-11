@@ -5,12 +5,13 @@ import {
   Coffee, Home, Smartphone,
   Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car ,Crown} from "lucide-react";
+import { Car, Crown } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
-import Spinner from "../Loaders/Spinner"
+import Spinner from "../Loaders/Spinner";
+
 const Budget = () => {
   const {
     TransactionData,
@@ -22,8 +23,8 @@ const Budget = () => {
     categoryData = { categoryIncomeData: [], categoryExpenseData: [] }
   } = ReportsData();
 
-  const { userType }= authCheck();
-  
+  const { userType } = authCheck();
+
   const { totalIncomeFortheCurrentMonth, setsearchYearForList, setMonthForList } = useGlobalTransactionData('income');
 
   const currentYear = new Date().getFullYear();
@@ -33,7 +34,7 @@ const Budget = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [financeRule, setFinanceRule] = useState('50/30/20');
-
+  const [editPersonalBudget, setEditPersonalBudget] = useState(false);
   const monthlyIncome = totalIncomeFortheCurrentMonth;
 
   const budgetPercentages523 = {
@@ -65,7 +66,8 @@ const Budget = () => {
     Education: 0.10,
     SavingsInvestments: 0.20
   };
-  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 :  userType==='premium'? budgetPercentages13rd: budgetPercentages523;
+
+  const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : userType === 'premium' ? budgetPercentages13rd : budgetPercentages523;
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
   const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
@@ -117,7 +119,7 @@ const Budget = () => {
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 dark:text-gray-400">Total Budget:</span>
             <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {formatCurrency(monthlyIncome)}
+              {formatCurrency(monthlyIncome)}
             </span>
           </div>
         </div>
@@ -147,7 +149,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             {years.map((year, index) => (
-              <option key={index} value={year}>{year} {index > 0 ? userType!=='premium'? '💎': '' : ''}</option>
+              <option key={index} value={year}>{year} {index > 0 ? userType !== 'premium' ? '💎' : '' : ''}</option>
             ))}
           </select>
         </div>
@@ -159,7 +161,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             <option value='50/30/20'>50/30/20 Rule</option>
-            <option value='One-Third'>Personalized {userType!=='premium'?  '💎':''}</option>
+            <option value='One-Third'>Personalized {userType !== 'premium' ? '💎' : ''}</option>
           </select>
         </div>
       </div>
@@ -192,21 +194,21 @@ const Budget = () => {
                 </div>
               </div>
             </div>
-            {monthlyIncome===0 ? loadingReport? <Spinner/> : <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
-            
+            {monthlyIncome === 0 ? loadingReport ? <Spinner /> : <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
               <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
-                {(financeRule != '50/30/20' || selectedYear!=currentYear) && userType!='premium' ? (
-                  <div className="absolute inset-0  backdrop-blur-sm  bg-opacity-75">
-                  <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
-                    <div className="flex items-center">
-                      <div className="ml-4">
-                        <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
-                        <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                {(financeRule !== '50/30/20' || selectedYear !== currentYear) && userType !== 'premium' ? (
+                  <div className="absolute inset-0 backdrop-blur-sm bg-opacity-75">
+                    <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+                      <div className="flex items-center">
+                        <div className="ml-4">
+                          <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+                          <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                          <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                        </div>
                       </div>
                     </div>
                   </div>
-               </div>):null}
+                ) : null}
                 {budgetCategories.map((category) => (
                   <div 
                     key={category.id}
@@ -259,169 +261,432 @@ const Budget = () => {
                 ))}
               </div>
             }
-            
           </div>
         </div>
 
         <div>
-          <div className=" rounded-xl  sticky top-2">
-            
+          <div className="rounded-xl sticky top-2">
             <div className="">
               <div className="space-y-2">
-                <BudgetAllocationTable financeRule={financeRule} selectedYear={selectedYear}/>
+                <BudgetAllocationTable editPersonalBudget={editPersonalBudget} setEditPersonalBudget={setEditPersonalBudget} financeRule={financeRule} selectedYear={selectedYear} />
               </div>
-              
             </div>
           </div>
         </div>
       </div>
+      <PersonalizedBudgetAllocationForm setEditPersonalBudget={setEditPersonalBudget}  editPersonalBudget={editPersonalBudget} />
     </div>
   );
 };
 
 export default Budget;
 
+const budgetPercentages523 = {
+  Needs: 0.50,
+  Housing: 0.20,
+  Utilities: 0.05,
+  FoodAndDining: 0.10,
+  Healthcare: 0.05,
+  Transportation: 0.05,
+  Insurance: 0.05,
+  Wants: 0.30,
+  Entertainment: 0.10,
+  OtherMiscellaneous: 0.10,
+  Education: 0.10,
+  SavingsInvestments: 0.20
+};
 
+const budgetPercentages13rd = {
+  Needs: 0.50,
+  Housing: 0.10,
+  Utilities: 0.05,
+  FoodAndDining: 0.05,
+  Healthcare: 0.05,
+  Transportation: 0.05,
+  Insurance: 0.05,
+  Wants: 0.30,
+  Entertainment: 0.10,
+  OtherMiscellaneous: 0.10,
+  Education: 0.10,
+  SavingsInvestments: 0.20
+};
 
-
- const budgetPercentages523 = {
-    Needs: 0.50,
-    Housing: 0.20,
-    Utilities: 0.05,
-    FoodAndDining: 0.10,
-    Healthcare: 0.05,
-    Transportation: 0.05,
-    Insurance: 0.05,
-    Wants: 0.30,
-    Entertainment: 0.10,
-    OtherMiscellaneous: 0.10,
-    Education: 0.10,
-    SavingsInvestments: 0.20
-  };
-
-  const budgetPercentages13rd = {
-    Needs: 0.50,
-    Housing: 0.10,
-    Utilities: 0.05,
-    FoodAndDining: 0.05,
-    Healthcare: 0.05,
-    Transportation: 0.05,
-    Insurance: 0.05,
-    Wants: 0.30,
-    Entertainment: 0.10,
-    OtherMiscellaneous: 0.10,
-    Education: 0.10,
-    SavingsInvestments: 0.20
-  };
-  
-const BudgetAllocationTable = ({financeRule,selectedYear}) => {
-  const { userType }= authCheck();
+const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, setEditPersonalBudget }) => {
+  const { userType } = authCheck();
   const currentYear = new Date().getFullYear();
-  const budgetPercentages = financeRule ==='50/30/20'? budgetPercentages523 : userType==='premium'? budgetPercentages13rd: budgetPercentages523;
+  const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : userType === 'premium' ? budgetPercentages13rd : budgetPercentages523;
 
   return (
-    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
-    <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
-      <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-600/10 dark:bg-opacity-10">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-8V3.5L18.5 9H13z"/>
-          </svg>
+    <>
+      <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
+        <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-600/10 dark:bg-opacity-10">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24         "     >
+                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-8V3.5L18.5 9H13z"/>
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Budget Allocation Chart</h2>
+            <h2></h2>
+            {financeRule !== '50/30/20' && userType === 'premium' ? (
+              <div onClick={() => setEditPersonalBudget(true)} className="text-xl cursor-pointer font-semibold text-gray-800 dark:text-gray-100">
+                <div className="p-2 hover:bg-blue-50 dark:hover:bg-opacity-20 dark:hover:bg-blue-900 rounded-lg">
+                  <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-600" />
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Budget Allocation Chart</h2>
-        <h2></h2>
-        {financeRule !='50/30/20' && userType==='premium' ? (<h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-         <div className="p-2 hover:bg-blue-50 dark:hover:bg-opacity-20 dark:hover:bg-blue-900 rounded-lg">
-           <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-600" />
-         </div>
-        </h2>) : null }
-         
+        {(financeRule !== '50/30/20' || selectedYear !== currentYear) && userType !== 'premium' ? (
+          <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+            <div className="flex items-center">
+              <div className="flex">
+                <Crown className='h-14 w-14' />
+              </div>
+              <div className="ml-4">
+                <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+                <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-6 space-y-6">
+            <div className="mb-4">
+              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Needs (50%)</div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Housing</div>
+                  <div className="text-gray-800 dark:text-gray-100">🏠</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Housing * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Utilities</div>
+                  <div className="text-gray-800 dark:text-gray-100">💡</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Utilities * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Food & Dining</div>
+                  <div className="text-gray-800 dark:text-gray-100">🍽️</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.FoodAndDining * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Healthcare</div>
+                  <div className="text-gray-800 dark:text-gray-100">⚕️</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Healthcare * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Transportation</div>
+                  <div className="text-gray-800 dark:text-gray-100">🚗</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Transportation * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Insurance</div>
+                  <div className="text-gray-800 dark:text-gray-100">🛡️</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Insurance * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Wants (30%)</div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Entertainment</div>
+                  <div className="text-gray-800 dark:text-gray-100">🎬</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Entertainment * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Other Miscellaneous</div>
+                  <div className="text-gray-800 dark:text-gray-100">📦</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.OtherMiscellaneous * 100).toFixed(2)}%</div>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Education</div>
+                  <div className="text-gray-800 dark:text-gray-100">📚</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Education * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Savings/Investments (20%)</div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                  <div className="text-gray-800 dark:text-gray-100">Savings/Investments</div>
+                  <div className="text-gray-800 dark:text-gray-100">💰</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.SavingsInvestments * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+    </>
+  );
+};
+
+
+
+
+const BudgetCategory = ({ title, percentage, children }) => (
+  <div className="mb-4">
+    <div className="flex items-center gap-2 mb-2">
+      <h3 className="text-base font-semibold">{title}</h3>
+      <span className="text-sm text-gray-500 dark:text-gray-400">({percentage}%)</span>
     </div>
-    {(financeRule != '50/30/20' || selectedYear!=currentYear) && userType!='premium' ? (
-     <div className="max-w-xl mx-auto  p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
-     <div className="flex items-center">
-       <div className="flex">
-          <Crown className='h-14 w-14' />
-       </div>
-       <div className="ml-4">
-         <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
-         <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-         <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
-       </div>
-     </div>
-   </div>
-    ) : (
-      <div className="p-6 space-y-6">
-        <div className="mb-4">
-          <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Needs (50%)</div>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Housing</div>
-              <div className="text-gray-800 dark:text-gray-100">🏠</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Housing * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Utilities</div>
-              <div className="text-gray-800 dark:text-gray-100">💡</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Utilities * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Food & Dining</div>
-              <div className="text-gray-800 dark:text-gray-100">🍽️</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.FoodAndDining * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Healthcare</div>
-              <div className="text-gray-800 dark:text-gray-100">⚕️</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Healthcare * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Transportation</div>
-              <div className="text-gray-800 dark:text-gray-100">🚗</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Transportation * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Insurance</div>
-              <div className="text-gray-800 dark:text-gray-100">🛡️</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Insurance * 100).toFixed(2)}%</div>
-            </div>
-          </div>
-        </div>
-        <div className="mb-4">
-          <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Wants (30%)</div>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Entertainment</div>
-              <div className="text-gray-800 dark:text-gray-100">🎬</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Entertainment * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Other Miscellaneous</div>
-              <div className="text-gray-800 dark:text-gray-100">📦</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.OtherMiscellaneous * 100).toFixed(2)}%</div>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Education</div>
-              <div className="text-gray-800 dark:text-gray-100">📚</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Education * 100).toFixed(2)}%</div>
-            </div>
-          </div>
-        </div>
-        <div className="mb-4">
-          <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Savings/Investments (20%)</div>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-              <div className="text-gray-800 dark:text-gray-100">Savings/Investments</div>
-              <div className="text-gray-800 dark:text-gray-100">💰</div>
-              <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.SavingsInvestments * 100).toFixed(2)}%</div>
-            </div>
-          </div>
-        </div>
+    <div className="grid grid-cols-2 gap-2">{children}</div>
+  </div>
+);
+
+const BudgetInput = ({ label, emoji, name, value, onChange, error }) => (
+  <div className="relative">
+    <label className="block text-sm mb-1 dark:text-gray-300">
+      <span className="mr-1">{emoji}</span>
+      {label}
+    </label>
+    <input
+      type="number"
+      step="0.01"
+      min="0"
+      max="100"
+      name={name}
+      value={value}
+      onChange={onChange}
+      className={`w-full px-2 py-1 text-sm dark:bg-[#0a0a0a] dark:border-[#ffffff24] border rounded-md 
+        focus:outline-none focus:ring-1 focus:ring-blue-500
+        ${error ? 'border-red-500' : 'border-gray-200'}`}
+    />
+    {error && (
+      <div className="absolute -bottom-4 left-0 text-xs text-red-500">
+        {error}
       </div>
     )}
   </div>
+);
+
+const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalBudget }) => {
+  const [budget, setBudget] = useState({
+    Housing: 10,
+    Utilities: 5,
+    FoodAndDining: 5,
+    Healthcare: 5,
+    Transportation: 5,
+    Insurance: 5,
+    Entertainment: 10,
+    OtherMiscellaneous: 10,
+    Education: 10,
+    SavingsInvestments: 20
+  });
+
+  const [errors, setErrors] = useState({});
+  const [totalPercentage, setTotalPercentage] = useState(0);
+  const [saveStatus, setSaveStatus] = useState(null);
+
+  useEffect(() => {
+    const total = Object.values(budget).reduce((sum, value) => sum + value, 0);
+    setTotalPercentage(total);
+  }, [budget]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const numValue = parseFloat(value) || 0;
+    
+    setBudget(prev => ({
+      ...prev,
+      [name]: numValue
+    }));
+    
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: null
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    Object.entries(budget).forEach(([key, value]) => {
+      if (value < 0 || value > 100) {
+        newErrors[key] = 'Must be 0-100%';
+      }
+    });
+    
+    if (totalPercentage !== 100) {
+      newErrors.total = `Total must be 100%`;
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      setSaveStatus('success');
+      console.log('Budget Allocation:', budget);
+      
+      setTimeout(() => {
+        setSaveStatus(null);
+        setEditPersonalBudget(false);
+      }, 1500);
+    } else {
+      setSaveStatus('error');
+    }
+  };
+
+  return (
+    <>
+      <div 
+        className={`${editPersonalBudget ? 'block' : 'hidden'} fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem] bg-opacity-75 z-40`}
+        onClick={() => setEditPersonalBudget(false)}
+      />
+
+      <div className={`bg-white dark:bg-[#0a0a0a] border-gray-200 border dark:border-[#ffffff24] fixed 
+        ${editPersonalBudget ? 'right-0' : 'right-[-24rem]'} duration-300 transition-right 
+        top-0 h-screen sm:w-96 shadow-lg z-50`}>
+        
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b dark:border-[#ffffff24]">
+            <h2 className="text-lg font-bold dark:text-white">Budget Allocation</h2>
+            <div className={`text-sm font-medium ${totalPercentage === 100 ? 'text-green-500' : 'text-red-500'}`}>
+              Total: {totalPercentage}%
+            </div>
+          </div>
+
+          {/* Form Content - Scrollable */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <form id="budgetForm" onSubmit={handleSubmit}>
+              {errors.total && (
+                <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded-md">
+                  <p className="text-xs text-red-600 dark:text-red-400">{errors.total}</p>
+                </div>
+              )}
+              
+              {saveStatus === 'success' && (
+                <div className="mb-4 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-md">
+                  <p className="text-xs text-green-600 dark:text-green-400">Budget saved successfully!</p>
+                </div>
+              )}
+
+              <BudgetCategory title="Needs" percentage="50">
+                <BudgetInput
+                  label="Housing"
+                  emoji="🏠"
+                  name="Housing"
+                  value={budget.Housing}
+                  onChange={handleChange}
+                  error={errors.Housing}
+                />
+                <BudgetInput
+                  label="Utilities"
+                  emoji="💡"
+                  name="Utilities"
+                  value={budget.Utilities}
+                  onChange={handleChange}
+                  error={errors.Utilities}
+                />
+                <BudgetInput
+                  label="Food & Dining"
+                  emoji="🍽️"
+                  name="FoodAndDining"
+                  value={budget.FoodAndDining}
+                  onChange={handleChange}
+                  error={errors.FoodAndDining}
+                />
+                <BudgetInput
+                  label="Healthcare"
+                  emoji="⚕️"
+                  name="Healthcare"
+                  value={budget.Healthcare}
+                  onChange={handleChange}
+                  error={errors.Healthcare}
+                />
+                <BudgetInput
+                  label="Transportation"
+                  emoji="🚗"
+                  name="Transportation"
+                  value={budget.Transportation}
+                  onChange={handleChange}
+                  error={errors.Transportation}
+                />
+                <BudgetInput
+                  label="Insurance"
+                  emoji="🛡️"
+                  name="Insurance"
+                  value={budget.Insurance}
+                  onChange={handleChange}
+                  error={errors.Insurance}
+                />
+              </BudgetCategory>
+
+              <BudgetCategory title="Wants" percentage="30">
+                <BudgetInput
+                  label="Entertainment"
+                  emoji="🎬"
+                  name="Entertainment"
+                  value={budget.Entertainment}
+                  onChange={handleChange}
+                  error={errors.Entertainment}
+                />
+                <BudgetInput
+                  label="Miscellaneous"
+                  emoji="📦"
+                  name="OtherMiscellaneous"
+                  value={budget.OtherMiscellaneous}
+                  onChange={handleChange}
+                  error={errors.OtherMiscellaneous}
+                />
+                <BudgetInput
+                  label="Education"
+                  emoji="📚"
+                  name="Education"
+                  value={budget.Education}
+                  onChange={handleChange}
+                  error={errors.Education}
+                />
+              </BudgetCategory>
+
+              <BudgetCategory title="Savings/Investments" percentage="20">
+                <BudgetInput
+                  label="Savings"
+                  emoji="💰"
+                  name="SavingsInvestments"
+                  value={budget.SavingsInvestments}
+                  onChange={handleChange}
+                  error={errors.SavingsInvestments}
+                />
+              </BudgetCategory>
+            </form>
+          </div>
+
+          {/* Footer - Fixed at bottom */}
+          <div className="border-t dark:border-[#ffffff24] p-4">
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setEditPersonalBudget(false)}
+                className="px-4 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 
+                  rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                form="budgetForm"
+                type="submit"
+                className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
+
 
 
