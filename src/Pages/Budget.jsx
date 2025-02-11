@@ -5,7 +5,7 @@ import {
   Coffee, Home, Smartphone,
   Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown } from "lucide-react";
+import { Car, Crown ,Percent} from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -38,34 +38,49 @@ const Budget = () => {
   const monthlyIncome = totalIncomeFortheCurrentMonth;
 
   const budgetPercentages523 = {
-    Needs: 0.50,
-    Housing: 0.20,
-    Utilities: 0.05,
-    FoodAndDining: 0.10,
-    Healthcare: 0.05,
-    Transportation: 0.05,
-    Insurance: 0.05,
-    Wants: 0.30,
-    Entertainment: 0.10,
-    OtherMiscellaneous: 0.10,
-    Education: 0.10,
-    SavingsInvestments: 0.20
+    Needs: 50,
+    Housing: 20,
+    Utilities: 5,
+    FoodAndDining: 10,
+    Healthcare: 5,
+    Transportation: 5,
+    Insurance: 5,
+    Wants: 30,
+    Entertainment: 10,
+    OtherMiscellaneous: 10,
+    Education: 10,
+    SavingsInvestments: 20
   };
 
-  const budgetPercentages13rd = {
-    Needs: 0.50,
-    Housing: 0.10,
-    Utilities: 0.05,
-    FoodAndDining: 0.05,
-    Healthcare: 0.05,
-    Transportation: 0.05,
-    Insurance: 0.05,
-    Wants: 0.30,
-    Entertainment: 0.10,
-    OtherMiscellaneous: 0.10,
-    Education: 0.10,
-    SavingsInvestments: 0.20
+  const budgetPercentages13rd2 = {
+    Needs: 50,
+    Housing: 10,
+    Utilities: 5,
+    FoodAndDining: 5,
+    Healthcare: 5,
+    Transportation: 5,
+    Insurance: 5,
+    Wants: 30,
+    Entertainment: 10,
+    OtherMiscellaneous: 10,
+    Education: 10,
+    SavingsInvestments: 20
   };
+
+  const [budgetPercentages13rd, setbudgetPercentages13rd] = useState({
+    Needs: 50,
+    Housing: 10,
+    Utilities: 5,
+    FoodAndDining: 5,
+    Healthcare: 5,
+    Transportation: 5,
+    Insurance: 5,
+    Wants: 30,
+    Entertainment: 10,
+    OtherMiscellaneous: 10,
+    Education: 10,
+    SavingsInvestments: 20
+  });
 
   const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : userType === 'premium' ? budgetPercentages13rd : budgetPercentages523;
 
@@ -94,16 +109,16 @@ const Budget = () => {
   };
 
   const budgetCategories = [
-    { id: 1, name: 'Housing', icon: <Home />, budget: monthlyIncome * budgetPercentages.Housing, spent: getSpentAmount('Housing'), type: 'Needs' },
-    { id: 2, name: 'Utilities', icon: <Sun />, budget: monthlyIncome * budgetPercentages.Utilities, spent: getSpentAmount('Utilities'), type: 'Needs' },
-    { id: 3, name: 'Food & Dining', icon: <Coffee />, budget: monthlyIncome * budgetPercentages.FoodAndDining, spent: getSpentAmount('Food & Dining'), type: 'Needs' },
-    { id: 4, name: 'Healthcare', icon: <Users />, budget: monthlyIncome * budgetPercentages.Healthcare, spent: getSpentAmount('Healthcare'), type: 'Needs' },
-    { id: 5, name: 'Transportation', icon: <Car />, budget: monthlyIncome * budgetPercentages.Transportation, spent: getSpentAmount('Transportation'), type: 'Needs' },
-    { id: 6, name: 'Insurance', icon: <Shield />, budget: monthlyIncome * budgetPercentages.Insurance, spent: getSpentAmount('Insurance'), type: 'Needs' },
-    { id: 7, name: 'Entertainment', icon: <Smartphone />, budget: monthlyIncome * budgetPercentages.Entertainment, spent: getSpentAmount('Entertainment'), type: 'Wants' },
-    { id: 8, name: 'Other Miscellaneous', icon: <Gift />, budget: monthlyIncome * budgetPercentages.OtherMiscellaneous, spent: getSpentAmount('Other Miscellaneous'), type: 'Wants' },
-    { id: 9, name: 'Education', icon: <Book />, budget: monthlyIncome * budgetPercentages.Education, spent: getSpentAmount('Education'), type: 'Wants' },
-    { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, budget: monthlyIncome * budgetPercentages.SavingsInvestments, spent: getSpentAmount('Savings/Investments'), type: 'Investments' }
+    { id: 1, name: 'Housing', icon: <Home />, budget: monthlyIncome * budgetPercentages.Housing*0.01, spent: getSpentAmount('Housing'), type: 'Needs' },
+    { id: 2, name: 'Utilities', icon: <Sun />, budget: monthlyIncome * budgetPercentages.Utilities*0.01, spent: getSpentAmount('Utilities'), type: 'Needs' },
+    { id: 3, name: 'Food & Dining', icon: <Coffee />, budget: monthlyIncome * budgetPercentages.FoodAndDining*0.01, spent: getSpentAmount('Food & Dining'), type: 'Needs' },
+    { id: 4, name: 'Healthcare', icon: <Users />, budget: monthlyIncome * budgetPercentages.Healthcare*0.01, spent: getSpentAmount('Healthcare'), type: 'Needs' },
+    { id: 5, name: 'Transportation', icon: <Car />, budget: monthlyIncome * budgetPercentages.Transportation*0.01, spent: getSpentAmount('Transportation'), type: 'Needs' },
+    { id: 6, name: 'Insurance', icon: <Shield />, budget: monthlyIncome * budgetPercentages.Insurance*0.01, spent: getSpentAmount('Insurance'), type: 'Needs' },
+    { id: 7, name: 'Entertainment', icon: <Smartphone />, budget: monthlyIncome * budgetPercentages.Entertainment*0.01, spent: getSpentAmount('Entertainment'), type: 'Wants' },
+    { id: 8, name: 'Other Miscellaneous', icon: <Gift />, budget: monthlyIncome * budgetPercentages.OtherMiscellaneous*0.01, spent: getSpentAmount('Other Miscellaneous'), type: 'Wants' },
+    { id: 9, name: 'Education', icon: <Book />, budget: monthlyIncome * budgetPercentages.Education*0.01, spent: getSpentAmount('Education'), type: 'Wants' },
+    { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, budget: monthlyIncome * budgetPercentages.SavingsInvestments*0.01, spent: getSpentAmount('Savings/Investments'), type: 'Investments' }
   ];
 
   return (
@@ -268,13 +283,13 @@ const Budget = () => {
           <div className="rounded-xl sticky top-2">
             <div className="">
               <div className="space-y-2">
-                <BudgetAllocationTable editPersonalBudget={editPersonalBudget} setEditPersonalBudget={setEditPersonalBudget} financeRule={financeRule} selectedYear={selectedYear} />
+                <BudgetAllocationTable budgetPercentages13rd={budgetPercentages13rd} editPersonalBudget={editPersonalBudget} setEditPersonalBudget={setEditPersonalBudget} financeRule={financeRule} selectedYear={selectedYear} />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <PersonalizedBudgetAllocationForm setEditPersonalBudget={setEditPersonalBudget}  editPersonalBudget={editPersonalBudget} />
+      <PersonalizedBudgetAllocationForm setbudgetPercentages13rd={setbudgetPercentages13rd} setEditPersonalBudget={setEditPersonalBudget}  editPersonalBudget={editPersonalBudget} />
     </div>
   );
 };
@@ -282,36 +297,23 @@ const Budget = () => {
 export default Budget;
 
 const budgetPercentages523 = {
-  Needs: 0.50,
-  Housing: 0.20,
-  Utilities: 0.05,
-  FoodAndDining: 0.10,
-  Healthcare: 0.05,
-  Transportation: 0.05,
-  Insurance: 0.05,
-  Wants: 0.30,
-  Entertainment: 0.10,
-  OtherMiscellaneous: 0.10,
-  Education: 0.10,
-  SavingsInvestments: 0.20
+  Needs: 50,
+  Housing: 20,
+  Utilities: 5,
+  FoodAndDining: 10,
+  Healthcare: 5,
+  Transportation: 5,
+  Insurance: 5,
+  Wants: 30,
+  Entertainment: 10,
+  OtherMiscellaneous: 10,
+  Education: 10,
+  SavingsInvestments: 20
 };
 
-const budgetPercentages13rd = {
-  Needs: 0.50,
-  Housing: 0.10,
-  Utilities: 0.05,
-  FoodAndDining: 0.05,
-  Healthcare: 0.05,
-  Transportation: 0.05,
-  Insurance: 0.05,
-  Wants: 0.30,
-  Entertainment: 0.10,
-  OtherMiscellaneous: 0.10,
-  Education: 0.10,
-  SavingsInvestments: 0.20
-};
 
-const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, setEditPersonalBudget }) => {
+
+const BudgetAllocationTable = ({ financeRule,budgetPercentages13rd, selectedYear, editPersonalBudget, setEditPersonalBudget }) => {
   const { userType } = authCheck();
   const currentYear = new Date().getFullYear();
   const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : userType === 'premium' ? budgetPercentages13rd : budgetPercentages523;
@@ -358,32 +360,32 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, 
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Housing</div>
                   <div className="text-gray-800 dark:text-gray-100">🏠</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Housing * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Housing )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Utilities</div>
                   <div className="text-gray-800 dark:text-gray-100">💡</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Utilities * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Utilities )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Food & Dining</div>
                   <div className="text-gray-800 dark:text-gray-100">🍽️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.FoodAndDining * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.FoodAndDining )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Healthcare</div>
                   <div className="text-gray-800 dark:text-gray-100">⚕️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Healthcare * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Healthcare )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Transportation</div>
                   <div className="text-gray-800 dark:text-gray-100">🚗</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Transportation * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Transportation )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Insurance</div>
                   <div className="text-gray-800 dark:text-gray-100">🛡️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Insurance * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Insurance )}%</div>
                 </div>
               </div>
             </div>
@@ -393,17 +395,17 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, 
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Entertainment</div>
                   <div className="text-gray-800 dark:text-gray-100">🎬</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Entertainment * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Entertainment )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Other Miscellaneous</div>
                   <div className="text-gray-800 dark:text-gray-100">📦</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.OtherMiscellaneous * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.OtherMiscellaneous )}%</div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Education</div>
                   <div className="text-gray-800 dark:text-gray-100">📚</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Education * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Education )}%</div>
                 </div>
               </div>
             </div>
@@ -413,7 +415,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, 
                 <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
                   <div className="text-gray-800 dark:text-gray-100">Savings/Investments</div>
                   <div className="text-gray-800 dark:text-gray-100">💰</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.SavingsInvestments * 100).toFixed(2)}%</div>
+                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.SavingsInvestments )}%</div>
                 </div>
               </div>
             </div>
@@ -430,19 +432,25 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, editPersonalBudget, 
 const BudgetCategory = ({ title, percentage, children }) => (
   <div className="mb-4">
     <div className="flex items-center gap-2 mb-2">
-      <h3 className="text-base font-semibold">{title}</h3>
-      <span className="text-sm text-gray-500 dark:text-gray-400">({percentage}%)</span>
+      <h3 className="text-base font-semibold dark:text-white">{title}</h3>
+      <span className="text-sm text-gray-500 dark:text-gray-200">({percentage}%)</span>
     </div>
     <div className="grid grid-cols-2 gap-2">{children}</div>
   </div>
 );
 
-const BudgetInput = ({ label, emoji, name, value, onChange, error }) => (
+const BudgetInput = ({ label, emoji, name, value, onChange, error }) => {
+  
+
+  return(
   <div className="relative">
-    <label className="block text-sm mb-1 dark:text-gray-300">
+    <label className="block text-md mb-1  dark:text-gray-300">
       <span className="mr-1">{emoji}</span>
       {label}
     </label>
+    <span className="absolute right-6 top-[70%] -translate-y-1/2">
+      <Percent size={22} className="text-gray-400 " />
+    </span>
     <input
       type="number"
       step="0.01"
@@ -451,9 +459,9 @@ const BudgetInput = ({ label, emoji, name, value, onChange, error }) => (
       name={name}
       value={value}
       onChange={onChange}
-      className={`w-full px-2 py-1 text-sm dark:bg-[#0a0a0a] dark:border-[#ffffff24] border rounded-md 
+      className={`w-full p-3 pr-14 text-md dark:text-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] border rounded-md 
         focus:outline-none focus:ring-1 focus:ring-blue-500
-        ${error ? 'border-red-500' : 'border-gray-200'}`}
+        ${error ? 'border-red-500 dark:border-red-500' : 'border-gray-200'}`}
     />
     {error && (
       <div className="absolute -bottom-4 left-0 text-xs text-red-500">
@@ -461,28 +469,33 @@ const BudgetInput = ({ label, emoji, name, value, onChange, error }) => (
       </div>
     )}
   </div>
-);
+)
+};
 
-const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalBudget }) => {
+const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalBudget ,setbudgetPercentages13rd}) => {
   const [budget, setBudget] = useState({
+    Needs: 50,
     Housing: 10,
     Utilities: 5,
     FoodAndDining: 5,
     Healthcare: 5,
     Transportation: 5,
     Insurance: 5,
+    Wants: 30,
     Entertainment: 10,
     OtherMiscellaneous: 10,
     Education: 10,
     SavingsInvestments: 20
   });
 
+ 
+  
   const [errors, setErrors] = useState({});
   const [totalPercentage, setTotalPercentage] = useState(0);
   const [saveStatus, setSaveStatus] = useState(null);
 
   useEffect(() => {
-    const total = Object.values(budget).reduce((sum, value) => sum + value, 0);
+    const total = Object.entries(budget).reduce((sum, [ key , value]) =>{ return ['Needs', 'Wants'].includes(key)? sum : sum + value}, 0);
     setTotalPercentage(total);
   }, [budget]);
 
@@ -491,6 +504,11 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     const numValue = parseFloat(value) || 0;
     
     setBudget(prev => ({
+      ...prev,
+      [name]: numValue
+    }));
+
+    setbudgetPercentages13rd(prev => ({
       ...prev,
       [name]: numValue
     }));
@@ -515,6 +533,27 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     if (totalPercentage !== 100) {
       newErrors.total = `Total must be 100%`;
     }
+
+    if(budget.Needs !== (budget.Housing + budget.Utilities + budget.FoodAndDining + budget.Healthcare + budget.Transportation + budget.Insurance)){
+      newErrors.Needs = '';
+      newErrors.Housing = '';
+      newErrors.Utilities = '';
+      newErrors.FoodAndDining = '';
+      newErrors.Healthcare = '';
+      newErrors.Transportation = '';
+      newErrors.Insurance = '';
+      newErrors.total='Needs percentage calculation error'
+      
+    }
+
+    if(budget.Wants !== (budget.Entertainment + budget.OtherMiscellaneous + budget.Education)){
+      newErrors.Entertainment = '';
+      newErrors.OtherMiscellaneous = '';
+      newErrors.Education = '';
+      newErrors.total='wants percentage calculation error'
+
+    }
+
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -525,7 +564,7 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     
     if (validateForm()) {
       setSaveStatus('success');
-      console.log('Budget Allocation:', budget);
+      // console.log('Budget Allocation:', budget);
       
       setTimeout(() => {
         setSaveStatus(null);
@@ -571,7 +610,15 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
                 </div>
               )}
 
-              <BudgetCategory title="Needs" percentage="50">
+              <BudgetCategory title="Needs" percentage={budget.Needs}>
+                <BudgetInput
+                  label="Needs"
+                  emoji=""
+                  name="Needs"
+                  value={budget.Needs}
+                  onChange={handleChange}
+                  error={errors.Needs}
+                />
                 <BudgetInput
                   label="Housing"
                   emoji="🏠"
@@ -622,7 +669,15 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
                 />
               </BudgetCategory>
 
-              <BudgetCategory title="Wants" percentage="30">
+              <BudgetCategory title="Wants" percentage={budget.Wants}>
+                <BudgetInput
+                  label="Wants"
+                  emoji=""
+                  name="Wants"
+                  value={budget.Wants}
+                  onChange={handleChange}
+                  error={errors.Wants}
+                />
                 <BudgetInput
                   label="Entertainment"
                   emoji="🎬"
@@ -649,7 +704,7 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
                 />
               </BudgetCategory>
 
-              <BudgetCategory title="Savings/Investments" percentage="20">
+              <BudgetCategory title="Savings/Investments" percentage={budget.SavingsInvestments}>
                 <BudgetInput
                   label="Savings"
                   emoji="💰"
@@ -669,7 +724,7 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
                 type="button"
                 onClick={() => setEditPersonalBudget(false)}
                 className="px-4 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 
-                  rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                  rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-opacity-20 dark:hover:bg-opacity-20"
               >
                 Cancel
               </button>
