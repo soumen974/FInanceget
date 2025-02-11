@@ -10,7 +10,7 @@ import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
-
+import Spinner from "../Loaders/Spinner"
 const Budget = () => {
   const {
     TransactionData,
@@ -18,6 +18,7 @@ const Budget = () => {
     searchYear,
     setsearchYear,
     setMonth,
+    loadingReport,
     categoryData = { categoryIncomeData: [], categoryExpenseData: [] }
   } = ReportsData();
 
@@ -191,7 +192,7 @@ const Budget = () => {
                 </div>
               </div>
             </div>
-            {monthlyIncome <= 0 ? <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
+            {monthlyIncome===0 ? loadingReport? <Spinner/> : <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
             
               <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
                 {(financeRule != '50/30/20' || selectedYear!=currentYear) && userType!='premium' ? (
@@ -258,6 +259,7 @@ const Budget = () => {
                 ))}
               </div>
             }
+            
           </div>
         </div>
 

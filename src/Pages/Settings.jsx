@@ -163,9 +163,9 @@ export default function Settings() {
                 {currentDateTime}
               </div>
             </div>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
-              <User size={16} className={`${userType==='premium'? ' text-white': 'text-gray-500'}`} />
-              <span className="text-sm font-medium">{currentUser} </span>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 dark:bg-yellow-900 dark:bg-opacity-20 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
+              <User size={16} className={`${userType==='premium'? ' text-white dark:text-yellow-600': 'text-gray-500'}`} />
+              <span className="text-sm dark:text-yellow-600 font-medium">{currentUser} </span>
             </div>
           </div>
         </div>
@@ -344,9 +344,9 @@ const FormField = ({ id, label,handleOnChange, type, defaultValue, icon ,baseSty
         name={id}
         placeholder={'Enter your '+label}
         disabled={type==='email'&& defaultValue}
-        className={` ${baseStyles.input} ${type==='email'&& 'cursor-not-allowed'} w-full pl-10 pr-4 py-2.5 rounded-lg border  transition-all duration-200`}
+        className={` ${baseStyles.input} ${type==='email'&& 'cursor-not-allowed text-slate-400 dark:text-slate-600'} w-full pl-10 pr-4 py-2.5 rounded-lg border  transition-all duration-200`}
       />
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+      <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${type==='email'? 'text-slate-200 dark:text-slate-600':'text-slate-400'}`}>
         {icon}
       </span>
     </div>
