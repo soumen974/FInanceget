@@ -10,7 +10,7 @@ import { api } from "../AxiosMeta/ApiAxios";
 
 
 export default function Settings() {
-    const { name , userEmail ,userType,setIsAction }= authCheck();
+    const { name , userEmail ,userType,setIsAction,updated_at }= authCheck();
     
   const [activeTab, setActiveTab] = useState('profile');
   const [currency, setCurrency] = useState('INR');
@@ -69,15 +69,7 @@ export default function Settings() {
     }, [darkMode]);
 
   
-  useEffect(() => {
-    const updateDateTime = () => {
-      const now = new Date();
-      setCurrentDateTime(now.toISOString().slice(0, 19).replace('T', ' '));
-    };
-    updateDateTime();
-    const interval = setInterval(updateDateTime, 60000);
-    return () => clearInterval(interval);
-  }, []);
+
 
   const [notifications,setNotifications] = useState({
     email: { enabled: true, description: 'Get email updates about your account' },
@@ -160,7 +152,7 @@ export default function Settings() {
               <div className="mt-2 flex items-center gap-2 text-sm">
                 <Clock size={16} />
                 <span className="hidden sm:inline">Last updated:</span>
-                {currentDateTime}
+                {updated_at}
               </div>
             </div>
             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 dark:bg-yellow-900 dark:bg-opacity-20 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>

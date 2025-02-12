@@ -7,14 +7,10 @@ export function ReportsData() {
   const [errorReports, setError] = useState('');
   const [messageReports, setMessage] = useState('');
   const [loadingReport, setLoadingReport] = useState(false);
-  const [searchYear, setsearchYear] = useState( new Date().getFullYear());
+  const [searchYear, setsearchYear] = useState(new Date().getFullYear());
   const [categoryData, setCategoryData] = useState({ categoryIncomeData: [], categoryExpenseData: [] });
   const [month, setMonth] = useState(new Date().getMonth());
 
-  useEffect(()=>{
-    // setsearchYear(searchYear);
-    setMonth(month);
-  },[])
   const GetTransactionData = async () => {
     try {
       const response = await api.post(`api/reports/LineChartData/${searchYear}`);
@@ -42,12 +38,9 @@ export function ReportsData() {
     try {
       const response = await api.get(`/api/reports/categoryData/${searchYear}/${month}`);
       setCategoryData(response.data);
-      // console.log(response.data);
-      // console.log(searchYear);
-      // console.log(month);
     } catch (error) {
-     setError('Error fetching ',error);
-     console.warn('Warning:', error.message);
+      setError('Error fetching category data');
+      console.warn('Warning:', error.message);
     }
   };
 
@@ -57,12 +50,6 @@ export function ReportsData() {
     GetTheYears();
     fetchCategoryData();
   }, [searchYear, month]);
-
-  console.log(month);
-
-  // useEffect(() => {
-  //   fetchCategoryData();
-  // }, []);
 
   return { TransactionData, errorReports, messageReports, loadingReport, Availableyears, searchYear, setsearchYear, setMonth, month, categoryData };
 }

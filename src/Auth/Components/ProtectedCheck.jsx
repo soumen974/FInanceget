@@ -6,6 +6,7 @@ export  function authCheck() {
     const [message, setMessage] = useState('');
     const [name , setName] =useState('');
     const [userEmail, setUserEmail] = useState('');
+    const [updated_at, setUpdated_at] = useState('');
     const [loading, setLoading] = useState(false);
     const [auth, setAuth] = useState(false);
     const[userType, setUserType] = useState('user');
@@ -38,6 +39,8 @@ export  function authCheck() {
             setName(response.data.name);
             setUserEmail(response.data.email);
             setUserType(response.data.type);
+            setUpdated_at(response.data.updated_at);
+
             setAuth(true);
             // console.log('Response Data:', response.data);
         }    
@@ -47,5 +50,5 @@ export  function authCheck() {
         }
     }
     
-  return { auth ,loading, error, message ,name ,userEmail,userType,setIsAction};
+  return { auth ,loading, error, message ,name ,userEmail,userType,setIsAction,updated_at};
 };

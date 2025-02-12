@@ -44,14 +44,9 @@ const { userType }= authCheck();
   const [dateRange, setDateRange] = useState(currentYear);
   const [dateRangeMonth, setDateRangeMonth] = useState(new Date().getMonth());
   const [reportType, setReportType] = useState('Income');
-  const [chartType, setChartType] = useState('lineChart');  
-  const [chartTypeCat, setChartTypeCat] = useState('PieChart');  
-  const [loaclTransactionData,setloaclTransactionData]=useState([]);
-
-  // useEffect(()=>{
-  //   setloaclTransactionData(TransactionData);
-  // },[TransactionData])
-
+  const [chartType, setChartType] = useState('lineChart');
+  const [chartTypeCat, setChartTypeCat] = useState('PieChart');
+  const [localTransactionData, setLocalTransactionData] = useState([]);
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
   const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
@@ -60,19 +55,19 @@ const { userType }= authCheck();
 
   useEffect(() => {
     setsearchYear(dateRange);
-    // setDateRangeMonth(dateRange)
     setMonth(dateRangeMonth);
-  }, [dateRange, setsearchYear, dateRangeMonth]);
-console.log(dateRangeMonth);
+  }, [dateRange, dateRangeMonth, setsearchYear, setMonth]);
+
   const DemocategoryData = [
     { name: 'No data found', value: 404 },
   ];
 
-  const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;  
+  const actualData = (reportType === 'Income') ? categoryData.categoryIncomeData : categoryData.categoryExpenseData;
   const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
-  const monthsForIncome =  TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
+  const monthsForIncome = TransactionData.filter(month => ((reportType === 'Income') ? month.income : month.expense) > 0).map(month => month.name);
 
   const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#A133FF', '#FFCE56'];
 // console.log(dateRange);
@@ -124,9 +119,9 @@ console.log(dateRangeMonth);
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-          <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
-            <div className="flex items-center justify-between">
+        <div className="bg-white overflow-hidden dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+          <div className="p-6  border-b dark:border-[#ffffff24] border-gray-100">
+            <div className="flex flex-wrap items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-600 dark:bg-opacity-20 text-blue-600">
                   <TrendingUp size={20} />
@@ -136,7 +131,7 @@ console.log(dateRangeMonth);
                 </h2>
               </div>
 
-              <div className="grid md:w-[20%]">
+              <div className="grid lg:w-[20%]">
                 <select
                   className=" mt-1 px-4 py-2.5 bg-white border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                   value={chartType}
@@ -236,7 +231,7 @@ console.log(dateRangeMonth);
         </div>
 
         {/* Category Distribution */}
-        <div className="bg-white rounded-xl shadow-sm border dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-gray-100 transition-all duration-200 hover:shadow-md">
+        <div className="bg-white overflow-hidden rounded-xl shadow-sm border dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-gray-100 transition-all duration-200 hover:shadow-md">
           <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
             <div className="flex max-sm:flex-wrap gap-y-3 items-center justify-between">
               <div className="flex items-center gap-3">
@@ -267,7 +262,7 @@ console.log(dateRangeMonth);
                     onChange={(e) => setDateRangeMonth(Number(e.target.value))}
                   >
                     {monthsForIncome.map((month, index) => (
-                      <option key={index} value={MONTH_NAMES.indexOf(month) || 0}>{month}</option>
+                      <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
                     ))}
                   </select>
                 </div>

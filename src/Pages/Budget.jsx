@@ -99,7 +99,7 @@ const Budget = () => {
   const DemocategoryData = [{ name: 'No data found', value: 404 }];
   const actualData = categoryData.categoryExpenseData;
   const Data = (actualData?.length === 0) ? DemocategoryData : actualData;
-  const monthsForIncome = TransactionData.filter(month => month.expense > 0).map(month => month.name);
+  const monthsForIncome = TransactionData.filter(month => month.income > 0).map(month => month.name);
 
   const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
