@@ -10,6 +10,7 @@ import {
 import Logout from "../Auth/Components/Logout";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { useDarkMode } from '../theam/TheamColorsStyle'
+import {TriangleAlert} from 'lucide-react';
 
 const mockTransactions = [
   { id: 1, type: 'expense', category: 'Food', amount: 25.50, date: '2024-12-27' },
@@ -271,14 +272,57 @@ const TransactionForm = () => {
   );
 };
 
+export const Popupbox = ({title ,loading,HidePopup, setHidePopup,taskFunction}) =>{
+  return(
+  <>
+  <div  className={`${HidePopup ?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
+  <div className="fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem]  bg-opacity-75" onClick={() => setHidePopup(false)}></div>
+    <div className={` z-20 relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff13]   rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
+     
+      <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div
+            className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-600 dark:bg-opacity-20 sm:mx-0 sm:h-10 sm:w-10`}
+          >
+            
+              <TriangleAlert className="h-6 w-6 text-red-600" aria-hidden="true" />
+
+          </div>
+          <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+            <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">{title}</h3>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to Logout this session ?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+        <button
+          className={`inline-flex w-full justify-center rounded-md bg-red-600  hover:bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto`}
+          onClick={() => taskFunction()}
+        >
+          Logout {loading&& "Loading..."}
+        </button>
+        <button
+          className="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-[#ffffff07] dark:hover:bg-[#ffffff17] dark:ring-[#ffffff24] dark:text-gray-200 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+          onClick={() => setHidePopup(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  </>)
+};
+
 
 // Navigation Component
 const Navigation = ({isCollapsed,setIsCollapsed}) => {
   const { darkMode }  = useDarkMode() ;
-   const {handleLogout} = Logout();
+   const {handleLogout,loading} = Logout();
      const { name }= authCheck();
      const [currentUser, setCurrentUser] = useState(name);
-     
+      const [HidePopup, setHidePopup] = useState(false);
      useEffect(() => {
       setCurrentUser(name);
       }, [name]);
@@ -296,7 +340,9 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
 
   return (
-    <aside className={`fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24] transition-all duration-300 
+    <>
+    <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout ?"} />
+    <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24] transition-all duration-300 
       ${isCollapsed ? 'w-16' : 'w-62'}`}>
      <div className="p-4 border-b dark:border-[#ffffff24]">
         <div className="flex items-center gap-3">
@@ -368,7 +414,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       {/* Logout Button */}
       <div className="absolute bottom-0 w-full p-2">
       <button
-          onClick={handleLogout}
+          onClick={()=>{setHidePopup(true)}}
           className={`
             w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium
             text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-600 
@@ -388,6 +434,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         </button>
       </div>
     </aside>
+    </>
   );
 };
 

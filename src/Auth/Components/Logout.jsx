@@ -14,5 +14,5 @@ export default function Logout() {
             // console.log(err.response?.data || err.message || 'Something went wrong');
         }
     }
-  return { handleLogout , loading, error, message };
+  return { handleLogout , loading, error, message, loading };
 }

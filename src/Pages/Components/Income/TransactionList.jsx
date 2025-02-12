@@ -7,7 +7,6 @@ import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
 import { TriangleAlert ,ArrowUpCircle,ArrowDownCircle,Edit2,Trash2 } from 'lucide-react'
 
 const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction,type}) =>{
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   return(
   <>
   <div  className={`${HidePopup ===currentId?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>

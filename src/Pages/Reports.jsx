@@ -46,6 +46,11 @@ const { userType }= authCheck();
   const [reportType, setReportType] = useState('Income');
   const [chartType, setChartType] = useState('lineChart');  
   const [chartTypeCat, setChartTypeCat] = useState('PieChart');  
+  const [loaclTransactionData,setloaclTransactionData]=useState([]);
+
+  // useEffect(()=>{
+  //   setloaclTransactionData(TransactionData);
+  // },[TransactionData])
 
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
@@ -55,9 +60,10 @@ const { userType }= authCheck();
 
   useEffect(() => {
     setsearchYear(dateRange);
+    // setDateRangeMonth(dateRange)
     setMonth(dateRangeMonth);
   }, [dateRange, setsearchYear, dateRangeMonth]);
-
+console.log(dateRangeMonth);
   const DemocategoryData = [
     { name: 'No data found', value: 404 },
   ];
@@ -261,7 +267,7 @@ const { userType }= authCheck();
                     onChange={(e) => setDateRangeMonth(Number(e.target.value))}
                   >
                     {monthsForIncome.map((month, index) => (
-                      <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+                      <option key={index} value={MONTH_NAMES.indexOf(month) || 0}>{month}</option>
                     ))}
                   </select>
                 </div>

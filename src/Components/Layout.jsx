@@ -13,7 +13,7 @@ const Layout = () => {
 
   return (
     <div className={`flex min-h-screen dark:bg-[#0a0a0a] bg-white transition-all duration-300`}>
-      <div className="max-lg:hidden">
+      <div className="">
         <Navigation setIsCollapsed={setIsCollapsed} isCollapsed={isCollapsed} />
       </div>
        

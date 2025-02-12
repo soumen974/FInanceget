@@ -18,13 +18,14 @@ import {
 } from 'lucide-react';
 import Logout from "../../Auth/Components/Logout";
 import { authCheck } from "../../Auth/Components/ProtectedCheck"
-
+import { Popupbox } from "../../Components/Navigation";
 const Headder = () => {
-  const { handleLogout }=Logout();
+  const { handleLogout ,loading}=Logout();
   const { name }= authCheck();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [currentUser] = useState("FinanceGet User");
+      const [HidePopup, setHidePopup] = useState(false);
 
   // Update time every minute
   useEffect(() => {
@@ -66,6 +67,8 @@ const Headder = () => {
   ];
 
   return (
+    <>
+    <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout ?"} />
     <nav className=" fixed w-full z-30 lg:hidden bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] border-b ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
@@ -127,7 +130,7 @@ const Headder = () => {
               <button
                 onClick={() => {
                   setIsMenuOpen(false);
-                  handleLogout();
+                  setHidePopup(true);
                 }}
                 className="flex items-center space-x-3 px-4 py-3 rounded-md w-full
                          text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-600 
@@ -141,6 +144,7 @@ const Headder = () => {
         )}
       </div>
     </nav>
+    </>
   );
 };
 

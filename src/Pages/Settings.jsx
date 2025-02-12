@@ -165,7 +165,7 @@ export default function Settings() {
             </div>
             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 dark:bg-yellow-900 dark:bg-opacity-20 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
               <User size={16} className={`${userType==='premium'? ' text-white dark:text-yellow-600': 'text-gray-500'}`} />
-              <span className="text-sm dark:text-yellow-600 font-medium">{currentUser} </span>
+              <span className={`text-sm ${userType==='premium'? 'dark:text-yellow-600':''} font-medium`}>{currentUser} </span>
             </div>
           </div>
         </div>
