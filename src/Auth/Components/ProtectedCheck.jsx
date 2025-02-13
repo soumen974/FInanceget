@@ -46,7 +46,7 @@ export  function authCheck() {
         }    
         catch(err){
             setError(err.response?.data || err.message || 'Something went wrong');
-            console.log(error);
+            // console.log(error);
         }
     }
     

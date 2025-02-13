@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { api } from "../../AxiosMeta/ApiAxios";
 import { authCheck } from "../Components/ProtectedCheck";
-
-const LoginForm = () => {
+import { 
+ CheckCircle, X
+} from 'react-feather';
+import { Link } from "react-router-dom";
+const LoginForm = ({error, setError, message, setMessage}) => {
   const { auth } = authCheck();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  // const [error, setError] = useState('');
+  // const [message, setMessage] = useState('');
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleLoginSubmit} className="space-y-6">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="email" className={`block text-sm font-medium  ${error==='Email not found'? 'text-red-500':'text-gray-700'}`}>Email</label>
         <input
           autoComplete="email"
           id="email"
@@ -40,11 +43,11 @@ const LoginForm = () => {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          className={`w-full px-3 py-2 border  rounded-lg focus:outline-none focus:ring focus:border-blue-300  ${error==='Email not found'? 'border-red-500 text-red-500 focus:border-red-300' : 'border-gray-300 text-black focus:border-blue-300'}`}
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+        <label htmlFor="password" className={`block text-sm font-medium   ${error==='Invalid credentials'? 'text-red-500':'text-gray-700'}`}>Password</label>
         <input
           autoComplete="current-password"
           id="password"
@@ -52,7 +55,7 @@ const LoginForm = () => {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          className={`w-full px-3 py-2 border  rounded-lg focus:outline-none   ${error==='Invalid credentials'? 'border-red-500 focus:border-red-300 focus:ring-red-300 text-red-500' : 'border-gray-300 text-black focus:border-blue-300 focus:ring'}`}
         />
       </div>
       <button
@@ -62,8 +65,14 @@ const LoginForm = () => {
       >
         {loading ? 'Logging in...' : 'Login'}
       </button>
-      {error && <div className="text-red-500 mt-2">{error}</div>}
-      {message && <div className="text-green-500 mt-2">{message}</div>}
+
+      <div className=" flex items-center justify-between text-sm">
+        <h1>Reset Password</h1>
+        <Link to={'/register'}>Create Account?</Link>
+      </div>
+      {/* {error && <div className="text-red-500 mt-2">{error}</div>} */}
+     
+      {/* {message && <div className="text-green-500 mt-2">{message}</div>} */}
     </form>
   );
 };
