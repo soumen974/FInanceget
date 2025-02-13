@@ -128,6 +128,21 @@ export default function Settings() {
     }`
   };
 
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+  
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  
+    return formattedDate;
+  }
+
   const updateProfileData = async (e)=>{
     e.preventDefault();
     try{
@@ -152,7 +167,7 @@ export default function Settings() {
               <div className="mt-2 flex items-center gap-2 text-sm">
                 <Clock size={16} />
                 <span className="hidden sm:inline">Last updated:</span>
-                {updated_at}
+                {formatDate(updated_at)}
               </div>
             </div>
             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${userType==='premium'? 'bg-yellow-400 dark:bg-yellow-900 dark:bg-opacity-20 text-white': null} ${ darkMode ? 'bg-[#ffffff17]':'bg-gray-100'} `}>
