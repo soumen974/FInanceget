@@ -11,7 +11,7 @@ import { useGlobalTransactionData } from "../Pages/Components/Income/Transaction
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
-
+import { BudgetData } from "../Pages/Components/Budget/BudgetData";
 const Budget = () => {
   const {
     TransactionData,
@@ -176,7 +176,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             <option value='50/30/20'>50/30/20 Rule</option>
-            <option value='One-Third'>Personalized {userType !== 'premium' ? '💎' : ''}</option>
+            <option value='Personalized'>Personalized {userType !== 'premium' ? '💎' : ''}</option>
           </select>
         </div>
       </div>
@@ -289,7 +289,7 @@ const Budget = () => {
           </div>
         </div>
       </div>
-      <PersonalizedBudgetAllocationForm setbudgetPercentages13rd={setbudgetPercentages13rd} setEditPersonalBudget={setEditPersonalBudget}  editPersonalBudget={editPersonalBudget} />
+      <PersonalizedBudgetAllocationForm financeRule={financeRule} selectedYear={selectedYear} selectedMonth={selectedMonth} setbudgetPercentages13rd={setbudgetPercentages13rd} setEditPersonalBudget={setEditPersonalBudget}  editPersonalBudget={editPersonalBudget} />
     </div>
   );
 };
@@ -426,9 +426,6 @@ const BudgetAllocationTable = ({ financeRule,budgetPercentages13rd, selectedYear
   );
 };
 
-
-
-
 const BudgetCategory = ({ title, percentage, children }) => (
   <div className="mb-4">
     <div className="flex items-center gap-2 mb-2">
@@ -472,7 +469,9 @@ const BudgetInput = ({ label, emoji, name, value, onChange, error }) => {
 )
 };
 
-const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalBudget ,setbudgetPercentages13rd}) => {
+const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalBudget ,setbudgetPercentages13rd,selectedYear,selectedMonth,financeRule}) => {
+  
+  const {addBudget,setrule,error,setBudgetMonth,setBudgetYear,Personalizedbudget}=BudgetData();
   const [budget, setBudget] = useState({
     Needs: 50,
     Housing: 10,
@@ -488,6 +487,21 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     SavingsInvestments: 20
   });
 
+  useEffect(()=>{
+    if(!error && financeRule==='Personalized' ){
+    setBudget((prev)=>({
+      ...prev,
+      ...Personalizedbudget
+    }));
+    console.log('working')
+  }
+  },[selectedYear,selectedMonth,financeRule,Personalizedbudget,error]);
+
+  useEffect(()=>{
+    setBudgetYear(selectedYear);
+    setBudgetMonth(selectedMonth);
+    setrule(financeRule)
+  },[selectedYear,selectedMonth,financeRule])
  
   
   const [errors, setErrors] = useState({});
@@ -565,7 +579,7 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     if (validateForm()) {
       setSaveStatus('success');
       // console.log('Budget Allocation:', budget);
-      
+      addBudget(budget);
       setTimeout(() => {
         setSaveStatus(null);
         setEditPersonalBudget(false);
@@ -742,6 +756,5 @@ const PersonalizedBudgetAllocationForm = ({ editPersonalBudget, setEditPersonalB
     </>
   );
 };
-
 
 
