@@ -6,15 +6,20 @@ export const BudgetData = () => {
   const [loadingBudgetPersonal, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [budgetYear, setBudgetYear] = useState(new Date().getFullYear());
-  const [budgetMonth, setBudgetMonth] = useState(new Date().getMonth()); 
+  const [budgetYear, setBudgetYear] = useState();
+  const [budgetMonth, setBudgetMonth] = useState(); 
   const [rule, setrule]=useState('');
 
   const getBudget = useCallback(async () => {
+    console.log('month',budgetMonth);
+    console.log('year',budgetYear);
     setLoading(true);
     try {
       const response = await api.get(`/api/budget/${budgetYear}/${budgetMonth}`);
       setPersonalizedbudget(response.data.allocations);
+      console.log('clicked and processed data',Personalizedbudget);
+
+
     } catch (err) {
       setError(err);
       console.log(err);
@@ -26,7 +31,6 @@ export const BudgetData = () => {
   useEffect(() => {
     if(rule==='Personalized'){
       getBudget();
-      console.log(Personalizedbudget);
     }
     // getBudget();
   }, [rule,budgetYear, budgetMonth]);
@@ -37,13 +41,15 @@ export const BudgetData = () => {
   }, [Personalizedbudget]);
 
   const addBudget = async (budgetdata) => {
+    console.log('month',budgetMonth);
+    console.log('year',budgetYear);
     setLoading(true);
     try {
       const response = await api.post(`/api/budget/${budgetYear}/${budgetMonth}`, {
         allocations: budgetdata
       });
       setMessage(response.data);
-      console.log(budgetdata);
+      console.log('Budget Allocation data:',budgetdata);
     } catch (err) {
       setError(err.response ? err.response.data : err.message);
       console.log(err);

@@ -279,11 +279,12 @@ const App = () => {
             </PublicRoute>
           } />
 
-          <Route path="/login" element={
+          <Route path="/login/:resetpassword?/:password?" element={
             <PublicRoute>
               <Login />
             </PublicRoute>
           } />
+          
           
           <Route path="/register" element={
             <PublicRoute>
