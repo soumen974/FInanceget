@@ -4,7 +4,7 @@ import Layout from "./Components/Layout";
 import Landing from "./Pages/Landing";
 import { Link } from 'react-router-dom';
 
-
+import LinkCodeVerify from "./Auth/Pages/LinkCodeVerify";
 import Login from './Auth/Pages/Login'
 import { authCheck } from "./Auth/Components/ProtectedCheck";
 import Income from "./Pages/Income";
@@ -279,9 +279,15 @@ const App = () => {
             </PublicRoute>
           } />
 
-          <Route path="/login/:resetpassword?/:password?" element={
+          <Route path="/login/:resetpassword?" element={
             <PublicRoute>
               <Login />
+            </PublicRoute>
+          } />
+
+          <Route path="/auth/:password?/:password?" element={
+            <PublicRoute>
+              <LinkCodeVerify />
             </PublicRoute>
           } />
           

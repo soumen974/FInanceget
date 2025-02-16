@@ -51,7 +51,7 @@ const PasswordAdding = ({error, setError, message, setMessage,email, setEmail,su
         <input
           autoComplete="password"
           id="password"
-          type="number"
+          type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}

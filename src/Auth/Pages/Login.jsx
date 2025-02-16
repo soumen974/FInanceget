@@ -21,29 +21,29 @@ const Login = () => {
     useEffect(()=>{
       setError('')
       setisPaswardForget(resetpassword==='resetpassword'?true:false)
-      extractDataFromLink(window.location.href);
+      // extractDataFromLink(window.location.href);
       if(successFrom==='Password Added'){
         window.location.href = '/login';
-        setisPaswardForget(false);
+        // setisPaswardForget(false);
       }
 
-      if(successFrom==='codeverified'){
-        window.location.href = '/login';
-        setisPaswardForget(false);
-        setSuccessFrom('codeverified');
-        setEmail(email);
-      }
+      // if(successFrom==='codeverified'){
+      //   window.location.href = '/login';
+      //   setisPaswardForget(false);
+      //   setSuccessFrom('codeverified');
+      //   setEmail(email);
+      // }
     },[resetpassword,successFrom])
 
-    const extractDataFromLink = (url) => {
-      const searchParams = new URLSearchParams(new URL(url).search);
-      const email = searchParams.get('email');
-      const code = searchParams.get('code');
-      setcode(code);
-      setEmail(email);
-      if(code) return  setSuccessFrom('mailsend');
-     // return { email, code };
-    };
+    // const extractDataFromLink = (url) => {
+    //   const searchParams = new URLSearchParams(new URL(url).search);
+    //   const email = searchParams.get('email');
+    //   const code = searchParams.get('code');
+    //   setcode(code);
+    //   setEmail(email);
+    //   if(code) return  setSuccessFrom('mailsend');
+    //  // return { email, code };
+    // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -94,9 +94,7 @@ const Login = () => {
             <X size={16} />
           </button>
         </div>
-    
 
-      
         <div className={`fixed max-md:top-20 ${error? (message? 'right-[-10rem] ': 'right-4 '):'right-[-10rem] ' } transition-all duration-200 md:bottom-10  z-50 bg-red-50   text-red-600 px-4 py-3 rounded-lg  flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
           <TriangleAlert size={20} />
           <span>{error}</span>
