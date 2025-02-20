@@ -68,7 +68,7 @@ const Login = () => {
             {steps.map((step, index) => (
               <div key={index} className="flex flex-col items-center flex-1">
                 <div 
-                  className={`
+                  className={`  
                     w-12 h-12 rounded-full flex items-center justify-center mb-3
                     transform transition-all duration-300 ease-in-out
                     ${index < currentStep 

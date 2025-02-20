@@ -320,7 +320,7 @@ export const Popupbox = ({title ,loading,HidePopup, setHidePopup,taskFunction}) 
 const Navigation = ({isCollapsed,setIsCollapsed}) => {
   const { darkMode }  = useDarkMode() ;
    const {handleLogout,loading} = Logout();
-     const { name }= authCheck();
+    const { name , userEmail ,userType,setIsAction,updated_at }= authCheck();
      const [currentUser, setCurrentUser] = useState(name);
       const [HidePopup, setHidePopup] = useState(false);
      useEffect(() => {
@@ -364,11 +364,27 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       {/* DateTime & User Info */}
       {!isCollapsed && (
         <div className="p-4 border-b dark:border-[#ffffff24] space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-            <span className="truncate w-32 font-medium">{currentUser}</span>
-          </div>
+      <div className="flex items-center  gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="relative">
+          <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+          {/* Small status indicator dot */}
+          <span className={`
+            absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full
+            ${userType === 'premium' 
+              ? 'bg-amber-400 dark:bg-amber-500' 
+              : 'bg-blue-400 dark:bg-blue-500'
+            }
+            ring-1 ring-white dark:ring-gray-900
+          `} />
         </div>
+        <span className="truncate  font-medium">{currentUser}</span>
+        {userType === 'premium' && (
+          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+            PRO
+          </span>
+        )}
+      </div>
+    </div>
       )}
 
 

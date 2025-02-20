@@ -82,10 +82,15 @@ const PasswordAdding = ({
       } else {
         response = await api.put('/api/auth/resetpasssword', { password, email });
         setMessage('Password reset successful!');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
       }
       setSuccessFrom('Password Added');
+      setError('');
     } catch (err) {
       setError(err.response?.data || err.message || 'Something went wrong');
+      setMessage('');
     } finally {
       setLoading(false);
     }

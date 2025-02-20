@@ -51,7 +51,7 @@ const AuthCheckEmail = ({
   };
 
   const isValidEmail = validateEmail(email);
-  const showEmailError = touched && !isValidEmail && email !== '';
+  const showEmailError = error || touched && !isValidEmail && email !== '';
 
   useEffect(()=>{
     if(isValidEmail){
@@ -112,10 +112,10 @@ const AuthCheckEmail = ({
               />
               {email && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  {isValidEmail ? (
+                  {(isValidEmail && !error) ? (
                     <CheckCircle size={20} className="text-green-500" />
                   ) : (
-                    touched && <X size={20} className="text-red-500" />
+                    touched  && <X onClick={()=>{setEmail('')}} size={20} className="text-red-500" />
                   )}
                 </div>
               )}
@@ -129,12 +129,12 @@ const AuthCheckEmail = ({
           </div>
 
           {/* Error/Success Messages */}
-          <div className="space-y-2">
+          <div className="space-y-2 md:hidden">
             {error && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fade-in">
                 <div className="flex items-center">
                   <X size={16} className="text-red-500 mr-2" />
-                  <p className="text-sm text-red-600">{error}</p>
+                  <p className="text-sm text-red-600">{error}ghjk</p>
                 </div>
               </div>
             )}

@@ -68,13 +68,16 @@ const CodeVErify = ({
   const handleResendCode = async () => {
     try {
       setLoading(true);
-      const response = await api.post('/api/auth/resendCode', { email });
+      const response = await api.post('/api/auth/passverifymail', { email });
       setMessage('Verification code resent successfully');
+      setError('');
       setTimeLeft(300); // Reset timer
     } catch (err) {
       setError(err.response?.data || 'Failed to resend code');
+      setMessage('');
     } finally {
       setLoading(false);
+      setMessage('');
     }
   };
 
@@ -91,11 +94,13 @@ const CodeVErify = ({
       });
       setMessage(response?.data);
       setSuccessFrom('codeverified');
+      setError('');
     } catch (err) {
       setError(err.response?.data || err.message || 'Invalid verification code');
       setCodeInputs(['', '', '', '', '', '']);
       document.getElementById('code-0').focus();
       setFocusedIndex(0);
+      setMessage('');
     } finally {
       setLoading(false);
     }
