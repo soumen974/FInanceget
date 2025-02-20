@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../AxiosMeta/ApiAxios";
 import { authCheck } from "../Components/ProtectedCheck";
-import { CheckCircle, X } from 'react-feather';
+import { 
+  CheckCircle, 
+  X, 
+  Lock, 
+  Eye, 
+  EyeOff, 
+  Shield, 
+  User,
+  Mail
+} from 'react-feather';
 import { Link, useParams, useLocation } from "react-router-dom";
 
 const PasswordAdding = ({
@@ -19,13 +28,45 @@ const PasswordAdding = ({
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
   const [name, setname] = useState('');
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const location = useLocation();
 
   const isRegisterRoute = location.pathname.includes('register');
 
+  const validatePassword = (pass) => {
+    let strength = 0;
+    const checks = {
+      length: pass.length >= 8,
+      uppercase: /[A-Z]/.test(pass),
+      lowercase: /[a-z]/.test(pass),
+      numbers: /[0-9]/.test(pass),
+      special: /[^A-Za-z0-9]/.test(pass)
+    };
+
+    strength = Object.values(checks).filter(Boolean).length;
+    setPasswordStrength(strength);
+    return checks;
+  };
+
+  const getStrengthColor = () => {
+    const colors = ['red-500', 'orange-500', 'yellow-500', 'blue-500', 'green-500'];
+    return colors[passwordStrength - 1] || 'gray-300';
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    if (passwordStrength < 3) {
+      setError('Please create a stronger password');
+      return;
+    }
+
     setLoading(true);
     setError('');
     setMessage('');
@@ -33,11 +74,15 @@ const PasswordAdding = ({
     try {
       let response;
       if (isRegisterRoute) {
-        response = await api.post('/api/auth/addpassword', { password, email,name });
+        response = await api.post('/api/auth/addpassword', { password, email, name });
+        setMessage('Account created successfully! Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
       } else {
         response = await api.put('/api/auth/resetpasssword', { password, email });
+        setMessage('Password reset successful!');
       }
-      setMessage(response?.data);
       setSuccessFrom('Password Added');
     } catch (err) {
       setError(err.response?.data || err.message || 'Something went wrong');
@@ -46,111 +91,200 @@ const PasswordAdding = ({
     }
   };
 
-  const renderTitle = () => {
-    return isRegisterRoute ? "Set Your Password" : "Reset Your Password";
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            {renderTitle()}
-          </h2>
+    <div className="max-w-md w-full mx-auto ">
+      {/* <div className="text-center mb-8">
+        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-blue-600" />
         </div>
-        
-        <form onSubmit={handleLoginSubmit} className="mt-8 space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {isRegisterRoute ? "Complete Your Account" : "Reset Your Password"}
+        </h2>
+        <p className="text-gray-600 text-sm">
+          {isRegisterRoute 
+            ? "Create a strong password to secure your account" 
+            : "Enter your new password below"}
+        </p>
+      </div> */}
+
+      <form onSubmit={handleLoginSubmit} className="space-y-6">
+        {/* Email Field */}
+        <div className="relative">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Mail className="h-5 w-5 text-gray-400" />
+            </div>
             <input
-              autoComplete="email"
               disabled={true}
               id="email"
               type="email"
-              required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring border-gray-300 text-gray-500 bg-gray-50"
+              className="pl-10 w-full px-3 py-2 border rounded-lg bg-gray-50 text-gray-500 border-gray-200"
             />
           </div>
-         
-          {isRegisterRoute && (
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
+        </div>
+
+        {/* Name Field (for registration) */}
+        {isRegisterRoute && (
+          <div className="relative">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Full Name
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
               <input
-                autoComplete="name"
                 id="name"
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setname(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring border-gray-300 text-gray-500 bg-gray-50"
+                className="pl-10 w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
+                placeholder="Enter your full name"
               />
             </div>
-          )}
+          </div>
+        )}
 
-          <div>
-            <label 
-              htmlFor="password" 
-              className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}
-            >
-              Password
-            </label>
+        {/* Password Field */}
+        <div className="relative">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Shield className="h-5 w-5 text-gray-400" />
+            </div>
             <input
-              autoComplete="new-password"
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none ${
-                error 
-                  ? 'border-red-500 focus:border-red-300 focus:ring-red-300 text-red-500' 
-                  : 'border-gray-300 text-black focus:border-blue-300 focus:ring'
-              }`}
+              onChange={handlePasswordChange}
+              className={`pl-10 pr-10 w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 
+                ${error ? 'border-red-300 focus:ring-red-200' : 'border-gray-300 focus:ring-blue-200'}`}
+              placeholder="Create a strong password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              )}
+            </button>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm flex items-center">
-              <X size={16} className="mr-1" />
-              {error}
+          {/* Password Strength Indicator */}
+          <div className="mt-2">
+            <div className="flex gap-1 mb-1">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <div
+                  key={level}
+                  className={`h-2 w-full rounded-full transition-colors duration-300
+                    ${level <= passwordStrength ? `bg-${getStrengthColor()}` : 'bg-gray-200'}`}
+                />
+              ))}
             </div>
-          )}
+            <p className={`text-xs text-${getStrengthColor()}`}>
+              {passwordStrength === 0 && "Enter password"}
+              {passwordStrength === 1 && "Very weak"}
+              {passwordStrength === 2 && "Weak"}
+              {passwordStrength === 3 && "Medium"}
+              {passwordStrength === 4 && "Strong"}
+              {passwordStrength === 5 && "Very strong"}
+            </p>
+          </div>
 
-          {message && (
-            <div className="text-green-500 text-sm flex items-center">
-              <CheckCircle size={16} className="mr-1" />
-              {message}
+          {/* Password Requirements */}
+          <div className="mt-2 space-y-1">
+            {[
+              { check: password.length >= 8, text: "At least 8 characters" },
+              { check: /[A-Z]/.test(password), text: "One uppercase letter" },
+              { check: /[a-z]/.test(password), text: "One lowercase letter" },
+              { check: /[0-9]/.test(password), text: "One number" },
+              { check: /[^A-Za-z0-9]/.test(password), text: "One special character" }
+            ].map(({ check, text }, index) => (
+              <div key={index} className="flex items-center text-sm">
+                {check ? (
+                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                ) : (
+                  <X className="h-4 w-4 text-gray-300 mr-2" />
+                )}
+                <span className={check ? "text-green-500" : "text-gray-500"}>
+                  {text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Error/Success Messages */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-shake">
+            <div className="flex items-center">
+              <X className="h-5 w-5 text-red-500 mr-2" />
+              <p className="text-sm text-red-600">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          <button
-            type="submit"
-            className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors ${
-              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : (isRegisterRoute ? 'Set Password' : 'Reset Password')}
-          </button>
-
-          {successFrom === 'Password Added' && (
-            <div className="text-center mt-4">
-              <Link
-                to="/login"
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Proceed to Login
-              </Link>
+        {message && (
+          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
+            <div className="flex items-center">
+              <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+              <p className="text-sm text-green-600">{message}</p>
             </div>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading || passwordStrength < 3}
+          className={`
+            w-full py-3 px-4 rounded-lg font-medium text-white
+            transition-all duration-200 transform hover:scale-[1.02]
+            ${loading 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : passwordStrength < 3
+                ? 'bg-blue-300 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'
+            }
+          `}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Processing...
+            </div>
+          ) : (
+            isRegisterRoute ? 'Complete Registration' : 'Reset Password'
           )}
-        </form>
-      </div>
+        </button>
+
+        {successFrom === 'Password Added' && (
+          <div className="text-center animate-fade-in">
+            <Link
+              to="/login"
+              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+            >
+              <span className="mr-2">→</span>
+              Continue to Login
+            </Link>
+          </div>
+        )}
+      </form>
     </div>
   );
 };

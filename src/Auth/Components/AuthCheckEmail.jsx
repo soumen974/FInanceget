@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../../AxiosMeta/ApiAxios";
 import { authCheck } from "../Components/ProtectedCheck";
-import { CheckCircle, X } from 'react-feather';
-import { Link, useParams, useSearchParams, useLocation } from "react-router-dom";
+import { CheckCircle, X, Mail, ArrowLeft } from 'react-feather';
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 
-const AuthCheckEmail = ({ error, setError, message, setMessage, email, setEmail, successFrom, setSuccessFrom }) => {
+const AuthCheckEmail = ({ 
+  error, 
+  setError, 
+  message, 
+  setMessage, 
+  email, 
+  setEmail, 
+  successFrom, 
+  setSuccessFrom 
+}) => {
   const { auth } = authCheck();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const [touched, setTouched] = useState(false);
 
-  // Determine if we're on the register route
   const isRegisterRoute = location.pathname === '/register' || searchParams.get('register') === 'register';
 
   const handleLoginSubmit = async (e) => {
@@ -22,7 +31,7 @@ const AuthCheckEmail = ({ error, setError, message, setMessage, email, setEmail,
     try {
       let response;
       if (isRegisterRoute) {
-        document.title='register'
+        document.title = 'Register';
         response = await api.post('/api/auth/register', { email });
       } else {
         response = await api.post('/api/auth/passverifymail', { email });
@@ -36,86 +45,162 @@ const AuthCheckEmail = ({ error, setError, message, setMessage, email, setEmail,
     }
   };
 
-  const renderTitle = () => {
-    if (isRegisterRoute) {
-      return "Register your account";
-    } else if (location.pathname === '/forgot-password') {
-      return "Reset your password";
-    } else {
-      return "Login to your account";
-    }
+  const validateEmail = (email) => {
+    // setSuccessFrom('Enter Email');
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const renderButtonText = () => {
-    if (loading) return 'Sending...';
-    if (isRegisterRoute) return 'Register';
-    if (location.pathname === '/forgot-password') return 'Reset Password';
-    return 'Send';
-  };
+  const isValidEmail = validateEmail(email);
+  const showEmailError = touched && !isValidEmail && email !== '';
 
-  const renderFooter = () => {
-    if (isRegisterRoute) {
-      return <Link to="/login" className="text-blue-600 hover:text-blue-700">Already have an account? Login</Link>;
-    } else if (location.pathname === '/login') {
-      return (
-        <div className="flex justify-between w-full">
-          <Link to="/register" className="text-blue-600 hover:text-blue-700">Create account</Link>
-          <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700">Forgot password?</Link>
-        </div>
-      );
-    } else if (location.pathname === '/forgot-password') {
-      return <Link to="/login" className="text-blue-600 hover:text-blue-700">Back to login</Link>;
+  useEffect(()=>{
+    if(isValidEmail){
+     // setSuccessFrom('Enter Email');
     }
-  };
+  },[isValidEmail])
 
   return (
-    <div className="flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className=" space-y-8">
-       
-        <form onSubmit={handleLoginSubmit} className="mt-8 space-y-6">
-          <div>
-            <label htmlFor="email" className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-gray-700'}`}>
+    <div className="w-full max-w-md mx-auto">
+      <div className=" transition-all duration-300">
+        {/* Header Section */}
+        {isRegisterRoute&&
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Mail size={24} className="text-blue-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {isRegisterRoute ? "Create your account" : 
+             location.pathname === '/reset-password' ? "" : 
+             ""}
+          </h2>
+          <p className="text-gray-600">
+            {isRegisterRoute ? "Get started with your free account" :
+             location.pathname === '/reset-password' ? "" :
+             ""}
+          </p>
+        </div>}
+
+        {/* Form Section */}
+        <form onSubmit={handleLoginSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label 
+              htmlFor="email" 
+              className={`block text-sm font-medium ${showEmailError ? 'text-red-500' : 'text-gray-700'}`}
+            >
               Email Address
             </label>
-            <input
-              autoComplete="email"
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={`mt-1 w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 
-                ${error ? 'border-red-500 text-red-500 focus:border-red-300' : 'border-gray-300 text-black focus:border-blue-300'}`}
-            />
-            {error && (
-              <p className="mt-2 text-sm text-red-600">
-                <span className="flex items-center">
-                  <X size={16} className="mr-1" />
-                  {error}
-                </span>
-              </p>
-            )}
-            {message && (
-              <p className="mt-2 text-sm text-green-600">
-                <span className="flex items-center">
-                  <CheckCircle size={16} className="mr-1" />
-                  {message}
-                </span>
+            <div className="relative">
+              <input
+                autoComplete="email"
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => setTouched(true)}
+                className={`
+                  w-full px-4 py-3 rounded-lg border-2 transition-all duration-200
+                  focus:outline-none focus:ring-2 focus:ring-offset-2
+                  ${showEmailError 
+                    ? 'border-red-300 text-red-500 focus:border-red-500 focus:ring-red-200' 
+                    : isValidEmail && email 
+                      ? 'border-green-300 focus:border-green-500 focus:ring-green-200' 
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-200'
+                  }
+                `}
+                placeholder="your@email.com"
+              />
+              {email && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  {isValidEmail ? (
+                    <CheckCircle size={20} className="text-green-500" />
+                  ) : (
+                    touched && <X size={20} className="text-red-500" />
+                  )}
+                </div>
+              )}
+            </div>
+            {showEmailError && (
+              <p className="text-sm text-red-500 flex items-center gap-1 mt-1">
+                <X size={16} />
+                Please enter a valid email address
               </p>
             )}
           </div>
 
+          {/* Error/Success Messages */}
+          <div className="space-y-2">
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fade-in">
+                <div className="flex items-center">
+                  <X size={16} className="text-red-500 mr-2" />
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              </div>
+            )}
+            {message && (
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
+                <div className="flex items-center">
+                  <CheckCircle size={16} className="text-green-500 mr-2" />
+                  <p className="text-sm text-green-600">{message}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
-            disabled={loading}
-            className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors 
-              ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+            disabled={loading || !isValidEmail}
+            className={`
+              w-full py-3 px-4 rounded-lg font-medium text-white
+              transition-all duration-200 transform hover:scale-[1.02]
+              ${loading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : !isValidEmail 
+                  ? 'bg-blue-300 cursor-not-allowed' 
+                  : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'
+              }
+            `}
           >
-            {renderButtonText()}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Processing...
+              </div>
+            ) : (
+              isRegisterRoute ? 'Create Account' :
+              location.pathname === '/forgot-password' ? 'Reset Password' :
+              'Continue'
+            )}
           </button>
 
-          <div className="mt-4 text-sm text-center">
-            {renderFooter()}
+          {/* Navigation Links */}
+          <div className="pt-4 border-t border-gray-200">
+            {location.pathname === '/login' ? (
+              <div className="flex flex-col sm:flex-row justify-between gap-4 text-sm">
+                <Link to="/register" className="text-blue-600 hover:text-blue-700 flex items-center justify-center gap-1 group">
+                  Create new account
+                  <span className="transform transition-transform group-hover:translate-x-1">→</span>
+                </Link>
+                <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700">
+                  Forgot password?
+                </Link>
+              </div>
+            ) : (
+             <>
+              <Link 
+                to="/login" 
+                className="flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-700 group"
+              >
+                <ArrowLeft size={16} className="transform transition-transform group-hover:-translate-x-1" />
+                Back to login
+              </Link>
+              </>
+            )}
           </div>
         </form>
       </div>
