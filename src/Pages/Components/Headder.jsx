@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { 
   Wallet, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut, 
-  Menu, X, User, Home, CreditCard 
+  Menu, X, User, Home,Goal, CreditCard 
 } from 'lucide-react';
 import Logout from "../../Auth/Components/Logout";
 import { authCheck } from "../../Auth/Components/ProtectedCheck";
@@ -27,14 +27,18 @@ const Headder = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [HidePopup, setHidePopup] = useState(false);
 
-  const navItems = [
+  const NAV_ITEMS = [
     { icon: <Home size={18} />, label: 'Dashboard', to: '/' },
     { icon: <ArrowUpCircle size={18} />, label: 'Income', to: '/income' },
     { icon: <ArrowDownCircle size={18} />, label: 'Expenses', to: '/expenses' },
-    { icon: <CreditCard size={18} />, label: 'Budget', to: '/budget' },
+    { icon: <CreditCard size={18} />, label: 'Budget', to: '/budget',isBeta: true },
     { icon: <PieChart size={18} />, label: 'Reports', to: '/reports' },
+    { icon: <Goal size={18} />, label: 'Goal', to: '/goal',isBeta: true },
     { icon: <Settings size={18} />, label: 'Settings', to: '/settings' },
   ];
+
+     const navItems = useMemo(() => NAV_ITEMS, []);
+  
 
   return (
     <>
@@ -119,6 +123,11 @@ const Headder = () => {
                   >
                     {item.icon}
                     <span>{item.label}</span>
+                    {item.isBeta && (
+                      <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 text-white shadow-md shadow-blue-500/30">
+                        BETA
+                      </span>
+                    )}
                   </NavLink>
                 ))}
                 <button
