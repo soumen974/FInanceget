@@ -14,6 +14,8 @@ import Reports from "./Pages/Reports";
 import Register from "./Auth/Pages/Register";
 import Settings from "./Pages/Settings";
 import Budget from "./Pages/Budget";
+import Goals from "./Pages/Goals";
+
 
 
 
@@ -131,6 +133,8 @@ const App = () => {
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/budget" element={<Budget />} />
+            <Route path="/goal" element={<Goals />} />
+
 
             <Route path='*' element={
                <div className="text-center h-screen py-12">

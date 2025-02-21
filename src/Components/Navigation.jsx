@@ -1,5 +1,5 @@
-import React, { useState ,useLocation, useEffect } from 'react';
-import { User,Home,PlusCircle,CreditCard , Wallet,ChevronRight,ChevronLeft,Clock, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
+import React, { useState ,useLocation, useEffect,useMemo } from 'react';
+import { User,Home,Goal,CreditCard , Wallet,ChevronRight,ChevronLeft, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import { 
     DollarSign, 
@@ -336,7 +336,19 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       setIsCollapsed(true);
 
     }
-   }
+   };
+
+   const NAV_ITEMS = [
+    { icon: <Home size={20} />, label: 'Dashboard', to: '/' },
+    { icon: <ArrowUpCircle size={20} />, label: 'Income', to: '/income' },
+    { icon: <ArrowDownCircle size={20} />, label: 'Expenses', to: '/expenses' },
+    { icon: <CreditCard size={20} />, label: 'Budget', to: '/budget', isBeta: true },
+    { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },
+    { icon: <Goal size={20} />, label: 'Goal', to: '/goal', isBeta: true },
+    { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
+  ];
+
+   const navItems = useMemo(() => NAV_ITEMS, []);
 
 
   return (
@@ -364,68 +376,75 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
       {/* DateTime & User Info */}
       {!isCollapsed && (
         <div className="p-4 border-b dark:border-[#ffffff24] space-y-2">
-      <div className="flex items-center  gap-2 text-sm text-gray-600 dark:text-gray-400">
-        <div className="relative">
-          <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-          {/* Small status indicator dot */}
-          <span className={`
-            absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full
-            ${userType === 'premium' 
-              ? 'bg-amber-400 dark:bg-amber-500' 
-              : 'bg-blue-400 dark:bg-blue-500'
-            }
-            ring-1 ring-white dark:ring-gray-900
-          `} />
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="relative">
+              <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+              {/* Small status indicator dot */}
+              <span className={`
+                absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full
+                ${userType === 'premium' 
+                  ? 'bg-amber-400 dark:bg-amber-500' 
+                  : 'bg-blue-400 dark:bg-blue-500'
+                }
+                ring-1 ring-white dark:ring-gray-900
+              `} />
+            </div>
+            <span className="truncate w- font-medium">{currentUser}</span>
+            {userType === 'premium' && (
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                PRO
+              </span>
+            )}
+          </div>
         </div>
-        <span className="truncate  font-medium">{currentUser}</span>
-        {userType === 'premium' && (
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
-            PRO
-          </span>
-        )}
-      </div>
-    </div>
-      )}
+          )}
+
+    {(isCollapsed & userType === 'premium')?
+       <div className="p-4 border-b dark:border-[#ffffff24]">
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+          PRO
+        </span> 
+      </div>: null }
+      
 
 
       {/* Navigation Links */}
-      <nav className="p-2 space-y-1">
-        {[
-          { icon: <Home size={18} />, label: 'Dashboard', to: '/' },
-          // { icon: <PlusCircle size={18} />, label: 'Add', to: '/add' },
-          { icon: <ArrowUpCircle size={18} />, label: 'Income', to: '/income' },
-          { icon: <ArrowDownCircle size={18} />, label: 'Expenses', to: '/expenses' },
-          { icon: <CreditCard  size={18} />, label: 'budget', to: '/budget' },
-          { icon: <PieChart size={18} />, label: 'Reports', to: '/reports' },
-          { icon: <Settings size={18} />, label: 'Settings', to: '/settings' },
+      <nav className="p-3 space-y-2  ">
+     {navItems.map((item) => (
+        <NavLink
+        key={item.label}
+        to={item.to}
+        className={({ isActive }) => `
+          flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+          transition-colors relative
+          ${
+            isActive 
+              ? 'text-blue-600   bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10 ' 
+              : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50 '
+          }
+          ${isCollapsed ? 'justify-center' : ''}
+        `}
+      >
+        <span className="flex-shrink-0">{item.icon}</span>
+        {!isCollapsed && <span>{item.label}</span>}
+        
+        {isCollapsed && (
+          <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs
+                        rounded opacity-0 hover:opacity-100 pointer-events-none
+                        whitespace-nowrap">
+            {item.label}
+          </div>
+        )}
+        {!isCollapsed && item.isBeta && (
+            <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 text-white shadow-md shadow-blue-500/30">
+              BETA
+            </span>
+          )}
 
-        ].map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.to}
-            className={({ isActive }) => `
-              flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-              transition-colors relative
-              ${
-                isActive 
-                  ? 'text-blue-600   bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10 ' 
-                  : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50 '
-              }
-              ${isCollapsed ? 'justify-center' : ''}
-            `}
-          >
-            <span className="flex-shrink-0">{item.icon}</span>
-            {!isCollapsed && <span>{item.label}</span>}
-            {isCollapsed && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs
-                            rounded opacity-0 hover:opacity-100 pointer-events-none
-                            whitespace-nowrap">
-                {item.label}
-              </div>
-            )}
-          </NavLink>
-        ))}
-      </nav>
+      </NavLink>
+      ))}
+    </nav>
+   
 
       {/* Logout Button */}
       <div className="absolute bottom-0 w-full p-2">

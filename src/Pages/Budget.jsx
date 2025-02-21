@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
-  DollarSign, PieChart, Edit2, Trash2,
-  AlertCircle, CheckCircle, X,
-  Coffee, Home, Smartphone,
-  Users, Book, Gift, Shield, Sun, TrendingUp
+  DollarSign, PieChart, Edit2, Trash2, AlertCircle, CheckCircle, X,
+  Coffee, Home, Smartphone, Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown ,Percent} from "lucide-react";
+import { Car, Crown, Percent } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -13,7 +11,7 @@ import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
 import { BudgetData } from "../Pages/Components/Budget/BudgetData";
 
-
+// Main Budget Component
 const Budget = () => {
   const {
     TransactionData,
@@ -26,7 +24,6 @@ const Budget = () => {
   } = ReportsData();
 
   const { userType } = authCheck();
-
   const { totalIncomeFortheCurrentMonth, setsearchYearForList, setMonthForList } = useGlobalTransactionData('income');
   const { addBudget, setrule, error, setBudgetMonth, setBudgetYear, Personalizedbudget } = BudgetData();
 
@@ -71,20 +68,17 @@ const Budget = () => {
   });
 
   useEffect(() => {
-    if (financeRule === 'Personalized' && userType === 'premium' && error==='') {
+    if (financeRule === 'Personalized' && userType === 'premium' && error === '') {
       setbudgetPercentages13rd(prev => ({
         ...prev,
         ...Personalizedbudget,
       }));
     }
-  }, [financeRule, userType, selectedYear, selectedMonth, Personalizedbudget,error]);
+  }, [financeRule, userType, selectedYear, selectedMonth, Personalizedbudget, error]);
 
   const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : budgetPercentages13rd;
 
   const years = Availableyears.length > 0 ? Availableyears : [currentYear, lastYear];
-  const totalExpensePerYear = TransactionData.reduce((acc, expense) => acc + expense.expense, 0);
-  const totalIncomePerYear = TransactionData.reduce((acc, income) => acc + income.income, 0);
-  const totalNetSavingsPerYear = TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0);
 
   useEffect(() => {
     setsearchYear(selectedYear);
@@ -94,32 +88,47 @@ const Budget = () => {
     setrule(financeRule);
     setBudgetMonth(selectedMonth);
     setBudgetYear(selectedYear);
-  }, [selectedYear, selectedMonth, financeRule, setsearchYear, setMonth, setsearchYearForList, setMonthForList, setrule, setBudgetMonth, setBudgetYear]);
+  }, [selectedYear, selectedMonth, financeRule]);
 
   const DemocategoryData = [{ name: 'No data found', value: 404 }];
   const actualData = categoryData.categoryExpenseData;
   const Data = actualData?.length === 0 ? DemocategoryData : actualData;
   const monthsForIncome = TransactionData.filter(month => month.income > 0).map(month => month.name);
 
-  const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  const getSpentAmount = (categoryName) => {
-    const category = Data.find(c => c.name === categoryName);
-    return category ? category.value : 0;
-  };
-
-  const budgetCategories = [
-    { id: 1, name: 'Housing', icon: <Home />, budget: monthlyIncome * budgetPercentages.Housing * 0.01, spent: getSpentAmount('Housing'), type: 'Needs' },
-    { id: 2, name: 'Utilities', icon: <Sun />, budget: monthlyIncome * budgetPercentages.Utilities * 0.01, spent: getSpentAmount('Utilities'), type: 'Needs' },
-    { id: 3, name: 'Food & Dining', icon: <Coffee />, budget: monthlyIncome * budgetPercentages.FoodAndDining * 0.01, spent: getSpentAmount('Food & Dining'), type: 'Needs' },
-    { id: 4, name: 'Healthcare', icon: <Users />, budget: monthlyIncome * budgetPercentages.Healthcare * 0.01, spent: getSpentAmount('Healthcare'), type: 'Needs' },
-    { id: 5, name: 'Transportation', icon: <Car />, budget: monthlyIncome * budgetPercentages.Transportation * 0.01, spent: getSpentAmount('Transportation'), type: 'Needs' },
-    { id: 6, name: 'Insurance', icon: <Shield />, budget: monthlyIncome * budgetPercentages.Insurance * 0.01, spent: getSpentAmount('Insurance'), type: 'Needs' },
-    { id: 7, name: 'Entertainment', icon: <Smartphone />, budget: monthlyIncome * budgetPercentages.Entertainment * 0.01, spent: getSpentAmount('Entertainment'), type: 'Wants' },
-    { id: 8, name: 'Other Miscellaneous', icon: <Gift />, budget: monthlyIncome * budgetPercentages.OtherMiscellaneous * 0.01, spent: getSpentAmount('Other Miscellaneous'), type: 'Wants' },
-    { id: 9, name: 'Education', icon: <Book />, budget: monthlyIncome * budgetPercentages.Education * 0.01, spent: getSpentAmount('Education'), type: 'Wants' },
-    { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, budget: monthlyIncome * budgetPercentages.SavingsInvestments * 0.01, spent: getSpentAmount('Savings/Investments'), type: 'Investments' }
+  const MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
+
+  // Optimized spent amount lookup
+  const spentMap = useMemo(() => {
+    const map = {};
+    Data.forEach(item => {
+      map[item.name] = item.value;
+    });
+    return map;
+  }, [Data]);
+
+  const CATEGORIES = [
+    { id: 1, name: 'Housing', icon: <Home />, percentageKey: 'Housing', type: 'Needs' },
+    { id: 2, name: 'Utilities', icon: <Sun />, percentageKey: 'Utilities', type: 'Needs' },
+    { id: 3, name: 'Food & Dining', icon: <Coffee />, percentageKey: 'FoodAndDining', type: 'Needs' },
+    { id: 4, name: 'Healthcare', icon: <Users />, percentageKey: 'Healthcare', type: 'Needs' },
+    { id: 5, name: 'Transportation', icon: <Car />, percentageKey: 'Transportation', type: 'Needs' },
+    { id: 6, name: 'Insurance', icon: <Shield />, percentageKey: 'Insurance', type: 'Needs' },
+    { id: 7, name: 'Entertainment', icon: <Smartphone />, percentageKey: 'Entertainment', type: 'Wants' },
+    { id: 8, name: 'Other Miscellaneous', icon: <Gift />, percentageKey: 'OtherMiscellaneous', type: 'Wants' },
+    { id: 9, name: 'Education', icon: <Book />, percentageKey: 'Education', type: 'Wants' },
+    { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, percentageKey: 'SavingsInvestments', type: 'Investments' }
+  ];
+
+  const budgetCategories = useMemo(() => 
+    CATEGORIES.map(category => ({
+      ...category,
+      budget: monthlyIncome * budgetPercentages[category.percentageKey] * 0.01,
+      spent: spentMap[category.name] || 0,
+    }))
+  , [monthlyIncome, budgetPercentages, spentMap]);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -164,7 +173,7 @@ const Budget = () => {
             className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             {years.map((year, index) => (
-              <option key={index} value={year}>{year} {index > 0 ? userType !== 'premium' ? '💎' : '' : ''}</option>
+              <option key={index} value={year}>{year} {index > 0 && userType !== 'premium' ? '💎' : ''}</option>
             ))}
           </select>
         </div>
@@ -247,7 +256,9 @@ const Budget = () => {
                             <span className="text-gray-300 dark:text-gray-500">•</span>
                             <span className="text-gray-500 dark:text-gray-400">Spent:</span>
                             <span className={`font-medium ${
-                              ((category.spent / category.budget) * 100) >= 95 ? 'text-red-600 dark:text-red-400' : ((category.spent / category.budget) * 100) >= 80 && ((category.spent / category.budget) * 100) < 100 ? 'text-yellow-400 dark:text-yellow-300' : 'text-green-400 dark:text-green-300'
+                              ((category.spent / (category.budget || 1)) * 100) >= 95 ? 'text-red-600 dark:text-red-400' : 
+                              ((category.spent / (category.budget || 1)) * 100) >= 80 ? 'text-yellow-400 dark:text-yellow-300' : 
+                              'text-green-400 dark:text-green-300'
                             }`}>
                               ₹{category.spent.toLocaleString()}
                             </span>
@@ -255,20 +266,19 @@ const Budget = () => {
                         </div>
                       </div>
                     </div>
-                    
                     <div className="mt-3">
-                      <div className="w-full bg-gray-100 dark:hover:bg-[#0c0b0b04] dark:bg-[#ffffff0f] rounded-full h-2">
+                      <div className="w-full bg-gray-100 dark:bg-[#ffffff0f] rounded-full h-2">
                         <div 
                           className={`h-2 rounded-full ${
-                            ((category.spent / category.budget) * 100) >= 95 ? 'bg-red-500 dark:bg-red-400' : ((category.spent / category.budget) * 100) >= 80 && ((category.spent / category.budget) * 100) < 100 ? 'bg-yellow-400 dark:bg-yellow-300' : 'bg-green-400 dark:bg-green-300'
+                            ((category.spent / (category.budget || 1)) * 100) >= 95 ? 'bg-red-500 dark:bg-red-400' : 
+                            ((category.spent / (category.budget || 1)) * 100) >= 80 ? 'bg-yellow-400 dark:bg-yellow-300' : 
+                            'bg-green-400 dark:bg-green-300'
                           }`}
-                          style={{ 
-                            width: `${Math.min((category.spent / category.budget) * 100, 100)}%`
-                          }}
+                          style={{ width: `${Math.min((category.spent / (category.budget || 1)) * 100, 100)}%` }}
                         />
                       </div>
                       <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                        <span>{((category.spent / category.budget) * 100).toFixed(0)}% used</span>
+                        <span>{((category.spent / (category.budget || 1)) * 100).toFixed(0)}% used</span>
                         <span>₹{(category.budget - category.spent).toLocaleString()} remaining</span>
                       </div>
                     </div>
@@ -278,136 +288,143 @@ const Budget = () => {
             }
           </div>
         </div>
-
         <div>
           <div className="rounded-xl sticky top-2">
             <div className="">
               <div className="space-y-2">
-                <BudgetAllocationTable selectedYear={selectedYear} financeRule={financeRule} budgetPercentages13rd={budgetPercentages} editPersonalBudget={editPersonalBudget} setEditPersonalBudget={setEditPersonalBudget} />
+                <BudgetAllocationTable 
+                  selectedYear={selectedYear} 
+                  financeRule={financeRule} 
+                  budgetPercentages13rd={budgetPercentages} 
+                  editPersonalBudget={editPersonalBudget} 
+                  setEditPersonalBudget={setEditPersonalBudget} 
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <PersonalizedBudgetAllocationForm  selectedMonth={selectedMonth} selectedYear={selectedYear} setbudgetPercentages13rd={setbudgetPercentages13rd} setEditPersonalBudget={setEditPersonalBudget} editPersonalBudget={editPersonalBudget} budgetPercentages13rd={budgetPercentages13rd} />
+      <PersonalizedBudgetAllocationForm 
+        selectedMonth={selectedMonth} 
+        selectedYear={selectedYear} 
+        setbudgetPercentages13rd={setbudgetPercentages13rd} 
+        setEditPersonalBudget={setEditPersonalBudget} 
+        editPersonalBudget={editPersonalBudget} 
+        budgetPercentages13rd={budgetPercentages13rd} 
+      />
     </div>
   );
 };
 
-export default Budget;
+// Sub-Components
 
-// -------------------components-----------------------
-
-const BudgetAllocationTable = ({financeRule,selectedYear, budgetPercentages13rd, editPersonalBudget, setEditPersonalBudget }) => {
+const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13rd, editPersonalBudget, setEditPersonalBudget }) => {
   const { userType } = authCheck();
   const currentYear = new Date().getFullYear();
   const budgetPercentages = budgetPercentages13rd;
 
   return (
-    <>
-      <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
-        <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
+      <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-600/10 dark:bg-opacity-10">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24         "     >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-8V3.5L18.5 9H13z"/>
               </svg>
             </div>
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Budget Allocation Chart</h2>
-            <h2></h2>
-            {financeRule !== '50/30/20' && userType === 'premium' ? (
-              <div onClick={() => setEditPersonalBudget(true)} className="text-xl cursor-pointer font-semibold text-gray-800 dark:text-gray-100">
-                <div className="p-2 hover:bg-blue-50 dark:hover:bg-opacity-20 dark:hover:bg-blue-900 rounded-lg">
-                  <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-600" />
-                </div>
+          </div>
+          {financeRule !== '50/30/20' && userType === 'premium' && (
+            <div onClick={() => setEditPersonalBudget(true)} className="text-xl cursor-pointer">
+              <div className="p-2 hover:bg-blue-50 dark:hover:bg-opacity-20 dark:hover:bg-blue-900 rounded-lg">
+                <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-600" />
               </div>
-            ) : null}
+            </div>
+          )}
+        </div>
+      </div>
+      {(financeRule !== '50/30/20' || selectedYear !== currentYear) && userType !== 'premium' ? (
+        <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
+          <div className="flex items-center">
+            <Crown className='h-14 w-14' />
+            <div className="ml-4">
+              <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
+              <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+              <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+            </div>
           </div>
         </div>
-        {(financeRule !== '50/30/20' || selectedYear !== currentYear) && userType !== 'premium' ? (
-          <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
-            <div className="flex items-center">
-              <div className="flex">
-                <Crown className='h-14 w-14' />
+      ) : (
+        <div className="p-6 space-y-6">
+          <div className="mb-4">
+            <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Needs (50%)</div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Housing</div>
+                <div className="text-gray-800 dark:text-gray-100">🏠</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Housing}%</div>
               </div>
-              <div className="ml-4">
-                <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
-                <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-                <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Utilities</div>
+                <div className="text-gray-800 dark:text-gray-100">💡</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Utilities}%</div>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className="p-6 space-y-6">
-            <div className="mb-4">
-              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Needs (50%)</div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Housing</div>
-                  <div className="text-gray-800 dark:text-gray-100">🏠</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Housing )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Utilities</div>
-                  <div className="text-gray-800 dark:text-gray-100">💡</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Utilities )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Food & Dining</div>
-                  <div className="text-gray-800 dark:text-gray-100">🍽️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.FoodAndDining )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Healthcare</div>
-                  <div className="text-gray-800 dark:text-gray-100">⚕️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Healthcare )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Transportation</div>
-                  <div className="text-gray-800 dark:text-gray-100">🚗</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Transportation )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Insurance</div>
-                  <div className="text-gray-800 dark:text-gray-100">🛡️</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Insurance )}%</div>
-                </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Food & Dining</div>
+                <div className="text-gray-800 dark:text-gray-100">🍽️</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.FoodAndDining}%</div>
               </div>
-            </div>
-            <div className="mb-4">
-              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Wants (30%)</div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Entertainment</div>
-                  <div className="text-gray-800 dark:text-gray-100">🎬</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Entertainment )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Other Miscellaneous</div>
-                  <div className="text-gray-800 dark:text-gray-100">📦</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.OtherMiscellaneous )}%</div>
-                </div>
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Education</div>
-                  <div className="text-gray-800 dark:text-gray-100">📚</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.Education )}%</div>
-                </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Healthcare</div>
+                <div className="text-gray-800 dark:text-gray-100">⚕️</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Healthcare}%</div>
               </div>
-            </div>
-            <div className="mb-4">
-              <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Savings/Investments (20%)</div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
-                  <div className="text-gray-800 dark:text-gray-100">Savings/Investments</div>
-                  <div className="text-gray-800 dark:text-gray-100">💰</div>
-                  <div className="text-gray-800 dark:text-gray-100">{(budgetPercentages.SavingsInvestments )}%</div>
-                </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Transportation</div>
+                <div className="text-gray-800 dark:text-gray-100">🚗</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Transportation}%</div>
+              </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Insurance</div>
+                <div className="text-gray-800 dark:text-gray-100">🛡️</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Insurance}%</div>
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </>
+          <div className="mb-4">
+            <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Wants (30%)</div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Entertainment</div>
+                <div className="text-gray-800 dark:text-gray-100">🎬</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Entertainment}%</div>
+              </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Other Miscellaneous</div>
+                <div className="text-gray-800 dark:text-gray-100">📦</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.OtherMiscellaneous}%</div>
+              </div>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Education</div>
+                <div className="text-gray-800 dark:text-gray-100">📚</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.Education}%</div>
+              </div>
+            </div>
+          </div>
+          <div className="mb-4">
+            <div className="font-bold text-lg text-gray-800 dark:text-gray-100">Savings/Investments (20%)</div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-[#ffffff24] py-2">
+                <div className="text-gray-800 dark:text-gray-100">Savings/Investments</div>
+                <div className="text-gray-800 dark:text-gray-100">💰</div>
+                <div className="text-gray-800 dark:text-gray-100">{budgetPercentages.SavingsInvestments}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -421,17 +438,14 @@ const BudgetCategory = ({ title, percentage, children }) => (
   </div>
 );
 
-const BudgetInput = ({ label, emoji, name, value, onChange, error }) => {
-  
-
-  return(
+const BudgetInput = ({ label, emoji, name, value, onChange, error }) => (
   <div className="relative">
-    <label className="block text-md mb-1  dark:text-gray-300">
+    <label className="block text-md mb-1 dark:text-gray-300">
       <span className="mr-1">{emoji}</span>
       {label}
     </label>
     <span className="absolute right-6 top-[70%] -translate-y-1/2">
-      <Percent size={22} className="text-gray-400 " />
+      <Percent size={22} className="text-gray-400" />
     </span>
     <input
       type="number"
@@ -451,49 +465,17 @@ const BudgetInput = ({ label, emoji, name, value, onChange, error }) => {
       </div>
     )}
   </div>
-)
-};
+);
 
-const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPersonalBudget, setEditPersonalBudget ,setbudgetPercentages13rd,budgetPercentages13rd}) => {
-  
-  const {addBudget,setrule,error,setBudgetMonth,setBudgetYear,Personalizedbudget}=BudgetData();
-  const [budget, setBudget] = useState({
-    Needs: 50,
-    Housing: 10,
-    Utilities: 5,
-    FoodAndDining: 5,
-    Healthcare: 5,
-    Transportation: 5,
-    Insurance: 5,
-    Wants: 30,
-    Entertainment: 10,
-    OtherMiscellaneous: 10,
-    Education: 10,
-    SavingsInvestments: 20
-  });
-
-  // setbudgetPercentages13rd,budgetPercentages13rd
-
-
-
+const PersonalizedBudgetAllocationForm = ({ selectedMonth, selectedYear, editPersonalBudget, setEditPersonalBudget, setbudgetPercentages13rd, budgetPercentages13rd }) => {
+  const { addBudget, setrule, error, setBudgetMonth, setBudgetYear } = BudgetData();
   const [errors, setErrors] = useState({});
-  const [totalPercentage, setTotalPercentage] = useState(0);
   const [saveStatus, setSaveStatus] = useState(null);
-
-  useEffect(() => {
-    const total = Object.entries(budgetPercentages13rd).reduce((sum, [ key , value]) =>{ return ['Needs', 'Wants'].includes(key)? sum : sum + value}, 0);
-    setTotalPercentage(total);
-  }, [budgetPercentages13rd]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     const numValue = parseFloat(value) || 0;
     
-    setbudgetPercentages13rd(prev => ({
-      ...prev,
-      [name]: numValue
-    }));
-
     setbudgetPercentages13rd(prev => ({
       ...prev,
       [name]: numValue
@@ -510,36 +492,38 @@ const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPerso
   const validateForm = () => {
     const newErrors = {};
     
+    // Validate main categories
+    const mainTotal = budgetPercentages13rd.Needs + budgetPercentages13rd.Wants + budgetPercentages13rd.SavingsInvestments;
+    if (mainTotal !== 100) {
+      newErrors.total = 'Main categories (Needs + Wants + Savings/Investments) must sum to 100%';
+    }
+    
+    // Define subcategories
+    const needsSubcategories = ['Housing', 'Utilities', 'FoodAndDining', 'Healthcare', 'Transportation', 'Insurance'];
+    const wantsSubcategories = ['Entertainment', 'OtherMiscellaneous', 'Education'];
+    
+    // Validate Needs subcategories
+    const needsSubTotal = needsSubcategories.reduce((sum, key) => sum + budgetPercentages13rd[key], 0);
+    if (needsSubTotal !== budgetPercentages13rd.Needs) {
+      newErrors.needsSub = 'Needs subcategories must sum to Needs percentage';
+      needsSubcategories.forEach(key => newErrors[key] = '');
+      newErrors.Needs = '';
+    }
+    
+    // Validate Wants subcategories
+    const wantsSubTotal = wantsSubcategories.reduce((sum, key) => sum + budgetPercentages13rd[key], 0);
+    if (wantsSubTotal !== budgetPercentages13rd.Wants) {
+      newErrors.wantsSub = 'Wants subcategories must sum to Wants percentage';
+      wantsSubcategories.forEach(key => newErrors[key] = '');
+      newErrors.Wants = '';
+    }
+    
+    // Validate individual percentages
     Object.entries(budgetPercentages13rd).forEach(([key, value]) => {
       if (value < 0 || value > 100) {
         newErrors[key] = 'Must be 0-100%';
       }
     });
-    
-    if (totalPercentage !== 100) {
-      newErrors.total = `Total must be 100%`;
-    }
-
-    if(budgetPercentages13rd.Needs !== (budgetPercentages13rd.Housing + budgetPercentages13rd.Utilities + budgetPercentages13rd.FoodAndDining + budgetPercentages13rd.Healthcare + budgetPercentages13rd.Transportation + budgetPercentages13rd.Insurance)){
-      newErrors.Needs = '';
-      newErrors.Housing = '';
-      newErrors.Utilities = '';
-      newErrors.FoodAndDining = '';
-      newErrors.Healthcare = '';
-      newErrors.Transportation = '';
-      newErrors.Insurance = '';
-      newErrors.total='Needs percentage calculation error'
-      
-    }
-
-    if(budgetPercentages13rd.Wants !== (budgetPercentages13rd.Entertainment + budgetPercentages13rd.OtherMiscellaneous + budgetPercentages13rd.Education)){
-      newErrors.Entertainment = '';
-      newErrors.OtherMiscellaneous = '';
-      newErrors.Education = '';
-      newErrors.total='wants percentage calculation error'
-
-    }
-
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -550,9 +534,6 @@ const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPerso
     
     if (validateForm()) {
       setSaveStatus('success');
-      console.log('Budget Allocation:', budgetPercentages13rd);
-      console.log('year all',selectedYear);
-      console.log('month all',selectedMonth);
       setBudgetMonth(selectedMonth);
       setBudgetYear(selectedYear);
       addBudget(budgetPercentages13rd);
@@ -581,8 +562,8 @@ const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPerso
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b dark:border-[#ffffff24]">
             <h2 className="text-lg font-bold dark:text-white">Budget Allocation</h2>
-            <div className={`text-sm font-medium ${totalPercentage === 100 ? 'text-green-500' : 'text-red-500'}`}>
-              Total: {totalPercentage}%
+            <div className={`text-sm font-medium ${errors.total ? 'text-red-500' : 'text-green-500'}`}>
+              Total: {(budgetPercentages13rd.Needs + budgetPercentages13rd.Wants + budgetPercentages13rd.SavingsInvestments)}%
             </div>
           </div>
 
@@ -714,8 +695,7 @@ const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPerso
               <button
                 type="button"
                 onClick={() => setEditPersonalBudget(false)}
-                className="px-4 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 
-                  rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-opacity-20 dark:hover:bg-opacity-20"
+                className="px-4 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-opacity-20 dark:hover:bg-opacity-20"
               >
                 Cancel
               </button>
@@ -734,4 +714,14 @@ const PersonalizedBudgetAllocationForm = ({selectedMonth,selectedYear, editPerso
   );
 };
 
+export default Budget;
 
+const styles = `
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+`;

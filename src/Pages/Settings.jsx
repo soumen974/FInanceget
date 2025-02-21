@@ -16,191 +16,66 @@ const UserBadge = ({ user, type, darkMode, onUpgradeToPremium }) => {
 
   return (
     <div className={`
-      group flex items-center gap-4 px-5 py-3 
-      rounded-2xl transition-all duration-500 ease-out
-      hover:scale-[1.02] hover:shadow-xl relative
-      cursor-pointer backdrop-blur-sm
-      border border-transparent
-      ${type === 'premium' 
-        ? 'bg-gradient-to-r from-amber-400/90 via-yellow-400/90 to-orange-400/90 hover:from-amber-500/90 hover:to-orange-500/90 dark:from-amber-500/30 dark:via-yellow-500/30 dark:to-orange-500/30 shadow-amber-200/50 dark:shadow-amber-900/50' 
-        : darkMode 
-          ? 'bg-gradient-to-r from-blue-900/50 to-indigo-900/50 hover:from-blue-800/50 hover:to-indigo-800/50 hover:border-blue-700/30'
-          : 'bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-200/50'
-      }
+      flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-150
+      ${type === 'premium'
+        ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+        : 'bg-gray-50 dark:bg-[#ffffff17] text-indigo-600 dark:text-indigo-400'}
     `}>
-      {/* Avatar Section with Enhanced Animations */}
+      {/* Avatar */}
       <div className="relative">
-        <div className={`
-          p-2.5 rounded-full transition-all duration-500
-          transform-gpu group-hover:scale-110
-          ${type === 'premium'
-            ? 'bg-amber-200/50 dark:bg-amber-900/30 group-hover:rotate-12'
-            : darkMode
-              ? 'bg-blue-800/50 group-hover:bg-blue-700/50'
-              : 'bg-blue-100/80 group-hover:bg-blue-200/80'
-          }
-        `}>
-          <User 
-            size={22} 
-            className={`
-              transition-transform duration-500
-              group-hover:scale-110
-              ${type === 'premium' 
-                ? 'text-amber-900 dark:text-amber-400'
-                : 'text-blue-600 dark:text-blue-300'
-              }
-            `} 
-          />
-        </div>
-
-        {/* Enhanced Status Indicators */}
-        {type === 'premium' ? (
-          <>
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 dark:bg-yellow-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-500" />
-            </span>
-            <span className="absolute -bottom-1 -left-1 flex h-2 w-2">
-              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-amber-400 dark:bg-amber-500 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-            </span>
-          </>
-        ) : (
-          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500 dark:bg-blue-400" />
-          </span>
-        )}
-      </div>
-      
-      {/* Enhanced User Info Section */}
-      <div className="flex flex-col min-w-[120px]">
+        <User 
+          size={18} 
+          className={type === 'premium' ? 'text-amber-500' : 'text-indigo-500'} 
+        />
         <span className={`
-          font-semibold text-sm transition-all duration-300
-          ${type === 'premium'
-            ? 'text-amber-900 dark:text-amber-300 group-hover:text-amber-950 dark:group-hover:text-amber-200'
-            : 'text-blue-700 dark:text-blue-300 group-hover:text-blue-800 dark:group-hover:text-blue-200'
-          }
-        `}>
+          absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
+          ${type === 'premium' ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
+        `} />
+      </div>
+
+      {/* User Info */}
+      <div className="flex flex-col">
+        <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
           {user}
         </span>
-        {type === 'premium' ? (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-amber-700 dark:text-amber-400/80">
-              Premium
-            </span>
-            <div className="flex space-x-[2px]">
-              {[...Array(3)].map((_, i) => (
-                <span 
-                  key={i}
-                  className="inline-block w-1 h-1 rounded-full bg-amber-500 dark:bg-amber-400 animate-bounce"
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">
-              Basic Plan
-            </span>
-            <span className="inline-block w-1 h-1 rounded-full bg-blue-500 dark:bg-blue-400 animate-pulse" />
-          </div>
-        )}
+        <span className="text-xs font-medium uppercase tracking-wide">
+          {type === 'premium' ? 'Premium' : 'Basic'}
+        </span>
       </div>
 
-      {/* Simplified Time Display Section */}
-      <div className="ml-auto hidden sm:flex items-center">
-        <div className={`
-          flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
-          transition-all duration-300 hover:scale-105
-          ${type === 'premium'
-            ? 'bg-amber-200/50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
-            : 'bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-          }
-        `}>
-          <Clock size={12} className="animate-pulse" />
-          <span className="font-mono">Active</span>
-        </div>
-      </div>
-
-      {/* Three Dot Menu (Only for Basic Plan) */}
+      {/* Menu for Basic Users */}
       {type !== 'premium' && (
-        <div className="relative ml-2">
+        <div className="relative ml-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               setShowMenu(!showMenu);
             }}
-            className={`
-              p-1.5 rounded-full transition-all duration-300
-              ${darkMode 
-                ? 'hover:bg-blue-700/50 active:bg-blue-600/50' 
-                : 'hover:bg-blue-200/50 active:bg-blue-300/50'}
-              ${showMenu ? 'bg-blue-200/50 dark:bg-blue-700/50' : ''}
-            `}
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
           >
-            <div className="flex flex-col gap-[3px]">
-              {[...Array(3)].map((_, i) => (
-                <div 
-                  key={i}
-                  className={`
-                    w-1 h-1 rounded-full
-                    ${type === 'premium'
-                      ? 'bg-amber-600 dark:bg-amber-400'
-                      : 'bg-blue-600 dark:bg-blue-400'
-                    }
-                  `}
-                />
-              ))}
-            </div>
+            <MoreVertical size={16} className="text-gray-500 dark:text-gray-400" />
           </button>
-
-          {/* Enhanced Dropdown Menu */}
           {showMenu && (
-            <div 
-              className={`
-                absolute right-0 mt-2 w-48 rounded-xl shadow-lg py-1.5
-                backdrop-blur-md border
-                ${darkMode
-                  ? 'bg-gray-800/95 border-gray-700'
-                  : 'bg-white/95 border-gray-100'
-                }
-                z-50 transform-gpu animate-fadeIn
-              `}
-            >
-              <div
-                className={`
-                  flex items-center gap-2 px-4 py-2.5 text-sm
-                  transition-colors duration-200
-                  ${darkMode
-                    ? 'text-gray-200 hover:bg-blue-900/30'
-                    : 'text-gray-700 hover:bg-blue-50'
-                  }
-                  cursor-pointer
-                `}
+            <div className={`
+              absolute right-0 mt-2 w-40 rounded-lg shadow-md py-2
+              bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
+              z-50 animate-fade-in
+            `}>
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onUpgradeToPremium?.();
                   setShowMenu(false);
                 }}
+                className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150 flex items-center gap-2"
               >
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 Upgrade to Premium
-              </div>
+              </button>
             </div>
           )}
         </div>
       )}
-
-      {/* Enhanced Background Effects */}
-      <div className={`
-        absolute inset-0 rounded-2xl opacity-20 blur-sm transition-opacity duration-500
-        group-hover:opacity-30 -z-10 animate-gradient
-        ${type === 'premium'
-          ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400'
-          : 'bg-gradient-to-r from-blue-300 via-indigo-400 to-blue-400'
-        }
-      `} />
     </div>
   );
 };
@@ -326,138 +201,7 @@ export default function Settings() {
     }`
   };
 
-  // const UserBadge = ({ user, type, darkMode, currentTime }) => (
-  //   <div className={`
-  //     group flex items-center gap-4 px-5 py-3 
-  //     rounded-2xl transition-all duration-500 ease-out
-  //     hover:scale-[1.02] hover:shadow-xl relative
-  //     cursor-pointer backdrop-blur-sm
-  //     border border-transparent
-  //     ${type === 'premium' 
-  //       ? 'bg-gradient-to-r from-amber-400/90 via-yellow-400/90 to-orange-400/90 hover:from-amber-500/90 hover:to-orange-500/90 dark:from-amber-500/30 dark:via-yellow-500/30 dark:to-orange-500/30 shadow-amber-200/50 dark:shadow-amber-900/50' 
-  //       : darkMode 
-  //         ? 'bg-gradient-to-r from-blue-900/50 to-indigo-900/50 hover:from-blue-800/50 hover:to-indigo-800/50 hover:border-blue-700/30'
-  //         : 'bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-200/50'
-  //     }
-  //   `}>
-  //     {/* Avatar Section */}
-  //     <div className="relative">
-  //       <div className={`
-  //         p-2.5 rounded-full transition-all duration-300 group-hover:scale-110
-  //         ${type === 'premium'
-  //           ? 'bg-amber-200/50 dark:bg-amber-900/30 group-hover:rotate-12'
-  //           : darkMode
-  //             ? 'bg-blue-800/50 group-hover:bg-blue-700/50'
-  //             : 'bg-blue-100/80 group-hover:bg-blue-200/80'
-  //         }
-  //       `}>
-  //         <User size={22} className={`
-  //           transition-transform duration-300
-  //           ${type === 'premium' 
-  //             ? 'text-amber-900 dark:text-amber-400'
-  //             : 'text-blue-600 dark:text-blue-300'
-  //           }
-  //         `} />
-  //       </div>
-  
-  //       {/* Status Indicators */}
-  //       {type === 'premium' ? (
-  //         <>
-  //           <span className="absolute -top-1 -right-1 flex h-3 w-3">
-  //             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 dark:bg-yellow-500 opacity-75" />
-  //             <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-500" />
-  //           </span>
-  //           <span className="absolute -bottom-1 -left-1 flex h-2 w-2">
-  //             <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-amber-400 dark:bg-amber-500 opacity-75" />
-  //             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-  //           </span>
-  //         </>
-  //       ) : (
-  //         <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-  //           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500 dark:bg-blue-400" />
-  //         </span>
-  //       )}
-  //     </div>
-      
-  //     {/* User Info Section */}
-  //     <div className="flex flex-col min-w-[120px]">
-  //       <span className={`
-  //         font-semibold text-sm transition-all duration-300
-  //         ${type === 'premium'
-  //           ? 'text-amber-900 dark:text-amber-300 group-hover:text-amber-950 dark:group-hover:text-amber-200'
-  //           : 'text-blue-700 dark:text-blue-300 group-hover:text-blue-800 dark:group-hover:text-blue-200'
-  //         }
-  //       `}>
-  //         {user}
-  //       </span>
-  //       {type === 'premium' ? (
-  //         <div className="flex items-center gap-1.5">
-  //           <span className="text-[10px] font-medium uppercase tracking-wider text-amber-700 dark:text-amber-400/80">
-  //             Premium
-  //           </span>
-  //           <div className="flex space-x-[2px]">
-  //             {[...Array(3)].map((_, i) => (
-  //               <span 
-  //                 key={i}
-  //                 className="inline-block w-1 h-1 rounded-full bg-amber-500 dark:bg-amber-400 animate-bounce"
-  //                 style={{ animationDelay: `${i * 0.1}s` }}
-  //               />
-  //             ))}
-  //           </div>
-  //         </div>
-  //       ) : (
-  //         <div className="flex items-center gap-1.5">
-  //           <span className="text-[10px] font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">
-  //             Basic Plan
-  //           </span>
-  //           <span className="inline-block w-1 h-1 rounded-full bg-blue-500 dark:bg-blue-400 animate-pulse" />
-  //         </div>
-  //       )}
-  //     </div>
-  
-  //     {/* Time Display Section */}
-  //     <div className="ml-auto hidden sm:flex flex-col items-end space-y-1">
-  //       <div className={`
-  //         flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium
-  //         ${type === 'premium'
-  //           ? 'bg-amber-200/50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
-  //           : 'bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-  //         }
-  //       `}>
-  //         <Clock size={10} className="animate-pulse" />
-  //         <span>{currentTime?.split(' ')[1]}</span>
-  //       </div>
-  //       <div className={`
-  //         flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium
-  //         ${type === 'premium'
-  //           ? 'bg-amber-200/30 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
-  //           : 'bg-blue-100/30 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-  //         }
-  //       `}>
-  //         <Calendar size={10} />
-  //         <span>{currentTime?.split(' ')[0]}</span>
-  //       </div>
-  //     </div>
-  
-  //     {/* Background Effects */}
-  //     <div className={`
-  //       absolute inset-0 rounded-2xl opacity-20 blur-sm transition-opacity duration-300
-  //       group-hover:opacity-30 -z-10
-  //       ${type === 'premium'
-  //         ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400'
-  //         : 'bg-gradient-to-r from-blue-300 via-indigo-400 to-blue-400'
-  //       }
-  //     `} />
-  //   </div>
-  // );
-  
-  // Usage example:
-  // <UserBadge 
-  //   user="soumen974"
-  //   type="free" // or "premium"
-  //   darkMode={darkMode}
-  //   currentTime="2025-02-20 18:52:29"
-  // />
+
   function formatDate(isoString) {
     const date = new Date(isoString);
   

@@ -1,51 +1,56 @@
-// StatCard.jsx
-import React from 'react';
-import {formatCurrency} from "../Income/formatCurrency";
+import React, { useMemo } from 'react';
+import { formatCurrency } from "../Income/formatCurrency";
 
-export default function StatCard({ title, amount, type, icon }) {
-  const getCardStyles = () => {
-    switch(type) {
-      case 'balance':
-        return {
-          wrapper: 'bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 ' + 
-                   'dark:from-black dark:to-blue-600/20  dark:border-blue-600/30',
-          text: 'text-blue-600 dark:text-blue-400',
-          icon: 'bg-blue-600 dark:bg-blue-400'
-        };
-      case 'income':
-        return {
-          wrapper: 'bg-gradient-to-br from-green-50 to-green-100 border border-green-200 ' +
-                   'dark:from-black dark:to-green-600/20  dark:border-green-600/30',
-          text: 'text-green-600 dark:text-green-400',
-          icon: 'bg-green-600 dark:bg-green-400'
-        };
-      case 'expense':
-        return {
-          wrapper: 'bg-gradient-to-br from-red-50 to-red-100 border border-red-200 ' +
-                   'dark:from-black dark:to-red-600/20 dark:border-red-600/30',
-          text: 'text-red-600 dark:text-red-400s',
-          icon: 'bg-red-600 dark:bg-red-400'
-        };
-    }
-  };
+// Color mapping for different types
+const TYPE_STYLES = {
+  balance: {
+    gradient: 'from-blue-100 to-blue-50 dark:from-gray-900 dark:to-blue-900/20',
+    border: 'border-blue-200 dark:border-blue-700/30',
+    text: 'text-blue-600 dark:text-blue-400',
+    iconBg: 'bg-blue-600/10 dark:bg-blue-500/20'
+  },
+  income: {
+    gradient: 'from-green-100 to-green-50 dark:from-gray-900 dark:to-green-900/20',
+    border: 'border-green-200 dark:border-green-700/30',
+    text: 'text-green-600 dark:text-green-400',
+    iconBg: 'bg-green-600/10 dark:bg-green-500/20'
+  },
+  expense: {
+    gradient: 'from-red-100 to-red-50 dark:from-gray-900 dark:to-red-900/20',
+    border: 'border-red-200 dark:border-red-700/30',
+    text: 'text-red-600 dark:text-red-400',
+    iconBg: 'bg-red-600/10 dark:bg-red-500/20'
+  }
+};
 
-  const styles = getCardStyles();
+const StatCard = ({ title, amount, type, icon }) => {
+  // Memoize styles to avoid recalculation
+  const styles = useMemo(() => TYPE_STYLES[type] || TYPE_STYLES.balance, [type]);
 
   return (
-    <div className={`rounded-xl p-6 transition-all duration-200 hover:shadow-md dark:hover:shadow-gray-700/30 ${styles.wrapper}`}>
+    <div 
+      className={`rounded-xl p-5 bg-gradient-to-br ${styles.gradient} ${styles.border} shadow-sm 
+        transition-all duration-300 hover:shadow-lg hover:scale-105 animate-fade-in`}
+      aria-label={`${title}: ${formatCurrency(amount)}`}
+    >
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-2 rounded-lg ${styles.icon} bg-opacity-10 dark:bg-opacity-20`}>
-          {React.cloneElement(icon, { className: `w-5 h-5 ${styles.text}` })}
+        <div className={`p-2.5 rounded-full ${styles.iconBg}`}>
+          {React.cloneElement(icon, { className: `w-6 h-6 ${styles.text}` })}
         </div>
-        <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${styles.text} ` + 
-                        'bg-white bg-opacity-50 dark:bg-gray-700/30 dark:bg-opacity-50'}>
+        <span 
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full ${styles.text} 
+            bg-white/80 dark:bg-gray-800/80 shadow-sm`}
+        >
           {type === 'balance' ? 'NET' : type.toUpperCase()}
         </span>
       </div>
-      <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">{title}</h3>
-      <p className={`text-2xl font-bold ${styles.text}`}>
+      <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">{title}</h3>
+      <p className={`text-3xl font-bold ${styles.text}`}>
         {formatCurrency(amount)}
       </p>
     </div>
   );
-}
+};
+
+// Apply React.memo to prevent unnecessary re-renders
+export default React.memo(StatCard);
