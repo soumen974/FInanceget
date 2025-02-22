@@ -375,7 +375,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
       {/* DateTime & User Info */}
       {!isCollapsed && (
-        <div className="p-4 border-b dark:border-[#ffffff24] space-y-2">
+        <div className="p-4 border-b  dark:border-[#ffffff24] space-y-2">
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <div className="relative">
               <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
@@ -389,7 +389,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
                 ring-1 ring-white dark:ring-gray-900
               `} />
             </div>
-            <span className="truncate w- font-medium">{currentUser}</span>
+            <span className="truncate w-[6.3rem]   font-medium">{currentUser}</span>
             {userType === 'premium' && (
               <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
                 PRO

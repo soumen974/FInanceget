@@ -75,6 +75,11 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
     }
   };
 
+
+  const isValidEmail = validateEmail(email);
+  const showEmailError = error ||  !isValidEmail && email !== '';
+
+
   return (
     <form onSubmit={handleLoginSubmit} className="space-y-6">
       {/* Email Input */}
@@ -189,6 +194,26 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
           Forgot password?
         </Link>
       </div>
+
+      <div className="space-y-2 md:hidden">
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fade-in">
+            <div className="flex items-center">
+              <X size={16} className="text-red-500 mr-2" />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          </div>
+        )}
+        {message && (
+          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
+            <div className="flex items-center">
+              <CheckCircle size={16} className="text-green-500 mr-2" />
+              <p className="text-sm text-green-600">{message}</p>
+            </div>
+          </div>
+        )}
+      </div>
+                  
 
       {/* Submit Button */}
       <button

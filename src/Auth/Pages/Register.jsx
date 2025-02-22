@@ -162,27 +162,27 @@ const Register = () => {
         )}
 
         {/* Toast Notifications */}
-        <div className={`fixed max-md:top-20 ${message? 'right-4 ':'right-[-10rem] ' } transition-all duration-200 md:bottom-10   z-50 bg-blue-50  text-blue-600 px-4 py-3 rounded-lg    flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
-                 <CheckCircle size={20} />
-                 <span>{message}</span>
-                 <button 
-                   onClick={() => setMessage('')}
-                   className="ml-auto hover:bg-blue-100  p-1 rounded-full"
-                 >
-                   <X size={16} />
-                 </button>
-               </div>
-       
-               <div className={`fixed max-md:top-20 ${error? (message? 'right-[-10rem] ': 'right-4 '):'right-[-10rem] ' } transition-all duration-200 md:bottom-10  z-50 bg-red-50   text-red-600 px-4 py-3 rounded-lg  flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
-                 <TriangleAlert size={20} />
-                 <span>{error}</span>
-                 <button 
-                   onClick={() => setError('')}
-                   className="ml-auto hover:bg-red-100  p-1 rounded-full"
-                 >
-                   <X size={16} />
-                 </button>
-               </div>
+        <div className={`fixed max-md:hidden ${message? 'right-4 ':'right-[-10rem] ' } transition-all duration-200 md:bottom-10   z-50 bg-blue-50  text-blue-600 px-4 py-3 rounded-lg    flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
+          <CheckCircle size={20} />
+          <span>{message}</span>
+          <button 
+            onClick={() => setMessage('')}
+            className="ml-auto hover:bg-blue-100  p-1 rounded-full"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className={`fixed  max-md:hidden ${error? (message? 'right-[-10rem] ': 'right-4 '):'right-[-10rem] ' } transition-all duration-200 md:bottom-10  z-50 bg-red-50   text-red-600 px-4 py-3 rounded-lg  flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
+          <TriangleAlert size={20} />
+          <span>{error}</span>
+          <button 
+            onClick={() => setError('')}
+            className="ml-auto hover:bg-red-100  p-1 rounded-full"
+          >
+            <X size={16} />
+          </button>
+        </div>
       </div>
     </div>
   );

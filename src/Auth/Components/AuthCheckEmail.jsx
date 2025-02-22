@@ -53,11 +53,7 @@ const AuthCheckEmail = ({
   const isValidEmail = validateEmail(email);
   const showEmailError = error || touched && !isValidEmail && email !== '';
 
-  useEffect(()=>{
-    if(isValidEmail){
-     // setSuccessFrom('Enter Email');
-    }
-  },[isValidEmail])
+
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -134,7 +130,7 @@ const AuthCheckEmail = ({
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fade-in">
                 <div className="flex items-center">
                   <X size={16} className="text-red-500 mr-2" />
-                  <p className="text-sm text-red-600">{error}ghjk</p>
+                  <p className="text-sm text-red-600">{error}</p>
                 </div>
               </div>
             )}
