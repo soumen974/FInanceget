@@ -24,7 +24,7 @@ const CodeVErify = ({
 }) => {
   const { auth } = authCheck();
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300);
   const [codeInputs, setCodeInputs] = useState(['', '', '', '', '', '']);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
@@ -44,17 +44,36 @@ const CodeVErify = ({
   };
 
   const handleCodeInput = (index, value) => {
-    if (value.length > 1) return; // Prevent multiple digits
-    
-    const newCodeInputs = [...codeInputs];
-    newCodeInputs[index] = value;
-    setCodeInputs(newCodeInputs);
-    setcode(newCodeInputs.join(''));
+    // If user pastes a longer string into the first input
+    if (index === 0 && value.length > 1) {
+      // Clean the input to only keep digits and limit to 6 characters
+      const cleanedValue = value.replace(/\D/g, '').slice(0, 6);
+      const newCodeInputs = ['', '', '', '', '', ''];
+      
+      // Distribute the digits across inputs
+      cleanedValue.split('').forEach((digit, i) => {
+        if (i < 6) newCodeInputs[i] = digit;
+      });
+      
+      setCodeInputs(newCodeInputs);
+      setcode(cleanedValue);
+      
+      // Move focus to the last filled input or the end
+      const lastFilledIndex = Math.min(cleanedValue.length - 1, 5);
+      document.getElementById(`code-${lastFilledIndex}`).focus();
+      setFocusedIndex(lastFilledIndex);
+    } 
+    // Handle single digit input as before
+    else if (value.length <= 1) {
+      const newCodeInputs = [...codeInputs];
+      newCodeInputs[index] = value;
+      setCodeInputs(newCodeInputs);
+      setcode(newCodeInputs.join(''));
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      document.getElementById(`code-${index + 1}`).focus();
-      setFocusedIndex(index + 1);
+      if (value && index < 5) {
+        document.getElementById(`code-${index + 1}`).focus();
+        setFocusedIndex(index + 1);
+      }
     }
   };
 
@@ -71,7 +90,7 @@ const CodeVErify = ({
       const response = await api.post('/api/auth/passverifymail', { email });
       setMessage('Verification code resent successfully');
       setError('');
-      setTimeLeft(300); // Reset timer
+      setTimeLeft(300);
     } catch (err) {
       setError(err.response?.data || 'Failed to resend code');
       setMessage('');
@@ -107,39 +126,38 @@ const CodeVErify = ({
   };
 
   return (
-    <div className="max-w-md mx-auto ">
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-          <Mail className="w-8 h-8 text-blue-600" />
+    <div className="w-full max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="text-center mb-6 sm:mb-8">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+          <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
           Verify your email
         </h2>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-600 text-sm sm:text-base">
           We've sent a verification code to
         </p>
-        <p className="text-blue-600 font-medium">{email}</p>
+        <p className="text-blue-600 font-medium text-sm sm:text-base break-all">{email}</p>
       </div>
 
       <form onSubmit={handleLoginSubmit} className="space-y-6">
-        {/* Code Input Section */}
         <div className="space-y-4">
           <label className="block text-sm font-medium text-gray-700">
             Enter verification code
           </label>
-          <div className="flex gap-2 justify-between">
+          <div className="flex gap-2 sm:gap-3  justify-between">
             {codeInputs.map((digit, index) => (
               <input
                 key={index}
-                id={`code-${index}`}
+                // id={`code-${index}`}
                 type="text"
-                maxLength="1"
+                maxLength="6" // Changed to allow pasting full code in first input
                 value={digit}
                 onChange={(e) => handleCodeInput(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 className={`
-                  w-12 h-12 text-center text-xl font-semibold border-2 rounded-lg
-                  transition-all duration-200
+                  w-[9vw] h-[9vw] sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-semibold 
+                  border-2 rounded-lg transition-all duration-200
                   ${error 
                     ? 'border-red-300 text-red-500 focus:border-red-500' 
                     : 'border-gray-300 focus:border-blue-500'
@@ -152,8 +170,7 @@ const CodeVErify = ({
           </div>
         </div>
 
-        {/* Timer and Resend Section */}
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-between text-sm gap-2 sm:gap-0">
           <div className="flex items-center text-gray-600">
             <Clock size={16} className="mr-1" />
             {timeLeft > 0 ? (
@@ -176,9 +193,8 @@ const CodeVErify = ({
           </button>
         </div>
 
-        {/* Error/Success Messages */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-shake">
+          <div className="bg-red-50 border-l-4 border-red-500 p-3 sm:p-4 rounded-md animate-shake">
             <div className="flex items-center">
               <X size={16} className="text-red-500 mr-2" />
               <p className="text-sm text-red-600">{error}</p>
@@ -187,7 +203,7 @@ const CodeVErify = ({
         )}
 
         {message && (
-          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
+          <div className="bg-green-50 border-l-4 border-green-500 p-3 sm:p-4 rounded-md animate-fade-in">
             <div className="flex items-center">
               <CheckCircle size={16} className="text-green-500 mr-2" />
               <p className="text-sm text-green-600">{message}</p>
@@ -195,12 +211,11 @@ const CodeVErify = ({
           </div>
         )}
 
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading || codeInputs.some(digit => !digit)}
           className={`
-            w-full py-3 px-4 rounded-lg font-medium text-white
+            w-full py-2.5 sm:py-3 px-4 rounded-lg font-medium text-white
             transition-all duration-200 transform hover:scale-[1.02]
             ${loading 
               ? 'bg-gray-400 cursor-not-allowed' 

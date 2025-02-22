@@ -45,27 +45,27 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-gray-50 p-4">
       <div className="w-full max-w-md">
         {/* Progress Tracker */}
-        <div className="mb-10 px-4  ">
-          <div className="relative pt-1">
+        <div className="mb-10 px-4 sm:px-6 lg:px-8">
+          <div className="relative pt-1 max-w-3xl mx-auto">
             {/* Progress Header */}
-            <div className="flex justify-between mb-4">
-              <span className="text-sm font-semibold text-blue-600 pb-4">
-                Step {currentStep} of {steps.length - 1}
+            <div className="flex justify-between items-center mb-8">
+              <span className="text-sm font-semibold text-blue-700">
+                Step {currentStep + 1} of {steps.length}
               </span>
-              <span className="text-sm font-medium text-gray-600">
+              <span className="text-sm font-medium text-gray-600 ">
                 {Math.round((currentStep / (steps.length - 1)) * 100)}% Complete
               </span>
             </div>
 
             {/* Progress Bar */}
-            <div className="relative mb-6 ">
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="relative mb-8">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className="h-full transition-all duration-500 ease-out relative
-                           bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700"
+                  className="h-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 
+                            transition-all duration-500 ease-out relative"
                   style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
                 >
-                  <div className="absolute inset-0 bg-white/30 animate-shimmer" />
+                  <div className="absolute inset-0 bg-white/20 animate-shimmer rounded-full" />
                 </div>
               </div>
 
@@ -76,36 +76,40 @@ const Register = () => {
                     <div
                       className={`
                         w-10 h-10 rounded-full flex items-center justify-center
-                        transition-all duration-300 transform
-                        ${getStepColor(index)}
-                        ${index <= currentStep ? 'scale-110 shadow-lg' : 'scale-100'}
-                        ${index === currentStep ? 'ring-4 ring-blue-100 animate-pulse' : ''}
+                        shadow-md transition-all duration-300 transform
+                        ${index < currentStep 
+                          ? 'bg-green-500 text-white scale-105 shadow-green-200' 
+                          : index === currentStep 
+                            ? 'bg-blue-600 text-white scale-110 ring-4 ring-blue-200 shadow-blue-200 animate-pulse-once'
+                            : 'bg-gray-100 text-gray-500 scale-100 shadow-gray-200'
+                        }
                       `}
                     >
                       {index < currentStep ? (
                         <CheckCircle className="w-5 h-5" />
                       ) : (
-                        step.icon
+                        <span className="text-lg">{step.icon}</span>
                       )}
                     </div>
-                    <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-max">
+                    <div className="absolute -bottom-9 left-1/2 transform -translate-x-1/2 w-max">
                       <span className={`
-                        text-xs font-medium whitespace-nowrap transition-all duration-300
-                        ${index <= currentStep ? 'text-blue-600' : 'text-gray-400'}
+                        text-xs font-medium whitespace-nowrap transition-colors duration-300
+                        ${index <= currentStep ? 'text-blue-700' : 'text-gray-500'}
                       `}>
                         {step.title}
                       </span>
                     </div>
                     {/* Connecting Line */}
                     {index < steps.length - 1 && (
-                      <div className="absolute h-[2px] top-5 left-10 w-[calc(200% - 2.5rem)]
-                                    transition-all duration-500 -z-10
-                                    bg-gradient-to-r from-current to-gray-200"
-                           style={{
-                             background: index < currentStep 
-                               ? 'linear-gradient(to right, #10B981, #10B981)' 
-                               : 'linear-gradient(to right, #E5E7EB, #E5E7EB)'
-                           }}
+                      <div 
+                        className={`
+                          absolute h-0.5 top-5 left-10 w-[calc(100% - 2.5rem)]
+                          transition-all duration-500 -z-10 rounded-full
+                          ${index < currentStep 
+                            ? 'bg-green-500 shadow-sm shadow-green-200' 
+                            : 'bg-gray-200'
+                          }
+                        `}
                       />
                     )}
                   </div>

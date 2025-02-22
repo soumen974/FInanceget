@@ -98,20 +98,7 @@ const PasswordAdding = ({
 
   return (
     <div className="max-w-md w-full mx-auto ">
-      {/* <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Lock className="w-8 h-8 text-blue-600" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {isRegisterRoute ? "Complete Your Account" : "Reset Your Password"}
-        </h2>
-        <p className="text-gray-600 text-sm">
-          {isRegisterRoute 
-            ? "Create a strong password to secure your account" 
-            : "Enter your new password below"}
-        </p>
-      </div> */}
-
+    
       <form onSubmit={handleLoginSubmit} className="space-y-6">
         {/* Email Field */}
         <div className="relative">
@@ -127,6 +114,7 @@ const PasswordAdding = ({
               id="email"
               type="email"
               value={email}
+              autoComplete="email"
               className="pl-10 w-full px-3 py-2 border rounded-lg bg-gray-50 text-gray-500 border-gray-200"
             />
           </div>
@@ -145,6 +133,7 @@ const PasswordAdding = ({
               <input
                 id="name"
                 type="text"
+                autoComplete="name"
                 required
                 value={name}
                 onChange={(e) => setname(e.target.value)}
@@ -167,6 +156,7 @@ const PasswordAdding = ({
             <input
               id="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               required
               value={password}
               onChange={handlePasswordChange}
@@ -233,7 +223,7 @@ const PasswordAdding = ({
 
         {/* Error/Success Messages */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-shake">
+          <div className="bg-red-50 md:hidden border-l-4 border-red-500 p-4 rounded-md animate-shake">
             <div className="flex items-center">
               <X className="h-5 w-5 text-red-500 mr-2" />
               <p className="text-sm text-red-600">{error}</p>
@@ -242,7 +232,7 @@ const PasswordAdding = ({
         )}
 
         {message && (
-          <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
+          <div className="bg-green-50 md:hidden border-l-4 border-green-500 p-4 rounded-md animate-fade-in">
             <div className="flex items-center">
               <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
               <p className="text-sm text-green-600">{message}</p>

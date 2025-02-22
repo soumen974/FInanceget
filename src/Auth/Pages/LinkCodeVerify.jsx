@@ -10,10 +10,12 @@ const LinkCodeVerify = () => {
   const { resetpassword } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+  const isRegisterRoute = location.pathname.includes('register');
+
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [isPaswardForget,setisPaswardForget] = useState(resetpassword === 'resetpassword');
+  const [isPaswardForget,setisPaswardForget] = useState(()=>isRegisterRoute?false:true);
+
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [email, setEmail] = useState('');
   const [successFrom, setSuccessFrom] = useState('');
@@ -21,7 +23,7 @@ const LinkCodeVerify = () => {
 
   // Toast component for notifications
   const Toast = ({ message, type, onClose }) => (
-    <div className={`fixed max-md:top-20 right-4 transition-all duration-200 md:bottom-10 z-50 
+    <div className={`fixed max-md:hidden right-4 transition-all duration-200 md:bottom-10 z-50 
       ${type === 'success' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}
       px-4 py-3 rounded-lg flex items-center gap-2 animate-fade-in max-w-[90vw] sm:max-w-md`}>
       {type === 'success' ? <CheckCircle size={20} /> : <TriangleAlert size={20} />}
@@ -87,8 +89,17 @@ const LinkCodeVerify = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       {successFrom === 'codeverified' ? (
         <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold text-center text-gray-900">Reset Password</h2>
+         {!isRegisterRoute ?
+         <div className="">
+           <h2 className="text-3xl font-bold text-center text-gray-900">Reset Password</h2>
           <p className="text-center text-gray-600">Enter your new password</p>
+         </div>: 
+          <div className="">
+          <h2 className="text-3xl font-bold text-center text-gray-900">Welcome to FinanceGet </h2>
+         <p className="text-center text-gray-600">Enter your password</p>
+        </div>
+
+         }
           <PasswordAdding 
           isPaswardForget={isPaswardForget}
           successFrom={successFrom}

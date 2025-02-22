@@ -61,21 +61,22 @@ const Login = () => {
                        successFrom === 'codeverified' ? 2 : 0;
   
     return (
-      <div className="mb-8 px-4">
+      <div className="mb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           {/* Desktop View */}
           <div className="hidden sm:flex items-center justify-between relative">
             {steps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center flex-1">
+              <div key={index} className="flex flex-col items-center flex-1 relative">
+                {/* Step Circle */}
                 <div 
-                  className={`  
-                    w-12 h-12 rounded-full flex items-center justify-center mb-3
-                    transform transition-all duration-300 ease-in-out
+                  className={`
+                    w-12 h-12 rounded-full flex items-center justify-center mb-4 z-10
+                    shadow-md transition-all duration-300 ease-in-out
                     ${index < currentStep 
-                      ? 'bg-green-500 text-white scale-110' 
+                      ? 'bg-green-500 text-white scale-105 shadow-green-200' 
                       : index === currentStep
-                        ? 'bg-blue-600 text-white ring-4 ring-blue-100 scale-110'
-                        : 'bg-gray-200 text-gray-500'
+                        ? 'bg-blue-600 text-white ring-4 ring-blue-200 scale-110 shadow-blue-200'
+                        : 'bg-gray-100 text-gray-500 shadow-gray-200'
                     }
                     ${index <= currentStep ? 'animate-pulse-once' : ''}
                   `}
@@ -85,23 +86,33 @@ const Login = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <span className="text-lg">{steps[index].icon}</span>
+                    <span className="text-xl">{step.icon}</span>
                   )}
                 </div>
-                <span className={`
-                  text-sm font-medium mb-1 transition-colors duration-300
-                  ${index <= currentStep ? 'text-blue-600' : 'text-gray-500'}
-                `}>
-                  {step.title}
-                </span>
-                <span className="text-xs text-gray-400 text-center hidden sm:block">
-                  {step.description}
-                </span>
+  
+                {/* Step Text */}
+                <div className="text-center">
+                  <span className={`
+                    block text-sm font-semibold mb-1 transition-colors duration-300
+                    ${index <= currentStep ? 'text-blue-700' : 'text-gray-600'}
+                  `}>
+                    {step.title}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {step.description}
+                  </span>
+                </div>
+  
+                {/* Connector Line */}
                 {index < steps.length - 1 && (
-                  <div className="absolute h-1 top-6" style={{
-                    left: `${(index * 50) + 12}%`,
-                    width: '38%',
-                  }}>
+                  <div 
+                    className="absolute h-1 top-[1.4rem] z-0"
+                    style={{
+                      left: '50%',
+                      width: 'calc(100% - 3rem)', // Adjusts to fit between circles
+                      transform: 'translateX(0)'
+                    }}
+                  >
                     <div className={`
                       h-full rounded-full transition-all duration-500 ease-in-out
                       ${index < currentStep 
@@ -118,41 +129,45 @@ const Login = () => {
           </div>
   
           {/* Mobile View */}
-          <div className="sm:hidden space-y-4">
+          <div className="sm:hidden space-y-5">
             {steps.map((step, index) => (
               <div 
                 key={index} 
                 className={`
-                  flex items-center space-x-4 p-3 rounded-lg
-                  ${index === currentStep ? 'bg-blue-50' : ''}
+                  flex items-center space-x-4 p-4 rounded-xl
+                  transition-all duration-200
+                  ${index === currentStep 
+                    ? 'bg-blue-50 border border-blue-100 shadow-sm' 
+                    : 'bg-white'
+                  }
                 `}
               >
                 <div className={`
                   w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-                  transition-all duration-300
+                  shadow-md transition-all duration-300
                   ${index < currentStep 
-                    ? 'bg-green-500 text-white' 
+                    ? 'bg-green-500 text-white scale-105 shadow-green-200' 
                     : index === currentStep
-                      ? 'bg-blue-600 text-white ring-2 ring-blue-100'
-                      : 'bg-gray-200 text-gray-500'
+                      ? 'bg-blue-600 text-white ring-2 ring-blue-200 scale-105 shadow-blue-200'
+                      : 'bg-gray-100 text-gray-500 shadow-gray-200'
                   }
                 `}>
                   {index < currentStep ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
-                    <span>{steps[index].icon}</span>
+                    <span className="text-lg">{step.icon}</span>
                   )}
                 </div>
                 <div className="flex flex-col">
                   <span className={`
-                    text-sm font-medium
-                    ${index <= currentStep ? 'text-blue-600' : 'text-gray-500'}
+                    text-sm font-semibold
+                    ${index <= currentStep ? 'text-blue-700' : 'text-gray-600'}
                   `}>
                     {step.title}
                   </span>
-                  <span className="text-xs text-gray-400">{step.description}</span>
+                  <span className="text-xs text-gray-500">{step.description}</span>
                 </div>
               </div>
             ))}
