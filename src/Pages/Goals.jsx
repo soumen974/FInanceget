@@ -100,7 +100,7 @@ const Goals = ({ darkMode }) => {
     return COLORS.success;
   };
 
-  if(userType === 'premium'){
+  if(!userType === 'premium'){
     return <div className="dark:text-white flex justify-center items-center place-content-center h-[90vh]">Under Construction for 1 day</div>
   }
 
