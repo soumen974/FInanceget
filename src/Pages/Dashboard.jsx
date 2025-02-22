@@ -12,7 +12,7 @@ export default function Dashboard() {
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
 
   return (
-    <div className="max-w-7xl mx-auto   min-h-screen">
+    <div className="max-w-6xl pb-6 mx-auto   min-h-screen">
       {/* Dashboard Header */}
       <div className="flex items-center justify-between mb-8">
         <div>

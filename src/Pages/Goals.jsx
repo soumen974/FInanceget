@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  CheckCircle, Goal,ReceiptIndianRupee, Calendar, X 
+  CheckCircle, Goal,Wallet,Trash2 ,TriangleAlert ,ReceiptIndianRupee, Calendar, X 
 } from 'lucide-react';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
-
 import { formatCurrency } from "./Components/Income/formatCurrency";
 
 
@@ -23,9 +22,10 @@ const COLORS = {
   danger: '#EF4444',
 };
 
+
 const Goals = ({ darkMode }) => {
   const [goals, setGoals] = useState([
-    { id: 1, name: "Emergency Fund", target: 5000, current: 3200, deadline: "2025-06-30" },
+    { id: 1, name: "Emergency Fund", target: 5000, current: 4200, deadline: "2028-06-30" },
     { id: 2, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
     { id: 3, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
     { id: 4, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
@@ -54,6 +54,8 @@ const Goals = ({ darkMode }) => {
   const years = Array.from({ length: 5 }, (_, i) => currentYear + i - 2);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [HidePopup, setHidePopup] = useState(null);
+  const [loading,setLoading] = useState(false);
 
   // saving calculation
   const calculateSavings = (target, deadline, current = 0) => {
@@ -100,14 +102,72 @@ const Goals = ({ darkMode }) => {
     const perMonth = monthsDiff > 0 ? remaining / monthsDiff : remaining / daysDiff;
     const perDay = remaining / daysDiff;
 
+    // Convert months to years if more than 12 months
+    let monthsLeftDisplay;
+    if (monthsDiff > 12) {
+        const years = Math.floor(monthsDiff / 12);
+        const remainingMonths = monthsDiff % 12;
+        monthsLeftDisplay = `${years} year${years > 1 ? 's' : ''}${remainingMonths > 0 ? ` ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}` : ''}`;
+    } else {
+        monthsLeftDisplay = `${monthsDiff} month${monthsDiff > 1 ? 's' : ''}`;
+    }
+
     return {
-        perMonth: Math.max(0, perMonth).toFixed(2),
-        perDay: Math.max(0, perDay).toFixed(2),
-        remaining: Math.max(0, remaining).toFixed(2),
-        monthsLeft: monthsDiff,
+        perMonth: formatCurrency(Math.max(0, perMonth)),
+        perDay: formatCurrency(Math.max(0, perDay)),
+        remaining: Math.max(0, remaining),
+        monthsLeft: monthsLeftDisplay, // Updated to display as years if > 12 months
         daysLeft: daysDiff
     };
+};
+
+  const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction,type}) =>{
+    return(
+    <>
+    <div  className={`${HidePopup ===currentId?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
+    <div className="fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem]  bg-opacity-75" onClick={() => setHidePopup(true)}></div>
+      <div className={` z-20 relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff13]   rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
+      
+        <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-start">
+            <div
+              className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-600 dark:bg-opacity-20 sm:mx-0 sm:h-10 sm:w-10`}
+            >
+              
+                <TriangleAlert className="h-6 w-6 text-red-600" aria-hidden="true" />
+
+            </div>
+            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Delete {title}</h3>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to delete this {type} data ?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <button
+            className={`inline-flex w-full justify-center rounded-md bg-red-600  hover:bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm sm:ml-3 sm:w-auto`}
+            onClick={() => taskFunction(currentId)}
+          >
+            Delete {loading&& "Loading..."}
+          </button>
+          <button
+            className="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-[#ffffff07] dark:hover:bg-[#ffffff17] dark:ring-[#ffffff24] dark:text-gray-200 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+            onClick={() => setHidePopup(true)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+    </>)
   };
+
+  const handlePopupopner = (id) => {
+    setHidePopup(HidePopup === id ? null : id);
+  };
+  
 
   const handleAddGoal = () => {
     if (newGoal.name && newGoal.target && newGoal.deadline) {
@@ -132,8 +192,14 @@ const Goals = ({ darkMode }) => {
     return <div className="dark:text-white flex justify-center items-center place-content-center h-[90vh]">Under Construction for 1 day</div>
   }
 
+   
+
+    
+  
+
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl pb-6 mx-auto">
+      
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -199,26 +265,33 @@ const Goals = ({ darkMode }) => {
         {/* Goals List */}
         <div className="lg:col-span-2">
           <div className={baseStyles.container}>
+            {/* Header */}
             <div className="p-6 border-b border-[#F3F4F6] dark:border-[#ffffff24]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-50 dark:bg-opacity-20 dark:bg-[#8B5CF6] rounded-lg">
                     <Goal className="w-5 h-5 text-[#8B5CF6] dark:text-[#8B5CF6]" />
                   </div>
-                  <h2 className="text-lg font-semibold text-[#1F2937] dark:text-white">
-                    Goals for {MONTH_NAMES[selectedMonth].charAt(0).toUpperCase() + MONTH_NAMES[selectedMonth].slice(1)} {selectedYear}
-                  </h2>
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#1F2937] dark:text-white">
+                      Goals for {MONTH_NAMES[selectedMonth].charAt(0).toUpperCase() + MONTH_NAMES[selectedMonth].slice(1)} {selectedYear}
+                    </h2>
+                    <p className="text-sm text-[#6B7280] dark:text-gray-400">Last updated: 2025-02-22 18:16:57</p>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Goals List */}
             <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24]">
               {goals.map((goal) => {
                 const percentage = (goal.current / goal.target) * 100;
-                const progressColor = getProgressColor(percentage);
                 const savings = calculateSavings(goal.target, goal.deadline, goal.current);
 
                 return (
                   <div key={goal.id} className={baseStyles.card}>
+                    <Popupbox HidePopup={HidePopup} type={'Goal'} loading={loading} currentId={goal.id} taskFunction={handleRemoveGoal} setHidePopup={setHidePopup} title={goal.name} />
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
@@ -241,32 +314,78 @@ const Goals = ({ darkMode }) => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleRemoveGoal(goal.id)}
-                        className="p-1 rounded-full hover:bg-[#EC4899]/20 transition-colors duration-150"
+                        // onClick={() => handlePopupopner(transaction._id)}
+                        onClick={() => handlePopupopner(goal.id)}
+                        className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20 transition-colors"
+                        title="Delete transaction"
                       >
-                        <X size={16} className="text-[#EC4899]" />
-                      </button>
+                        <Trash2 size={16} />
+                      </button> 
                     </div>
+
+                    {/* Progress Bar */}
                     <div className="mt-3">
                       <div className="w-full bg-[#F3F4F6] dark:bg-[#ffffff0f] rounded-full h-2">
                         <div
-                          className={`h-2 rounded-full ${percentage >= 95 ? 'bg-[#EF4444]' : percentage >= 80 ? 'bg-[#FBBF24]' : 'bg-[#10B981]'}`}
+                          className={`h-2 rounded-full ${percentage >= 95 ? 'bg-purple-600' : percentage >= 80 ? 'bg-[#FBBF24]' : 'bg-[#10B981]'}`}
                           style={{ width: `${Math.min(percentage, 100)}%` }}
                         />
                       </div>
                       <div className="mt-1 flex justify-between text-xs text-[#6B7280] dark:text-gray-400">
                         <span>{percentage.toFixed(0)}% achieved</span>
-                        <span>₹{savings.remaining} remaining</span>
+                        <span>₹{savings.remaining.toLocaleString()} remaining</span>
                       </div>
                     </div>
-                    <div className="mt-2 text-xs text-[#6B7280] dark:text-gray-400">
-                      <div>Save ₹{savings.perMonth} per month</div>
-                      <div>Save ₹{savings.perDay} per day</div>
-                      <div>{savings.monthsLeft} months left ({savings.daysLeft} days)</div>
+
+                    {/* Colored Statistics Boxes */}
+                    <div className="mt-4 grid grid-cols-4 md:grid-cols-5 gap-3">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div 
+                        key={index} 
+                        className={`p-3 rounded-lg ${
+                          percentage >= 95 ? 'bg-purple-500/10' : 
+                          percentage >= 80 ? 'bg-amber-500/10' : 
+                          'bg-emerald-500/10'
+                        }`}
+                      >
+                        <div className={`text-sm font-medium ${
+                          percentage >= 95 ? 'text-purple-600 dark:text-purple-400' :
+                          percentage >= 80 ? 'text-amber-600 dark:text-amber-400' :
+                          'text-emerald-600 dark:text-emerald-400'
+                        }`}>
+                          {/* Customize the content based on the index */}
+                          {index === 0 && `${savings.perMonth}`}
+                          {index === 1 && `${savings.perDay}`}
+                          {index === 2 && `${savings.monthsLeft}`}
+                          {index === 3 && `${savings.daysLeft}`}
+                          {index === 4 && `${savings.remaining.toLocaleString()}`}
+                        </div>
+                        <div className="text-xs text-[#6B7280] dark:text-gray-400">
+                          {/* Customize the label based on the index */}
+                          {index === 0 && 'per month'}
+                          {index === 1 && 'per day'}
+                          {index === 2 && 'months left'}
+                          {index === 3 && 'days left'}
+                          {index === 4 && 'remaining'}
+                        </div>
+                      </div>
+                    ))}
                     </div>
                   </div>
                 );
               })}
+
+              {goals.length === 0 && (
+                <div className="p-8 text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3F4F6] dark:bg-[#0a0a0a] mb-4">
+                    <Goal className="w-6 h-6 text-[#6B7280]" />
+                  </div>
+                  <h3 className="text-[#1F2937] dark:text-white font-medium">No goals yet</h3>
+                  <p className="text-[#6B7280] dark:text-gray-400 text-sm mt-1">
+                    Start by adding your first financial goal
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -335,9 +454,9 @@ const Goals = ({ darkMode }) => {
                     const savings = calculateSavings(newGoal.target, newGoal.deadline);
                     return (
                       <>
-                        <div>Monthly savings: ₹{savings.perMonth}</div>
-                        <div>Daily savings: ₹{savings.perDay}</div>
-                        <div>Time remaining: {savings.monthsLeft} months ({savings.daysLeft} days)</div>
+                        <div>Monthly savings: {savings.perMonth}</div>
+                        <div>Daily savings: {savings.perDay}</div>
+                        <div>Time remaining: {savings.monthsLeft}  ({savings.daysLeft} days)</div>
                       </>
                     );
                   })()}

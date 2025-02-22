@@ -232,7 +232,7 @@ export default function Settings() {
   }
   return (
     <div className={`${baseStyles.container}`}>
-      <div className="max-w-7xl mx-auto ">
+      <div className="max-w-6xl pb-6 mx-auto ">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
