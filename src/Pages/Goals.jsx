@@ -4,10 +4,8 @@ import {
 } from 'lucide-react';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 
-// Currency formatter
-const formatCurrency = (amount) => {
-  return `₹${parseFloat(amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-};
+import { formatCurrency } from "./Components/Income/formatCurrency";
+
 
 // Color Palette
 const COLORS = {
@@ -33,7 +31,7 @@ const Goals = ({ darkMode }) => {
     { id: 4, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
     { id: 5, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
   ]);
-  const [newGoal, setNewGoal] = useState({ name: '', target: '', deadline: '' });
+  const [newGoal, setNewGoal] = useState({ name: '', target: '', deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0] });
   const [showSuccess, setShowSuccess] = useState(false);
   const { userType } = authCheck();
 
@@ -57,27 +55,57 @@ const Goals = ({ darkMode }) => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
+  // saving calculation
   const calculateSavings = (target, deadline, current = 0) => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
+    
     const endDate = new Date(deadline);
-    const monthsDiff = ((endDate.getFullYear() - today.getFullYear()) * 12) + 
-                       (endDate.getMonth() - today.getMonth());
-    const daysDiff = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+    endDate.setHours(0, 0, 0, 0); // Normalize to start of day
 
-    if (monthsDiff <= 0 || daysDiff <= 0) {
-      return { perMonth: 0, perDay: 0, remaining: 0, monthsLeft: 0, daysLeft: 0 };
+    // Calculate differences
+    const daysDiffRaw = (endDate - today) / (1000 * 60 * 60 * 24);
+    let monthsDiff = ((endDate.getFullYear() - today.getFullYear()) * 12) + 
+                    (endDate.getMonth() - today.getMonth());
+    let daysDiff = Math.ceil(daysDiffRaw);
+
+    // Handle special cases
+    const isSameMonth = endDate.getFullYear() === today.getFullYear() && 
+                       endDate.getMonth() === today.getMonth();
+    const isTodayOrPast = daysDiffRaw <= 0;
+
+    // If date is today or earlier, return zeros
+    if (isTodayOrPast) {
+        return { 
+            perMonth: 0, 
+            perDay: 0, 
+            remaining: parseFloat(target) - parseFloat(current), 
+            monthsLeft: 0, 
+            daysLeft: 0 
+        };
+    }
+
+    // Adjust for current month: set months to 0 and ensure days >= 1
+    if (isSameMonth) {
+        monthsDiff = 0;
+        daysDiff = Math.max(1, daysDiff); // Ensure at least 1 day
+    } else {
+        // For future months, ensure days is positive
+        daysDiff = Math.max(1, daysDiff);
     }
 
     const remaining = parseFloat(target) - parseFloat(current);
-    const perMonth = remaining / monthsDiff;
+    
+    // Calculate per month (use days if in current month)
+    const perMonth = monthsDiff > 0 ? remaining / monthsDiff : remaining / daysDiff;
     const perDay = remaining / daysDiff;
 
     return {
-      perMonth: perMonth.toFixed(2),
-      perDay: perDay.toFixed(2),
-      remaining: remaining.toFixed(2),
-      monthsLeft: monthsDiff,
-      daysLeft: daysDiff
+        perMonth: Math.max(0, perMonth).toFixed(2),
+        perDay: Math.max(0, perDay).toFixed(2),
+        remaining: Math.max(0, remaining).toFixed(2),
+        monthsLeft: monthsDiff,
+        daysLeft: daysDiff
     };
   };
 
@@ -318,7 +346,7 @@ const Goals = ({ darkMode }) => {
 
               <button
                 onClick={handleAddGoal}
-                className={`${baseStyles.button} ${baseStyles.activeButton} w-full`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200   dark:bg-opacity-10  focus:ring-4 focus:ring-blue-500/20  disabled:opacity-50 disabled:cursor-not-allowed bg-purple-50  dark:bg-[#8B5CF6] text-[#8B5CF6] dark:text-[#8B5CF6] w-full`}
               >
                 Add Goal
               </button>
