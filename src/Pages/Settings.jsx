@@ -8,6 +8,7 @@ import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { api } from "../AxiosMeta/ApiAxios";
 
 import {   MoreVertical } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 
 
@@ -61,7 +62,8 @@ const UserBadge = ({ user, type, darkMode, onUpgradeToPremium }) => {
               bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
               z-50 animate-fade-in
             `}>
-              <button
+              <Link
+              to={'/upgrade'}
                 onClick={(e) => {
                   e.stopPropagation();
                   onUpgradeToPremium?.();
@@ -71,7 +73,7 @@ const UserBadge = ({ user, type, darkMode, onUpgradeToPremium }) => {
               >
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 Upgrade to Premium
-              </button>
+              </Link>
             </div>
           )}
         </div>

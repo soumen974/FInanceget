@@ -10,7 +10,7 @@ const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction
   return(
   <>
   <div  className={`${HidePopup ===currentId?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
-  <div className="fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem]  bg-opacity-75" onClick={() => setHidePopup(true)}></div>
+  <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center " onClick={() => setHidePopup(true)}></div>
     <div className={` z-20 relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff13]   rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
      
       <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">

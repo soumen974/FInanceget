@@ -258,7 +258,7 @@ const Budget = () => {
                             <span className={`font-medium ${
                               ((category.spent / (category.budget || 1)) * 100) >= 95 ? 'text-red-600 dark:text-red-400' : 
                               ((category.spent / (category.budget || 1)) * 100) >= 80 ? 'text-yellow-400 dark:text-yellow-300' : 
-                              'text-green-400 dark:text-green-300'
+                              'text-[#10B981] dark:text-[#10B981]'
                             }`}>
                               ₹{category.spent.toLocaleString()}
                             </span>
@@ -272,7 +272,7 @@ const Budget = () => {
                           className={`h-2 rounded-full ${
                             ((category.spent / (category.budget || 1)) * 100) >= 95 ? 'bg-red-500 dark:bg-red-400' : 
                             ((category.spent / (category.budget || 1)) * 100) >= 80 ? 'bg-yellow-400 dark:bg-yellow-300' : 
-                            'bg-green-400 dark:bg-green-300'
+                            'bg-[#10B981] dark:bg-[#10B981]'
                           }`}
                           style={{ width: `${Math.min((category.spent / (category.budget || 1)) * 100, 100)}%` }}
                         />

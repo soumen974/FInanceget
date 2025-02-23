@@ -1,6 +1,6 @@
 import React, { useState ,useLocation, useEffect,useMemo } from 'react';
 import { User,Home,Goal,CreditCard , Wallet,ChevronRight,ChevronLeft, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, Links, NavLink } from 'react-router-dom';
 import { 
     DollarSign, 
     TrendingUp, 
@@ -276,7 +276,7 @@ export const Popupbox = ({title ,loading,HidePopup, setHidePopup,taskFunction}) 
   return(
   <>
   <div  className={`${HidePopup ?  'flex' : 'hidden'} fixed inset-0   z-30 flex items-center justify-center`}>
-  <div className="fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem]  bg-opacity-75" onClick={() => setHidePopup(false)}></div>
+  <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center " onClick={() => setHidePopup(false)}></div>
     <div className={` z-20 relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff13]   rounded-lg text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg `}>
      
       <div className=" px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -353,7 +353,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
   return (
     <>
-    <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout ?"} />
+    <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout conformation?"} />
     <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24] transition-all duration-300 
       ${isCollapsed ? 'w-16' : 'w-62'}`}>
      <div className="p-4 border-b dark:border-[#ffffff24]">
@@ -390,11 +390,18 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
               `} />
             </div>
             <span className="truncate w-[6.3rem]   font-medium">{currentUser}</span>
-            {userType === 'premium' && (
+            {userType === 'premium' ? (
               <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
                 PRO
               </span>
-            )}
+            ):
+            (
+              <Link to={'/upgrade'} className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                UPGRADE
+              </Link>
+            )
+            
+            }
           </div>
         </div>
           )}

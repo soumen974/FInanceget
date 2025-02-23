@@ -27,9 +27,9 @@ const Goals = ({ darkMode }) => {
   const [goals, setGoals] = useState([
     { id: 1, name: "Emergency Fund", target: 5000, current: 4200, deadline: "2028-06-30" },
     { id: 2, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
-    { id: 3, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
-    { id: 4, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
-    { id: 5, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
+    { id: 3, name: "Vacation", target: 2000, current: 1900, deadline: "2025-12-15" },
+    // { id: 4, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
+    // { id: 5, name: "Vacation", target: 2000, current: 800, deadline: "2025-12-15" },
   ]);
   const [newGoal, setNewGoal] = useState({ name: '', target: '', deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0] });
   const [showSuccess, setShowSuccess] = useState(false);
@@ -306,7 +306,7 @@ const Goals = ({ darkMode }) => {
                             </span>
                             <span className="text-[#D1D5DB] dark:text-gray-500">•</span>
                             <span className="text-[#6B7280] dark:text-gray-400">Saved:</span>
-                            <span className={`font-medium ${percentage >= 95 ? 'text-[#EF4444]' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
+                            <span className={`font-medium ${percentage >= 95 ? 'text-purple-600' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
                               ₹{parseFloat(goal.current).toLocaleString()}
                             </span>
                           </div>
@@ -343,12 +343,14 @@ const Goals = ({ darkMode }) => {
                       <div 
                         key={index} 
                         className={`p-3 rounded-lg ${
+                          savings.monthsLeft == 0 ? 'bg-red-500/10' :
                           percentage >= 95 ? 'bg-purple-500/10' : 
                           percentage >= 80 ? 'bg-amber-500/10' : 
                           'bg-emerald-500/10'
                         }`}
                       >
                         <div className={`text-sm font-medium ${
+                          savings.monthsLeft == 0 ? 'text-red-600 dark:text-red-400' :
                           percentage >= 95 ? 'text-purple-600 dark:text-purple-400' :
                           percentage >= 80 ? 'text-amber-600 dark:text-amber-400' :
                           'text-emerald-600 dark:text-emerald-400'

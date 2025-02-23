@@ -15,6 +15,8 @@ import Register from "./Auth/Pages/Register";
 import Settings from "./Pages/Settings";
 import Budget from "./Pages/Budget";
 import Goals from "./Pages/Goals";
+import Upgrade from "./Pages/Upgrade";
+
 
 
 
@@ -122,6 +124,8 @@ const App = () => {
             }/>
 
 
+          
+
           {/* Protected Routes with Layout */}
           {/* <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}> */}
           {isAuthenticated?
@@ -134,6 +138,7 @@ const App = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/budget" element={<Budget />} />
             <Route path="/goal" element={<Goals />} />
+            <Route path="/upgrade" element={<Upgrade />} />
 
 
             <Route path='*' element={
