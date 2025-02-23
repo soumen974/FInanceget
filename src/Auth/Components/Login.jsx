@@ -19,7 +19,7 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [remembered, setremembered] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [loginAttempts, setLoginAttempts] = useState(0);
 
@@ -28,7 +28,7 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
       setEmail(savedEmail);
-      setRememberMe(true);
+      setremembered(true);
     }
   }, []);
 
@@ -55,10 +55,10 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
     setMessage('');
 
     try {
-      const response = await api.post('/api/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password,remembered });
       setMessage('Login successful! Redirecting...');
       
-      if (rememberMe) {
+      if (remembered) {
         localStorage.setItem('rememberedEmail', email);
       } else {
         localStorage.removeItem('rememberedEmail');
@@ -179,8 +179,8 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
           <input
             id="remember-me"
             type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
+            checked={remembered}
+            onChange={(e) => setremembered(e.target.checked)}
             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
           />
           <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
