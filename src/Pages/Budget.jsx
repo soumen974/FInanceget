@@ -10,6 +10,7 @@ import { formatCurrency } from "./Components/Income/formatCurrency";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
 import { BudgetData } from "../Pages/Components/Budget/BudgetData";
+import { Link } from 'react-router-dom';
 
 // Main Budget Component
 const Budget = () => {
@@ -226,8 +227,8 @@ const Budget = () => {
                       <div className="flex items-center">
                         <div className="ml-4">
                           <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
-                          <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-                          <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+                          <p className="mt-2 mb-4 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+                          <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</Link>
                         </div>
                       </div>
                     </div>
@@ -350,8 +351,8 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
             <Crown className='h-14 w-14' />
             <div className="ml-4">
               <h2 className="text-2xl font-bold">Unlock Premium Features</h2>
-              <p className="mt-2 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
-              <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</button>
+              <p className="mt-2 mb-4 text-lg">Get access to exclusive content and features by upgrading to our premium plan.</p>
+              <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Upgrade Now</Link>
             </div>
           </div>
         </div>

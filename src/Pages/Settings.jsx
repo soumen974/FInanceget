@@ -17,31 +17,33 @@ const UserBadge = ({ user, type, darkMode, onUpgradeToPremium }) => {
 
   return (
     <div className={`
-      flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-150
+      flex items-center justify-between gap-2 px-3 py-2 rounded-lg transition-colors duration-150
       ${type === 'premium'
         ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
         : 'bg-gray-50 dark:bg-[#ffffff17] text-indigo-600 dark:text-indigo-400'}
     `}>
       {/* Avatar */}
-      <div className="relative">
-        <User 
-          size={18} 
-          className={type === 'premium' ? 'text-amber-500' : 'text-indigo-500'} 
-        />
-        <span className={`
-          absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
-          ${type === 'premium' ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
-        `} />
-      </div>
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <User 
+            size={18} 
+            className={type === 'premium' ? 'text-amber-500' : 'text-indigo-500'} 
+          />
+          <span className={`
+            absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
+            ${type === 'premium' ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
+          `} />
+        </div>
 
-      {/* User Info */}
-      <div className="flex flex-col">
-        <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
-          {user}
-        </span>
-        <span className="text-xs font-medium uppercase tracking-wide">
-          {type === 'premium' ? 'Premium' : 'Basic'}
-        </span>
+        {/* User Info */}
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
+            {user}
+          </span>
+          <span className="text-xs font-medium uppercase tracking-wide">
+            {type === 'premium' ? 'Premium' : 'Basic'}
+          </span>
+        </div>
       </div>
 
       {/* Menu for Basic Users */}
@@ -176,7 +178,7 @@ export default function Settings() {
 
 
    const baseStyles = {
-    container: `min-h-screen transition-colors duration-300 ${
+    container: ` transition-colors duration-300 ${
       darkMode ? 'bg-[#0a0a0a] text-slate-100' : 'bg-[#fff] text-slate-900'
     }`,
     headding: ` ${ darkMode ?'text-gray-100':'text-gray-900'}`,

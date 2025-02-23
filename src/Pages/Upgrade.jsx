@@ -56,7 +56,7 @@ const Upgrade = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#0a0a0a] text-[#1F2937] dark:text-white flex items-center justify-center py-12 px-4">
+    <div className="  dark:bg-[#0a0a0a] text-[#1F2937] dark:text-white flex items-center justify-center ">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <h1 className="text-3xl font-bold text-center tracking-tight">
@@ -125,8 +125,8 @@ const Upgrade = () => {
           disabled={selectedPlan === 'Basic'}
           className={`w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
             selectedPlan === 'Premium'
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-600 dark:bg-opacity-20 dark:hover:bg-opacity-20  dark:hover:bg-indigo-500 hover:shadow-md'
-              : 'bg-gray-300 text-gray-500 dark:bg-gray-600 dark:text-gray-400 cursor-not-allowed'
+              ? 'bg-indigo-600 text-white dark:text-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:bg-opacity-20 dark:hover:bg-opacity-20  dark:hover:bg-indigo-500 hover:shadow-md'
+              : 'bg-gray-300 text-gray-500 dark:bg-[#1c1c1c9a] dark:text-gray-400 cursor-not-allowed'
           }`}
         >
           {selectedPlan === 'Premium' ? 'Proceed to Payment' : 'Already Free'}

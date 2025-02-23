@@ -10,6 +10,7 @@ import { ReportsData } from './Components/Reports/ReportsData';
 import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
+import { Link, Links } from 'react-router-dom';
 
 
 // Constants
@@ -132,13 +133,6 @@ const Reports = () => {
         </div>
       </div>
 
-      {/* Error Handling */}
-      {(errorReports || incomeError) && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded-lg text-red-600 dark:text-red-400">
-          {errorReports || incomeError}
-        </div>
-      )}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Trends Chart */}
         <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
@@ -176,8 +170,8 @@ const Reports = () => {
                     <div className="absolute inset-0 z-20 backdrop-blur-sm bg-opacity-75 flex items-center justify-center">
                       <div className="p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold">Unlock Premium Features</h2>
-                        <p className="mt-2 text-base">Access historical data with a premium plan.</p>
-                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</button>
+                        <p className="mt-2 mb-4 text-base">Access historical data with a premium plan.</p>
+                        <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
                       </div>
                     </div>
                   )}
@@ -271,8 +265,8 @@ const Reports = () => {
                     <div className="absolute inset-0 z-20 backdrop-blur-sm bg-opacity-75 flex items-center justify-center">
                       <div className="p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold">Unlock Premium Features</h2>
-                        <p className="mt-2 text-base">Access detailed category data with a premium plan.</p>
-                        <button className="mt-4 px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</button>
+                        <p className="mt-2 mb-4 text-base">Access detailed category data with a premium plan.</p>
+                        <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
                       </div>
                     </div>
                   )}
