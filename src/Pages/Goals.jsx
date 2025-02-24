@@ -22,7 +22,7 @@ const COLORS = {
   danger: '#EF4444',
 };
 
-const Goals = ({ darkMode }) => {
+const Goals = () => {
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState({ 
     _id: null, // Added to track if editing
@@ -54,13 +54,15 @@ const Goals = ({ darkMode }) => {
 
   useEffect(() => {
     fetchGoals();
+    // console.log(goals);
+
   }, []);
 
   const fetchGoals = async () => {
     try {
       setLoading(true);
       const response = await api.get('/api/goals');
-      setGoals(response.data.map(goal => ({ ...goal, current: goal.current  }))); // Ensure current is set
+      setGoals(response.data.map(goal => ({ ...goal, current: goal.current  })));
     } catch (error) {
       console.error('Error fetching goals:', error);
     } finally {
@@ -166,7 +168,7 @@ const Goals = ({ darkMode }) => {
         name: newGoal.name, 
         target: parseFloat(newGoal.target), 
         deadline: newGoal.deadline,
-        current: newGoal.current || 0 // Include current if editing
+        current: newGoal.current || 0 
       };
 
       if (newGoal._id) {
@@ -210,7 +212,7 @@ const Goals = ({ darkMode }) => {
 
   const cancelEditGoal = () => {
     setNewGoal({
-      _id: null, // Added to track if editing
+      _id: null, 
       name: '', 
       target: '', 
       deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
@@ -617,14 +619,15 @@ const Goals = ({ darkMode }) => {
 
 export default Goals;
 
-export const GoalsData =()=>{
+export const GoalsData = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const fetchGoals = async () => {
     try {
       setLoading(true);
       const response = await api.get('/api/goals');
-      setGoals(response.data.map(goal => ({ ...goal, current: goal.current  }))); 
+      setGoals(response.data.map(goal => ({ _id: goal._id, name: goal.name }))); 
     } catch (error) {
       console.error('Error fetching goals:', error);
     } finally {
@@ -632,10 +635,25 @@ export const GoalsData =()=>{
     }
   };
 
+  const UpdateGoal = async (id, data) => {
+    try {
+      setLoading(true); 
+      const response = await api.put(`/api/goals/${id}`, { current: data });
+      console.log('Goal updated with current:', response.data.current);
+      console.log('Response data:', response.data); 
+      return response.data;
+    } catch (error) {
+      console.error('Error updating goal:', error);
+      throw error; 
+    } finally {
+      setLoading(false); 
+    }
+  };
+
   useEffect(() => {
     fetchGoals();
+    // console.log(goals);
   }, []);
 
-  return {goals, loading, fetchGoals};
-
+  return { goals, loading, fetchGoals,UpdateGoal };
 };
