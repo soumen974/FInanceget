@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
 import { ReceiptIndianRupee  } from "lucide-react";
+import { GoalsData } from "../../Goals";
 export default function TransactionForm({ type, setAction, action, editId, setEditId }) {
   const categories = type === 'income' ? [
     { id: 1, name: 'Salary', icon: '💰' },
@@ -22,6 +23,16 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     { id: 10, name: 'Other Miscellaneous', icon: '📦' }
   ];
 
+  const {goals} = GoalsData();
+   const [newGoal, setNewGoal] = useState({ 
+      _id: null,
+      name: '', 
+      target: '', 
+      deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
+      contributionAmount: '',
+      contributionFrequency: 'month',
+    });
+  // console.log(goals);
  
   const formatDateToString = (date) => {
     const d = new Date(date);
@@ -185,44 +196,11 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
-        <div className="space-y-2">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Description
-          </label>
-          <input
-            name="description"
-            value={formData.description}
-            onChange={handleOnChange}
-            id="description"
-            type="text"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
-            placeholder={`What is this ${type} for?`}
-            required
-          />
-        </div>
+       
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              {type === 'income' ? 'Source' : 'Category'}
-            </label>
-            <select
-              name="source"
-              value={formData.source}
-              onChange={handleOnChange}
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
-              required
-            >
-              <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
-              {categories.map(category => (
-                <option key={category.id} value={category.name}>
-                   {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div className="space-y-2">
+        <div className="space-y-2">
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Amount
             </label>
@@ -244,8 +222,62 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               />
             </div>
           </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {type === 'income' ? 'Source' : 'Category'}
+            </label>
+            <select
+              name="source"
+              value={formData.source}
+              onChange={handleOnChange}
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+              required
+            >
+              <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.name}>
+                   {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {formData.source==='Other Miscellaneous' && (
+            <div className="space-y-2">
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Add to Goal Savings
+              </label>
+              <select
+              name="source"
+              // value={formData.source}
+              // onChange={handleOnChange}s
+              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+              required
+            >
+              <option value="">Select Goal</option>
+              <option value="Goal">Goal 1</option>
+            </select>
+            </div>
+          )}
+
         </div>
 
+         <div className="space-y-2">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Description
+          </label>
+          <input
+            name="description"
+            value={formData.description}
+            onChange={handleOnChange}
+            id="description"
+            type="text"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+            placeholder={`What is this ${type} for?`}
+            required
+          />
+        </div>
         <div className="space-y-2">
           <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Date

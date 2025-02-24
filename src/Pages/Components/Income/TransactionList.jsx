@@ -196,7 +196,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   
     {/* Main Content Area */}
     <div className="p-4 sm:p-6">
-      <div className="space-y-3 md:min-h-[55.5vh]">
+      <div className="space-y-3 min-h-[55vh] md:min-h-[55.5vh]">
         {/* Loading State with Smooth Animation */}
         {loading && filteredTransactions.length === 0 && (
           <div className="space-y-3">

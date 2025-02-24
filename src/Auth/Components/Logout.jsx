@@ -10,6 +10,7 @@ export default function Logout() {
             const response = await api.post('/api/auth/logout');
             // console.log(response.data);
             window.location.href='/';
+            localStorage.removeItem('rememberedEmail');
         }catch(err){
             // console.log(err.response?.data || err.message || 'Something went wrong');
         }
