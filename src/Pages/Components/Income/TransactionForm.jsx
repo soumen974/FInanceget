@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
-import { ArrowUpCircle, ArrowDownCircle, Calendar, DollarSign, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
-import { ReceiptIndianRupee  } from "lucide-react";
+import { ArrowUpCircle, ArrowDownCircle, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
+import { ReceiptIndianRupee } from "lucide-react";
 import { GoalsData } from "../../Goals";
 
 export default function TransactionForm({ type, setAction, action, editId, setEditId }) {
@@ -17,26 +17,24 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     { id: 3, name: 'Utilities', icon: '💡' },
     { id: 4, name: 'Entertainment', icon: '🎬' },
     { id: 5, name: 'Healthcare', icon: '⚕️' },
-    { id: 6, name: 'Housing', icon: '⚕️' },
-    { id: 7, name: 'Education', icon: '⚕️' },
-    { id: 8, name: 'Insurance', icon: '⚕️' },
-    { id: 9, name: 'Savings/Investments', icon: '⚕️' },
+    { id: 6, name: 'Housing', icon: '🏠' },
+    { id: 7, name: 'Education', icon: '📚' },
+    { id: 8, name: 'Insurance', icon: '🛡️' },
+    { id: 9, name: 'Savings/Investments', icon: '💰' },
     { id: 10, name: 'Other Miscellaneous', icon: '📦' }
   ];
 
-  const {goals,fetchGoals,UpdateGoal} = GoalsData();
+  const { goals, fetchGoals, UpdateGoal } = GoalsData();
 
-
- 
   const formatDateToString = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    
     return `${year}-${month}-${day}`;
-  }
-  const [formData, setFormDate] = useState({
+  };
+
+  const [formData, setFormData] = useState({
     amount: '',
     source: '',
     date: formatDateToString(new Date()),
@@ -45,142 +43,113 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     goalId: '',
   });
 
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const [error, setError] = useState('');
-    const [message, setMessage] = useState('');
-    const [loading,setLoading] = useState(false);
-    
-
-  const emptyform = ()=>{
-    setFormDate((prevState) => ({
+  const emptyForm = () => {
+    setFormData((prevState) => ({
       ...prevState,
       amount: '',
       source: '',
       date: formatDateToString(new Date()),
       description: '',
-      note: ''
-    }));  
-  }
-
-  const handleSubmit = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-
-    // Convert the date to Date object for data send to backend 
-     const updformData = {
-        ...formData,
-        date: new Date(formData.date)
-      };
-
-    try {
-      if (type === 'income') {
-        if(!editId){
-          // add income
-          await api.post('/api/income', updformData);
-          setMessage('Income added successfully');
-          emptyform();
-          setAction('add'); 
-          setLoading(false);
-        }else{
-          // // update income
-         // console.log(editId);
-          await api.put(`/api/income/${editId}`, updformData);
-          setMessage('Income updated successfully');
-          emptyform();    
-          setAction('update');
-          setEditId(null);
-          setLoading(false);
-        } 
-      } else if(type === 'expense'){
-        if(!editId){
-          // console.log('coming soon');
-          await api.post('/api/expenses', updformData);
-          if(formData.goalId){
-            await UpdateGoal(formData.goalId,formData.amount);
-          }
-          
-          setMessage('Expense added successfully');
-          setAction('add'); 
-          emptyform(); 
-          setLoading(false);
-        }else{
-          // console.log('coming soon');
-          await api.put(`/api/expenses/${editId}`, updformData);
-          setMessage('Expense updated successfully');
-          emptyform();    
-          setAction('update');
-          setEditId(null);
-          setLoading(false);
-        }
-        // amount, category, date , description , note}
-      }
-    } catch (err) {
-      // console.error(err);
-      setLoading(false);
-      setError(err.response?.data || err.message || 'Something went wrong');
-    }
-  };
-
- 
-
-
-  const getDatatoEdit = async (editId)=>{
-     try{
-      setLoading(true);
-      if(type === 'income' ){
-        if(!editId) return;
-        // console.log(editId);
-        const response = await api.get(`/api/income/${editId}`);
-        // converting the object date to normal date 
-        const formGetData = {
-          ...response.data,
-          date: formatDateToString(response.data.date)
-        };
-        setFormDate(formGetData);
-        setLoading(false);
-        
-
-       // console.log(response.data);
-      }else if (type === 'expense'){
-        //  console.log(editId);
-        // console.log('coming soon');
-        if(!editId) return;
-        const response = await api.get(`/api/expenses/${editId}`);
-        const formGetData = {
-          ...response.data,
-          date: formatDateToString(response.data.date)
-        };
-        console.log(response.data);
-        setFormDate(formGetData);
-        setLoading(false);
-
-      }
-
-     }catch (err){
-      console.log(err);
-     }
-  }
-
-  useEffect(() => {
-    if (editId) {
-     // console.log(editId);
-      getDatatoEdit(editId);
-    }
-  //  console.log(formData.date);
-  }, [editId])
-  
-
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setFormDate((prev) => ({
-      ...prev,
-      [name]: value
+      note: '',
+      goalId: '',
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const updFormData = {
+      ...formData,
+      date: new Date(formData.date),
+    };
+
+    try {
+      if (type === 'income') {
+        if (!editId) {
+          await api.post('/api/income', updFormData);
+          setMessage('Income added successfully');
+          emptyForm();
+          setAction('add');
+        } else {
+          await api.put(`/api/income/${editId}`, updFormData);
+          setMessage('Income updated successfully');
+          emptyForm();
+          setAction('update');
+          setEditId(null);
+        }
+      } else if (type === 'expense') {
+        if (!editId) {
+          await api.post('/api/expenses', updFormData);
+          if (formData.goalId) {
+            await UpdateGoal(formData.goalId, formData.amount); // goalId is now _id
+          }
+          setMessage('Expense added successfully');
+          emptyForm();
+          setAction('add');
+        } else {
+          await api.put(`/api/expenses/${editId}`, updFormData);
+          setMessage('Expense updated successfully');
+          emptyForm();
+          setAction('update');
+          setEditId(null);
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDataToEdit = async (editId) => {
+    try {
+      setLoading(true);
+      if (type === 'income') {
+        if (!editId) return;
+        const response = await api.get(`/api/income/${editId}`);
+        const formGetData = {
+          ...response.data,
+          date: formatDateToString(response.data.date),
+        };
+        setFormData(formGetData);
+      } else if (type === 'expense') {
+        if (!editId) return;
+        const response = await api.get(`/api/expenses/${editId}`);
+        const formGetData = {
+          ...response.data,
+          date: formatDateToString(response.data.date),
+        };
+        setFormData(formGetData);
+      }
+    } catch (err) {
+      console.log(err);
+      setError('Failed to load data for editing');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (editId) {
+      getDataToEdit(editId);
+    }
+  }, [editId]);
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
-    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl  border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
       <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl ${
@@ -195,17 +164,14 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
-       
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div className="space-y-2">
+          <div className="space-y-2">
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Amount
             </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2">
-              <ReceiptIndianRupee size={18} className="text-gray-400 " />
+                <ReceiptIndianRupee size={18} className="text-gray-400" />
               </span>
               <input
                 name="amount"
@@ -236,39 +202,35 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
               {categories.map(category => (
                 <option key={category.id} value={category.name}>
-                   {category.name}
+                  {category.name}
                 </option>
               ))}
             </select>
           </div>
 
-          {formData.source==='Other Miscellaneous' && (
+          {formData.source === 'Other Miscellaneous' && (
             <div className="space-y-2">
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="goalId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Add to Goal Savings
               </label>
               <select
-              name="source"
-              value={formData.goalId}
-              onChange={handleOnChange}
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
-              required
-            >
-              <option value="">Select Goal</option>
-              
-              {goals.map(goal => (
-                <option key={goal._id} value={goal.name}>
-                   {goal.name}
-                </option>
-              ))}
-
-            </select>
+                name="goalId" // Fixed to correctly update formData.goalId
+                value={formData.goalId}
+                onChange={handleOnChange}
+                className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+              >
+                <option value="">Select Goal</option>
+                {goals.map(goal => (
+                  <option key={goal._id} value={goal._id}> {/* Fixed to use _id */}
+                    {goal.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
-
         </div>
 
-         <div className="space-y-2">
+        <div className="space-y-2">
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description
           </label>
@@ -296,13 +258,12 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
               id="date"
               className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             />
-            {/* <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} /> */}
           </div>
         </div>
 
         <div className="space-y-2">
           <label htmlFor="note" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Notes <span className="text-gray-400  text-xs">(Optional)</span>
+            Notes <span className="text-gray-400 text-xs">(Optional)</span>
           </label>
           <textarea
             name="note"
@@ -338,8 +299,8 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           {editId && (
             <button
               type="button"
-              onClick={() => { emptyform(); setEditId(null); }}
-              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-red-600  dark:text-red-500 dark:bg-red-600/10 dark:bg-opacity-10 bg-red-50 transition-all duration-200"
+              onClick={() => { emptyForm(); setEditId(null); }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-red-600 dark:text-red-500 dark:bg-red-600/10 dark:bg-opacity-10 bg-red-50 transition-all duration-200"
             >
               <X className="w-5 h-5" />
               <span>Cancel</span>
@@ -347,7 +308,6 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           )}
         </div>
 
-        {/* Status Messages */}
         {(error || message) && (
           <div className={`mt-4 p-4 rounded-lg flex items-center gap-2 ${
             error ? 'bg-red-50 text-red-600 dark:bg-red-600 dark:bg-opacity-20' : 'bg-green-50 text-green-600 dark:bg-green-600 dark:bg-opacity-20'

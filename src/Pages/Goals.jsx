@@ -5,7 +5,7 @@ import {
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { api } from "../AxiosMeta/ApiAxios";
-
+import Spinner from "../Loaders/Spinner";
 // Color Palette
 const COLORS = {
   primary: '#8B5CF6',
@@ -26,11 +26,13 @@ const Goals = () => {
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState({ 
     _id: null, // Added to track if editing
+    current:0,
     name: '', 
     target: '', 
     deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
     contributionAmount: '',
     contributionFrequency: 'month',
+
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -183,6 +185,7 @@ const Goals = () => {
 
       setNewGoal({ 
         _id: null,
+        current:0,
         name: '', 
         target: '', 
         deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0], 
@@ -213,6 +216,7 @@ const Goals = () => {
   const cancelEditGoal = () => {
     setNewGoal({
       _id: null, 
+      current:'',
       name: '', 
       target: '', 
       deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
@@ -362,7 +366,7 @@ const Goals = () => {
 
             <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24]">
               {loading ? (
-                <div className="p-8 text-center">Loading...</div>
+                <Spinner />
               ) : goals.length === 0 ? (
                 <div className="p-8 text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3F4F6] dark:bg-[#0a0a0a] mb-4">
@@ -493,6 +497,21 @@ const Goals = () => {
             </div>
 
             <div className="space-y-3 p-6">
+
+            <div>
+                <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Set Saving</label>
+                <div className="relative mt-1">
+                  <input 
+                    type="number" 
+                    placeholder="Set saved amount" 
+                    value={newGoal.current} 
+                    onChange={(e) => setNewGoal({ ...newGoal, current: e.target.value })} 
+                    className={baseStyles.input} 
+                  />
+                  <Goal size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
+                </div>
+              </div>
+
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Goal Name</label>
                 <div className="relative mt-1">

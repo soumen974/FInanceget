@@ -44,13 +44,11 @@ const CodeVErify = ({
   };
 
   const handleCodeInput = (index, value) => {
-    // If user pastes a longer string into the first input
-    if (index === 0 && value.length > 1) {
-      // Clean the input to only keep digits and limit to 6 characters
-      const cleanedValue = value.replace(/\D/g, '').slice(0, 6);
+    // Handle pasting a full code
+    if (value.length > 1) {
+      const cleanedValue = value.replace(/\D/g, '').slice(0, 6); // Only digits, max 6
       const newCodeInputs = ['', '', '', '', '', ''];
       
-      // Distribute the digits across inputs
       cleanedValue.split('').forEach((digit, i) => {
         if (i < 6) newCodeInputs[i] = digit;
       });
@@ -58,29 +56,37 @@ const CodeVErify = ({
       setCodeInputs(newCodeInputs);
       setcode(cleanedValue);
       
-      // Move focus to the last filled input or the end
+      // Focus the last filled input or the end if full
       const lastFilledIndex = Math.min(cleanedValue.length - 1, 5);
-      document.getElementById(`code-${lastFilledIndex}`).focus();
       setFocusedIndex(lastFilledIndex);
+      document.getElementById(`code-${lastFilledIndex}`)?.focus();
     } 
-    // Handle single digit input as before
-    else if (value.length <= 1) {
+    // Handle single digit input
+    else {
       const newCodeInputs = [...codeInputs];
-      newCodeInputs[index] = value;
+      newCodeInputs[index] = value.replace(/\D/g, ''); // Only allow digits
       setCodeInputs(newCodeInputs);
       setcode(newCodeInputs.join(''));
 
       if (value && index < 5) {
-        document.getElementById(`code-${index + 1}`).focus();
         setFocusedIndex(index + 1);
+        document.getElementById(`code-${index + 1}`)?.focus();
       }
     }
   };
 
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !codeInputs[index] && index > 0) {
-      document.getElementById(`code-${index - 1}`).focus();
       setFocusedIndex(index - 1);
+      document.getElementById(`code-${index - 1}`)?.focus();
+    }
+  };
+
+  const handlePaste = (e, index) => {
+    if (index === 0) { // Only handle paste in the first input
+      const pastedData = e.clipboardData.getData('text');
+      handleCodeInput(0, pastedData);
+      e.preventDefault(); // Prevent default paste behavior
     }
   };
 
@@ -117,8 +123,9 @@ const CodeVErify = ({
     } catch (err) {
       setError(err.response?.data || err.message || 'Invalid verification code');
       setCodeInputs(['', '', '', '', '', '']);
-      document.getElementById('code-0').focus();
+      setcode('');
       setFocusedIndex(0);
+      document.getElementById('code-0')?.focus();
       setMessage('');
     } finally {
       setLoading(false);
@@ -145,16 +152,18 @@ const CodeVErify = ({
           <label className="block text-sm font-medium text-gray-700">
             Enter verification code
           </label>
-          <div className="flex gap-2 sm:gap-3  justify-between">
+          <div className="flex gap-2 sm:gap-3 justify-between">
             {codeInputs.map((digit, index) => (
               <input
                 key={index}
-                // id={`code-${index}`}
+                id={`code-${index}`} // Re-enabled for focus management
                 type="text"
-                maxLength="6" // Changed to allow pasting full code in first input
+                maxLength="1" // Restrict to 1 char per input, pasting handled separately
                 value={digit}
                 onChange={(e) => handleCodeInput(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
+                onPaste={(e) => handlePaste(e, index)} // Added paste handler
+                onFocus={() => setFocusedIndex(index)}
                 className={`
                   w-[9vw] h-[9vw] sm:w-12 sm:h-12 text-center text-lg sm:text-xl font-semibold 
                   border-2 rounded-lg transition-all duration-200
