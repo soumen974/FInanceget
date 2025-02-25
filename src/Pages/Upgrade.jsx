@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, Check, Wallet, Lock, Mail, X } from 'lucide-react';
-import payme29  from "./assets/payme29.jpeg";
+import payme29  from "./assets/payme29qr.png";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 
 const COLORS = {
@@ -52,7 +52,9 @@ const Upgrade = () => {
   };
 
   if(userType==='premium'){
-    return <div className=''>Enjoy your premium</div>
+    return <div className='dark:text-white'>Enjoy your premium</div>
+  }else if(userType==='admin'){
+    return <div className='dark:text-white'>Admin page is activated</div>
   }
 
   return (
@@ -149,27 +151,75 @@ const Upgrade = () => {
         </div>
       </div>
 
-      {/* QR Code Popup */}
+      
       {showQrPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#0a0a0a] border border-[#ffffff24] rounded-xl p-6 w-full max-w-sm relative shadow-2xl">
-            <button
-              onClick={closeQrPopup}
-              className="absolute top-2 right-2 p-1 rounded-full bg-gray-200 dark:bg-[#ffffff17] text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-[#ffffff24] transition-colors duration-150"
-            >
-              <X size={18} />
-            </button>
-            <h3 className="text-lg font-semibold text-center mb-4 text-[#1F2937] dark:text-white">Scan to Pay</h3>
-            <div className="w-48 h-48 mx-auto bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
-              <img src={payme29} alt="pay29" className="w-full h-full object-cover  rounded-lg" />
-            </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300 text-center mt-4">Use your UPI app to scan and pay ₹29</p>
-            <div className="flex items-center justify-center gap-1 mt-2 text-xs text-[#6B7280] dark:text-gray-400">
-              <Lock size={14} />
-              Secure Transaction
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div className="bg-white dark:bg-[#0a0a0a] border border-[#ffffff24] rounded-2xl p-8 w-full max-w-sm relative shadow-2xl">
+          <button
+            onClick={closeQrPopup}
+            className="absolute top-3 right-3 p-2 rounded-full bg-gray-200 dark:bg-[#ffffff17] text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-[#ffffff24] transition-colors duration-150"
+          >
+            <X size={20} />
+          </button>
+      
+          {/* Header Section */}
+          <div className="space-y-2 mb-6">
+            <h3 className="text-xl font-bold text-center text-[#1F2937] dark:text-white">Scan to Pay</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">Complete your payment securely</p>
+          </div>
+      
+          {/* Amount Display */}
+          <div className="bg-indigo-50 dark:bg-[#ffffff0a] rounded-lg p-3 mb-6">
+            <div className="flex items-center justify-center">
+              <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">₹29/-</span>
             </div>
           </div>
+      
+          {/* QR Code Section */}
+          <div className="relative">
+            <div className="w-52 h-52 mx-auto bg-white dark:bg-gray-800 rounded-xl p-3 shadow-md">
+              <img 
+                src={payme29} 
+                alt="Payment QR Code" 
+                className="w-full h-full object-contain rounded-lg" 
+              />
+            </div>
+            
+            {/* Scanner Animation Overlay */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-52 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-75 animate-[scan_2s_ease-in-out_infinite]"></div>
+          </div>
+      
+          {/* Instructions */}
+          <div className="mt-6 space-y-3">
+            <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
+              Use your UPI app to scan and complete payment
+            </p>
+            <div className="bg-yellow-50 dark:bg-[#ffffff0a] p-3 rounded-lg">
+              <p className="text-xs text-yellow-700 dark:text-yellow-500 text-center font-medium">
+                Important: Please include your account email with the payment
+              </p>
+            </div>
+          </div>
+      
+          {/* Security Badge */}
+          <div className="mt-4 flex items-center justify-center gap-2 p-2 bg-[#f8fafc] dark:bg-[#ffffff0a] rounded-lg">
+            <Lock size={16} className="text-green-600 dark:text-green-500" />
+            <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+              Secure SSL encrypted payment
+            </span>
+          </div>
+      
+          {/* Payment Methods */}
+          {/* <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#ffffff1a]">
+            <div className="flex items-center justify-center gap-3">
+              <img src="/upi-icon.png" alt="UPI" className="h-6 w-auto opacity-70" />
+              <img src="/gpay-icon.png" alt="Google Pay" className="h-6 w-auto opacity-70" />
+              <img src="/phonepe-icon.png" alt="PhonePe" className="h-6 w-auto opacity-70" />
+              <img src="/paytm-icon.png" alt="Paytm" className="h-6 w-auto opacity-70" />
+            </div>
+          </div> */}
         </div>
+      </div>
       )}
     </div>
   );
