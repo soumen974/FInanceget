@@ -382,7 +382,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
               {/* Small status indicator dot */}
               <span className={`
                 absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full
-                ${userType === 'premium' 
+                ${(userType === 'premium' || userType === 'admin') 
                   ? 'bg-amber-400 dark:bg-amber-500' 
                   : 'bg-blue-400 dark:bg-blue-500'
                 }
@@ -390,7 +390,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
               `} />
             </div>
             <span className="truncate w-[6.3rem]   font-medium">{currentUser}</span>
-            {userType === 'premium' ? (
+            {(userType === 'premium' || userType === 'admin') ? (
               <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
                 PRO
               </span>
@@ -406,7 +406,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         </div>
           )}
 
-    {(isCollapsed & userType === 'premium')?
+    {(isCollapsed & (userType === 'premium' || userType === 'admin'))?
        <div className="p-4 border-b dark:border-[#ffffff24]">
         <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
           PRO

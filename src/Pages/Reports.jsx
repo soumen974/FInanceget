@@ -10,8 +10,7 @@ import { ReportsData } from './Components/Reports/ReportsData';
 import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
-import { Link, Links } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 
 // Constants
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -55,12 +54,22 @@ const Reports = () => {
   const [trendChartType, setTrendChartType] = useState('lineChart');
   const [categoryChartType, setCategoryChartType] = useState('PieChart');
 
+  const isPremiumOrAdmin = userType === 'premium' || userType === 'admin';
+
   // Memoized Data
-  const years = useMemo(() => Availableyears.length > 0 ? Availableyears : [currentYear, currentYear - 1], [Availableyears]);
-  const monthsForIncome = useMemo(() => 
-    TransactionData.filter(month => (reportType === 'Income' ? month.income : month.expense) > 0).map(month => month.name),
-    [TransactionData, reportType]
+  const years = useMemo(() => 
+     Availableyears.length > 0 ? Availableyears : [currentYear], 
+    [Availableyears]
   );
+
+  const monthsForIncome = useMemo(() => {
+    if (TransactionData.length > 0) {
+      return TransactionData
+        .filter(month => (reportType === 'Income' ? month.income : month.expense) > 0)
+        .map(month => month.name);
+    }
+    return ['No Data'];
+  }, [TransactionData, reportType]);
 
   const totalExpensePerYear = useMemo(() => 
     TransactionData.reduce((acc, expense) => acc + expense.expense, 0), 
@@ -82,11 +91,12 @@ const Reports = () => {
     const debounceTimeout = setTimeout(() => {
       setsearchYear(dateRange);
       setMonth(dateRangeMonth);
-    }, 300); // Debounce for 300ms
+      
+    }, 300); 
     return () => clearTimeout(debounceTimeout);
-  }, [dateRange, dateRangeMonth, setsearchYear, setMonth]);
+  }, [dateRange, dateRangeMonth, setsearchYear, setMonth, isPremiumOrAdmin]);
 
-  const isPremiumLocked = dateRange !== currentYear && userType !== 'premium';
+  const isPremiumLocked = dateRange !== currentYear && !isPremiumOrAdmin;
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
@@ -109,9 +119,9 @@ const Reports = () => {
                 onChange={(e) => setDateRange(Number(e.target.value))}
                 className="mt-1 px-4 py-2.5 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                {years.map((year, i) => (
+                {years.map((year) => (
                   <option key={year} value={year}>
-                    {year} {i > 0 && userType !== 'premium' ? '💎' : ''}
+                    {year} {!isPremiumOrAdmin && year !== currentYear ? '💎' : ''}
                   </option>
                 ))}
               </select>
@@ -139,10 +149,10 @@ const Reports = () => {
           <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg  bg-blue-50 dark:bg-blue-600 text-blue-600 ${reportType==='Expenses'&& 'bg-yellow-50 dark:bg-yellow-600 text-yellow-600'} ${reportType==='Net Savings'&& 'bg-purple-50 dark:bg-purple-600 text-purple-600'}  dark:bg-opacity-20 `}>
-                 {reportType==='Income'&& <TrendingUp size={20} />}
-                 {reportType==='Net Savings'&& <Calendar size={20} />}
-                 {reportType==='Expenses'&& <BarChart2 size={20} />}
+                <div className={`p-2 rounded-lg bg-blue-50 dark:bg-blue-600 text-blue-600 ${reportType === 'Expenses' && 'bg-yellow-50 dark:bg-yellow-600 text-yellow-600'} ${reportType === 'Net Savings' && 'bg-purple-50 dark:bg-purple-600 text-purple-600'} dark:bg-opacity-20`}>
+                  {reportType === 'Income' && <TrendingUp size={20} />}
+                  {reportType === 'Net Savings' && <Calendar size={20} />}
+                  {reportType === 'Expenses' && <BarChart2 size={20} />}
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {reportType} Trends
@@ -171,7 +181,7 @@ const Reports = () => {
                       <div className="p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold">Unlock Premium Features</h2>
                         <p className="mt-2 mb-4 text-base">Access historical data with a premium plan.</p>
-                        <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
+                        <Link to={'/upgrade'} className="px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
                       </div>
                     </div>
                   )}
@@ -246,8 +256,14 @@ const Reports = () => {
                   onChange={(e) => setDateRangeMonth(Number(e.target.value))}
                   className="mt-1 px-4 py-2 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 >
-                  {monthsForIncome.map((month, index) => (
-                    <option key={index} value={MONTH_NAMES.indexOf(month)}>{month}</option>
+                  {MONTH_NAMES.map((month, index) => (
+                    <option 
+                      key={index} 
+                      value={index}
+                      disabled={!monthsForIncome.includes(month)}
+                    >
+                      {month} {!monthsForIncome.includes(month) && '(No Data)'}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -266,7 +282,7 @@ const Reports = () => {
                       <div className="p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold">Unlock Premium Features</h2>
                         <p className="mt-2 mb-4 text-base">Access detailed category data with a premium plan.</p>
-                        <Link to={'/upgrade'} className=" px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
+                        <Link to={'/upgrade'} className="px-4 py-2 bg-white dark:bg-black dark:text-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100">Upgrade Now</Link>
                       </div>
                     </div>
                   )}
@@ -358,13 +374,3 @@ const Reports = () => {
 };
 
 export default Reports;
-
-const styles = `
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-`;

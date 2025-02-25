@@ -57,14 +57,17 @@ const Upgrade = () => {
 
   return (
     <div className="  dark:bg-[#0a0a0a] text-[#1F2937] dark:text-white flex items-center justify-center ">
-      <div className="max-w-md w-full space-y-8">
+      <div className="max-w-md w-full space-y-8 mb-6">
+
         {/* Header */}
-        <h1 className="text-3xl font-bold text-center tracking-tight">
-          Upgrade to <span className="text-indigo-600 dark:text-indigo-400">Premium</span>
-        </h1>
-        <p className="text-sm text-[#6B7280] dark:text-gray-400 text-center">
-          Unlock advanced tools at a special price.
-        </p>
+        <div className="space-y-3">
+          <h1 className="text-3xl font-bold text-center tracking-tight">
+            Upgrade to <span className="text-indigo-600 dark:text-indigo-400">Premium</span>
+          </h1>
+          <p className="text-sm text-[#6B7280] dark:text-gray-400 text-center">
+            Unlock advanced tools at a special price.
+          </p>
+        </div>
 
         {/* Pricing Plans */}
         <div className="grid gap-6">

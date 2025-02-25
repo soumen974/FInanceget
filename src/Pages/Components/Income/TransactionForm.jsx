@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import { ArrowUpCircle, ArrowDownCircle, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
 import { ReceiptIndianRupee } from "lucide-react";
-import { GoalsData } from "../../Goals";
 
 export default function TransactionForm({ type, setAction, action, editId, setEditId }) {
   const categories = type === 'income' ? [
@@ -24,8 +23,6 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     { id: 10, name: 'Other Miscellaneous', icon: '📦' }
   ];
 
-  const { goals, fetchGoals, UpdateGoal } = GoalsData();
-
   const formatDateToString = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -40,7 +37,6 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
     date: formatDateToString(new Date()),
     description: '',
     note: '',
-    goalId: '',
   });
 
   const [error, setError] = useState('');
@@ -55,7 +51,6 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
       date: formatDateToString(new Date()),
       description: '',
       note: '',
-      goalId: '',
     }));
   };
 
@@ -85,9 +80,6 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
       } else if (type === 'expense') {
         if (!editId) {
           await api.post('/api/expenses', updFormData);
-          if (formData.goalId) {
-            await UpdateGoal(formData.goalId, formData.amount); // goalId is now _id
-          }
           setMessage('Expense added successfully');
           emptyForm();
           setAction('add');
@@ -208,26 +200,7 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             </select>
           </div>
 
-          {formData.source === 'Other Miscellaneous' && (
-            <div className="space-y-2">
-              <label htmlFor="goalId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Add to Goal Savings
-              </label>
-              <select
-                name="goalId" // Fixed to correctly update formData.goalId
-                value={formData.goalId}
-                onChange={handleOnChange}
-                className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
-              >
-                <option value="">Select Goal</option>
-                {goals.map(goal => (
-                  <option key={goal._id} value={goal._id}> {/* Fixed to use _id */}
-                    {goal.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+         
         </div>
 
         <div className="space-y-2">
