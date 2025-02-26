@@ -13,7 +13,7 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
   };
 
   return (
-    <div className="bg-white dark:bg-black rounded-xl shadow-sm border border-gray-100 dark:border-[#ffffff24]">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-gray-100 dark:border-[#ffffff24]">
       <div className="border-b border-gray-100 dark:border-[#ffffff24] p-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Transactions</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Your latest financial activities</p>
