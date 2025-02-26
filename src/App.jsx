@@ -118,7 +118,7 @@ const App = () => {
           } />
         
            <Route path='*' element={
-            // (!loading?
+            (!loading?
                <div className="text-center  h-screen justify-center items-center flex jus py-12">
                 <div className="">
                   <h2 className="text-2xl font-bold text-gray-800">404 - Page Not Found</h2>
@@ -126,9 +126,9 @@ const App = () => {
                   <Link to='/' className='text-indigo-600 underline hover:no-underline '>Go Back to Home</Link>
                </div>
              </div>
-            //  : <div className='flex justify-center place-content-center h-screen '>
-            //   <Spinner/>
-            //   </div>)
+             : <div className='flex justify-center place-content-center h-screen '>
+              <Spinner/>
+              </div>)
             }/>
 
 
@@ -136,6 +136,7 @@ const App = () => {
 
           {/* Protected Routes with Layout */}
           {/* <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}> */}
+
           {isAuthenticated?
           <Route element={<Layout />}>
             <Route path="/" element={<Dashboard />} />
@@ -157,6 +158,8 @@ const App = () => {
             }/>
             </Route>:
           <Route path="/" element={<Landing />} />}
+
+          
 
         </Routes>
       </Router>

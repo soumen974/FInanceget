@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, Check, Wallet, Lock, Mail, X } from 'lucide-react';
 import payme29  from "./assets/payme29qr.png";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
+import { Link } from 'react-router-dom';
 
 const COLORS = {
   primary: '#6366F1',    // Modern Indigo for Premium
@@ -196,7 +197,7 @@ const Upgrade = () => {
             </p>
             <div className="bg-yellow-50 dark:bg-[#ffffff0a] p-3 rounded-lg">
               <p className="text-xs text-yellow-700 dark:text-yellow-500 text-center font-medium">
-                Important: Please include your account email with the payment
+                Important: Please include your account email with the payment note for successful verification.
               </p>
             </div>
           </div>
@@ -210,14 +211,15 @@ const Upgrade = () => {
           </div>
       
           {/* Payment Methods */}
-          {/* <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#ffffff1a]">
+          <div className="mt-4 md:hidden pt-4 border-t border-gray-200 dark:border-[#ffffff1a]">
             <div className="flex items-center justify-center gap-3">
-              <img src="/upi-icon.png" alt="UPI" className="h-6 w-auto opacity-70" />
+              {/* <img src="/upi-icon.png" alt="UPI" className="h-6 w-auto opacity-70" />
               <img src="/gpay-icon.png" alt="Google Pay" className="h-6 w-auto opacity-70" />
               <img src="/phonepe-icon.png" alt="PhonePe" className="h-6 w-auto opacity-70" />
-              <img src="/paytm-icon.png" alt="Paytm" className="h-6 w-auto opacity-70" />
+              <img src="/paytm-icon.png" alt="Paytm" className="h-6 w-auto opacity-70" /> */}
+              <Link to="upi://pay?pa=sob99338@okaxis&pn=Soumen&am=29.00&cu=INR&aid=uGICAgIDt7YC4Qw" className="h-6 flex justify-center items-center p-5 rounded-full opacity-70 bg-blue-700 w-full">Pay</Link>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
       )}

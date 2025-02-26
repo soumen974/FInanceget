@@ -79,18 +79,18 @@ const Headder = () => {
               {/* User Badge */}
               <div className={`
                 flex items-center gap-3 px-3 py-2 mb-2 rounded-lg
-                ${userType === 'premium'
+                ${(userType === 'premium' || userType === 'admin')
                   ? 'bg-amber-50 dark:bg-amber-900/20'
                   : 'bg-gray-50 dark:bg-[#ffffff17]'}
               `}>
                 <div className="relative">
                   <User 
                     size={18} 
-                    className={userType === 'premium' ? 'text-amber-500' : 'text-indigo-500'} 
+                    className={(userType === 'premium' || userType === 'admin') ? 'text-amber-500' : 'text-indigo-500'} 
                   />
                   <span className={`
                     absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
-                    ${userType === 'premium' ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
+                    ${(userType === 'premium' || userType === 'admin') ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
                   `} />
                 </div>
                 <div>
@@ -99,9 +99,9 @@ const Headder = () => {
                   </span>
                   <span className={`
                     text-xs font-medium uppercase tracking-wide
-                    ${userType === 'premium' ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400'}
+                    ${(userType === 'premium' || userType === 'admin') ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400'}
                   `}>
-                    {userType === 'premium' ? 'Premium' : 'Basic'}
+                    {(userType === 'premium') ? 'Premium' : userType === 'admin'? 'Admin' : 'Basic'}
                   </span>
                 </div>
               </div>
