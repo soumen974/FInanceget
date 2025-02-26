@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef  } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import {formatCurrency} from "../Income/formatCurrency";
 import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
 // import DialogBox from "../../../popups/DialogBox";
 
-import { TriangleAlert ,ArrowUpCircle,ArrowDownCircle,Edit2,Trash2 } from 'lucide-react'
+import { TriangleAlert ,ArrowUpCircle,ArrowDownCircle,Edit2,Trash2,MoreVertical } from 'lucide-react'
 
 const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction,type}) =>{
   return(
@@ -50,44 +50,11 @@ const Popupbox = ({title ,loading,HidePopup, setHidePopup,currentId,taskFunction
 };
 
 export default function TransactionList({ type ,action ,setAction ,setEditId ,editId}) {
-  const [transactions, setTransactions] = useState([
-    { 
-      _id: 1, 
-      description: 'Grocery Shopping',
-      category: 'Food',
-      amount: 120.50,
-      date: '2024-12-26',
-      type: 'expense'
-    },
-    { 
-      _id: 2, 
-      description: 'Salary Deposit',
-      category: 'Salary',
-      amount: 3000.00,
-      date: '2024-12-25',
-      type: 'income'
-    },
-    { 
-      _id: 3, 
-      description: 'Freelance Work',
-      category: 'Side Income',
-      amount: 500.00,
-      date: '2024-12-24',
-      type: 'income'
-    },
-    { 
-      _id: 4, 
-      description: 'Internet Bill',
-      category: 'Utilities',
-      amount: 89.99,
-      date: '2024-12-23',
-      type: 'expense'
-    }
-  ]);
   const [GetData, setGetData] = useState([]);
    const [error, setError] = useState('');
    const [message, setMessage] = useState('');
    const [loading,setLoading] = useState(true);
+   const menuRef = useRef(null); 
 
   useEffect(() => {
     getData();
@@ -111,10 +78,16 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   };
 
   const [HidePopup, setHidePopup] = useState(null);
+    const [showMenu, setShowMenu] = useState(null);
+  
   const [updating5,setupdating5] = useState(0);
 
   const handlePopupopner = (id) => {
     setHidePopup(HidePopup === id ? null : id);
+  };
+
+  const handleMenuClick = (id) => {
+    setShowMenu(showMenu === id ? null : id);
   };
 
   const handleDelete = async (id) =>{
@@ -156,6 +129,16 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
     }
 
   }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(null);
+      }
+    };
+    document.body.addEventListener('click', handleClickOutside);
+    return () => document.body.removeEventListener('click', handleClickOutside);
+  }, []);
 
  
 
@@ -228,7 +211,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
               className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
-
+               
               
               <div className="flex-1">
                 <p className="font-medium text-gray-900 dark:text-white truncate">{transaction.description}</p>
@@ -239,25 +222,66 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                   {/* <span>{new (Date()-1).toLocaleDateString()}</span> */}
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-right flex justify-center items-center gap-2">
                 <p className={`font-bold ${type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                   {formatCurrency(transaction.amount)} 
                 </p>
+
+                {/* buttons menu*/}
                 <div className="flex gap-2 mt-1">
+                
                   <button
-                    onClick={() => setEditId(transaction._id)}
-                    className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20 transition-colors"
-                    title="Edit transaction"
+                    onClick={(e) => { e.stopPropagation();handleMenuClick(transaction._id)}}
+                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
                   >
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    onClick={() => handlePopupopner(transaction._id)}
-                    className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20 transition-colors"
-                    title="Delete transaction"
-                  >
-                    <Trash2 size={16} />
+                    <MoreVertical size={16} className="text-gray-500 dark:text-gray-400" />
                   </button> 
+                  {(showMenu===transaction._id) && (
+                   <div 
+                   ref={menuRef}
+                   onClick={()=>{setShowMenu(null)}}
+                   className={`
+                     absolute right-0 mt-2 w-24 rounded-xl shadow-lg py-2 px-1.5
+                     bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
+                     z-10 transform  scale-95 animate-in
+                     data-[state=open]:opacity-100 data-[state=open]:scale-100
+                     transition-all duration-200 ease-out
+                   `}
+                 >
+
+                   {/* Edit Action */}
+                   <button
+                     onClick={() => setEditId(transaction._id)}
+                     className="w-full flex items-center gap-2 p-2 rounded-lg
+                       text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300
+                       hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20
+                       transition-colors duration-150 group"
+                     title="Edit transaction"
+                   >
+                     <Edit2 
+                       size={16} 
+                       className="group-hover:scale-110 transition-transform duration-150" 
+                     />
+                     <span className="text-sm font-medium">Edit</span>
+                   </button>
+                 
+                   {/* Delete Action */}
+                   <button
+                     onClick={() => handlePopupopner(transaction._id)}
+                     className="w-full flex items-center gap-2 p-2 rounded-lg mt-1
+                       text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-300
+                       hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20
+                       transition-colors duration-150 group"
+                     title="Delete transaction"
+                   >
+                     <Trash2 
+                       size={16} 
+                       className="group-hover:scale-110 transition-transform duration-150" 
+                     />
+                     <span className="text-sm font-medium">Delete</span>
+                   </button>
+                  </div>
+                    )}
                 </div>
                  
               </div>
