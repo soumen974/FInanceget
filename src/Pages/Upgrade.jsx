@@ -217,7 +217,7 @@ const Upgrade = () => {
               <img src="/gpay-icon.png" alt="Google Pay" className="h-6 w-auto opacity-70" />
               <img src="/phonepe-icon.png" alt="PhonePe" className="h-6 w-auto opacity-70" />
               <img src="/paytm-icon.png" alt="Paytm" className="h-6 w-auto opacity-70" /> */}
-              <Link to="upi://pay?pa=sob99338@okaxis&pn=Soumen&am=29.00&cu=INR&aid=uGICAgIDt7YC4Qw" className="h-6 flex justify-center items-center p-5 rounded-full opacity-70 bg-blue-700 w-full">Pay</Link>
+              <Link to="upi://pay?pa=sob99338@okaxis&pn=Soumen&am=29.00&cu=INR&aid=uGICAgIDt7YC4Qw" className="h-6 flex justify-center items-center p-5 rounded-full font-bold opacity-70 bg-indigo-600 w-full">Pay</Link>
             </div>
           </div>
         </div>
