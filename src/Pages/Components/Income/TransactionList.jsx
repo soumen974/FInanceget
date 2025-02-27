@@ -179,7 +179,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   
     {/* Main Content Area */}
     <div className="p-4 sm:p-6">
-      <div className="space-y-3 min-h-[55vh] md:min-h-[55.5vh]">
+      <div className="space-y-3 min-h-[48vh] md:min-h-[48vh]">
         {/* Loading State with Smooth Animation */}
         {loading && filteredTransactions.length === 0 && (
           <div className="space-y-3">
@@ -208,7 +208,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="group relative flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
+              className="group relative flex items-center justify-between p-4 md:pr-1 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
                
@@ -222,7 +222,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                   {/* <span>{new (Date()-1).toLocaleDateString()}</span> */}
                 </div>
               </div>
-              <div className="text-right flex justify-center items-center gap-2">
+              <div className="text-right flex max-md:flex-col  justify-center items-center md:gap-1">
                 <p className={`font-bold ${type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                   {formatCurrency(transaction.amount)} 
                 </p>
@@ -232,9 +232,9 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                 
                   <button
                     onClick={(e) => { e.stopPropagation();handleMenuClick(transaction._id)}}
-                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
+                    className="p-1  rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
                   >
-                    <MoreVertical size={16} className="text-gray-500 dark:text-gray-400" />
+                    <MoreVertical size={16} className="text-gray-500 dark:text-gray-400 max-md:rotate-90" />
                   </button> 
                   {(showMenu===transaction._id) && (
                    <div 

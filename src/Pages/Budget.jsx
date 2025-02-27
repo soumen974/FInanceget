@@ -3,7 +3,7 @@ import {
   DollarSign, PieChart, Edit2, Trash2, AlertCircle, CheckCircle, X,
   Coffee, Home, Smartphone, Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown, Percent,HeartHandshake,Lightbulb,Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
+import { Car, Crown, Twitter, Percent,HeartHandshake,Lightbulb,Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -144,6 +144,11 @@ const Budget = () => {
     }))
   , [monthlyIncome, budgetPercentages, spentMap]);
 
+  const shareBudget = () => {
+    const tweet = `Managed my ${MONTH_NAMES[selectedMonth]} budget on FinanceGet! Total: ₹${monthlyIncome}. Join me: https://financeget.vercel.app #FinanceGet @Soumen81845556`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
+};
+
   return (
     <div className="max-w-6xl pb-6 mx-auto">
       <div className="mb-8">
@@ -228,7 +233,7 @@ const Budget = () => {
         <div className="lg:col-span-2">
           <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl shadow-sm border border-gray-100">
             <div className="p-6 border-b dark:border-[#ffffff24] border-gray-100">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-50 dark:bg-opacity-20 dark:bg-blue-900 rounded-lg">
                     <PieChart className="w-5 h-5 text-blue-600 dark:text-blue-600" />
@@ -236,6 +241,17 @@ const Budget = () => {
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Budget Categories for {MONTH_NAMES[selectedMonth].charAt(0).toUpperCase() + MONTH_NAMES[selectedMonth].slice(1)} {selectedYear}
                   </h2>
+                </div>
+
+                {/* Limelight: Share Budget */}
+                <div className="mt-4">
+                  <button
+                    onClick={shareBudget}
+                    className="group inline-flex gap-2 items-center px-4 py-2 bg-indigo-50 dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+                  >
+                    Share Your Budget
+                    <Twitter className='ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200' />
+                  </button>
                 </div>
               </div>
             </div>
@@ -310,7 +326,7 @@ const Budget = () => {
           </div>
         </div>
         <div>
-          <div className="rounded-xl sticky top-2">
+          <div className="rounded-xl ">
             <div className="">
               <div className="space-y-2">
                 <BudgetAllocationTable 
@@ -322,6 +338,66 @@ const Budget = () => {
                 />
               </div>
             </div>
+          </div>
+
+          
+          {/* Monetization: Budget-Related Affiliates */}
+          <div className="mt-6 p-4 bg-white dark:bg-[#0a0a0a] rounded-lg shadow-sm border border-gray-200 dark:border-[#ffffff24]">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Master Your Budget
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+              Learn the 50/30/20 rule with{' '}
+              <a
+                href="https://www.amazon.in/Budgeting-101-Tracking-Financial-Essential/dp/150720907X?crid=2SO5M4BKAXMAX&dib=eyJ2IjoiMSJ9.rAVtOtjFQ0T6Q-Opl2qtqQiN-13co4hMTqZoHCv5j8B4gwFd4rgGwOhEAhdUOsbdB7EonGh0vzpZPJtcKz8z-A.04ZYPY0lmHFO2oFNmgNGdIuk_0m12q9wGV7r1lQ0N1M&dib_tag=se&keywords=Budgeting+101+by+Michele+Cagan.&qid=1740651360&sprefix=budgeting+101+by+michele+cagan.%2Caps%2C385&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=58a0d044aec974be4f45aa27f9783f04&language=en_IN&ref_=as_li_ss_tl" // Replace with your Amazon Associates ID
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                Budgeting 101 by Michele Cagan
+              </a>.
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+              Protect your finances with{' '}
+              <a
+                href="https://www.policybazaar.com/health-insurance/health-insurance-india/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                Policybazaar Insurance—compare & save
+              </a>.
+            </p>
+            {/* <p className="text-sm text-gray-600 dark:text-gray-300">
+              Cut food costs with{' '}
+              <a
+                href="https://www.bigbasket.com/affiliate?yourcode" // Replace with BigBasket affiliate link
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                BigBasket—groceries delivered cheap
+              </a>.
+            </p> */}
+          </div>
+
+          {/* Usage: Budget Tip */}
+          <div className="mt-4 p-4 bg-gray-100 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
+            <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Budget Tip
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Optimize your 50/30/20 rule—read{' '}
+              <a
+                href="https://www.amazon.in/All-Your-Worth-Ultimate-Lifetime/dp/0743269888?crid=1AT6TVOE80K5J&dib=eyJ2IjoiMSJ9.5GUJ8kYj9yMBf1P4L6hjyyWufTADqvLSO2Y3NXI6atLGjHj071QN20LucGBJIEps.kp-zR_ssenKYA62lIPJyK5oeO-fFHEm-kvSTh13B6jQ&dib_tag=se&keywords=All+Your+Worth+by+Elizabeth+Warren.&qid=1740651460&sprefix=all+your+worth+by+elizabeth+warren.%2Caps%2C419&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=55e98425506ed95278a1913f390aed59&language=en_IN&ref_=as_li_ss_tl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                All Your Worth
+              </a>{' '}
+              by Elizabeth Warren.
+            </p>
           </div>
         </div>
       </div>

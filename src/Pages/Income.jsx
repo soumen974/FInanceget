@@ -37,7 +37,7 @@ export default function Income() {
   // Share to Twitter
   const shareGains = () => {
     const tweet = latestIncome
-      ? `Just added ₹${latestIncome.amount} from ${latestIncome.source} on FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app`
+      ? `Just added ₹${latestIncome.amount} from ${latestIncome.source} on FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app  #FinanceGet @Soumen81845556`
       : `Tracking income on FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app  #FinanceGet @Soumen81845556`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
   };
@@ -54,6 +54,24 @@ export default function Income() {
     </div>
     <div className="lg:grid grid-cols-1 flex flex-col-reverse lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2">
+
+         {/* Streak Feedback */}
+          <div className="mb-4 flex flex-wrap justify-between p-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Your Income Streak:{' '}
+            <span className="font-bold text-indigo-600 dark:text-indigo-400">{streak} days</span>
+          </p>
+            {/* Limelight: Share Savings */}
+          <div className="mt-4">
+            <button
+              onClick={shareGains}
+              className="group inline-flex gap-2 items-center px-4 py-2 bg-indigo-50 dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+            >
+              Share Your Gains
+              <Twitter className='ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200' />
+            </button>
+          </div>
+        </div>
         <TransactionList
           type="income"
           action={action}
@@ -61,23 +79,7 @@ export default function Income() {
           setEditId={setEditId}
           editId={editId}
         />
-        {/* Streak Feedback */}
-        <div className="mt-6 p-4 bg-gray-100 dark:bg-[#1c1c1c94]  rounded-lg shadow-sm">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            Your Income Streak:{' '}
-            <span className="font-bold text-indigo-600 dark:text-indigo-400">{streak} days</span>
-          </p>
-        </div>
-        {/* Limelight: Share Gains */}
-        <div className="mt-4">
-          <button
-            onClick={shareGains}
-            className="group inline-flex gap-2 items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-          >
-            Share Your Gains
-            <Twitter className='ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200' />
-          </button>
-        </div>
+       
       </div>
       <div>
         <TransactionForm

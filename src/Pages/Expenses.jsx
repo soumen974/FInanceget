@@ -37,8 +37,8 @@ export default function Expenses() {
   // Share savings to Twitter
   const shareSavings = () => {
     const tweet = latestExpense
-      ? `Tracked ₹${latestExpense.amount} on ${latestExpense.source} with FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app & save with Honey: https://joinhoney.com/ref/yourcode`
-      : `Mastering my budget on FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app`;
+      ? `Tracked ₹${latestExpense.amount} on ${latestExpense.source} with FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app & save with Honey: https://joinhoney.com/ref/yourcode  #FinanceGet @Soumen81845556`
+      : `Mastering my budget on FinanceGet! Streak: ${streak}. Join me: https://financeget.vercel.app  #FinanceGet @Soumen81845556`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
   };
 
@@ -54,6 +54,25 @@ export default function Expenses() {
       </div>
       <div className="lg:grid flex flex-col-reverse grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
+
+           {/* Streak Feedback */}
+           <div className="mb-4 flex flex-wrap justify-between p-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Your Expense Tracking Streak:{' '}
+              <span className="font-bold text-indigo-600 dark:text-indigo-400">{streak} days</span>
+            </p>
+             {/* Limelight: Share Savings */}
+            <div className="mt-4">
+              <button
+                onClick={shareSavings}
+                className="group inline-flex gap-2 items-center px-4 py-2 bg-indigo-50 dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+              >
+                Share Your Savings
+                <Twitter className='ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200' />
+              </button>
+            </div>
+          </div>
+
           <TransactionList
             type="expense"
             action={action}
@@ -61,23 +80,7 @@ export default function Expenses() {
             setEditId={setEditId}
             editId={editId}
           />
-          {/* Streak Feedback */}
-          <div className="mt-6 p-4 bg-gray-100 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Your Expense Tracking Streak:{' '}
-              <span className="font-bold text-indigo-600 dark:text-indigo-400">{streak} days</span>
-            </p>
-          </div>
-          {/* Limelight: Share Savings */}
-          <div className="mt-4">
-            <button
-              onClick={shareSavings}
-              className="group inline-flex gap-2 items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-            >
-              Share Your Savings
-              <Twitter className='ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200' />
-            </button>
-          </div>
+         
         </div>
         <div>
           <TransactionForm
@@ -107,7 +110,7 @@ export default function Expenses() {
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
               Earn cashback with{' '}
               <a
-                href="https://www.axisbank.com/credit-card-affiliate" 
+                href="https://bitli.in/YVz6YDB" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-indigo-600 dark:text-indigo-400 hover:underline"

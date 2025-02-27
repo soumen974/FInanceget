@@ -70,11 +70,11 @@ export default function Dashboard() {
       </div>
 
       {/* Usage Booster: Streak Notification */}
-      <div className="mb-6 p-6 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24] rounded-lg shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+      <div className="mb-6 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700">
+        <h3 className="text-lg font-bold tracking-tight">
           Your Money Streak
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
+        <p className="mt-1 text-sm text-blue-100">
           {streak > 0 
             ? `Nice! You’ve logged in ${streak} days straight. Keep it up!`
             : `Start tracking daily to build your streak!`}
