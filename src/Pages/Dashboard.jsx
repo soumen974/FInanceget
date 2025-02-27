@@ -151,7 +151,7 @@ export default function Dashboard() {
               <p className="mt-1 text-sm text-blue-100">Get a detailed PDF of your transactions for just <span className='text-md font-bold'>₹0/-</span>  <span className='line-through'>₹49/-</span> </p>
               <button 
                 className="group mt-3 inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-                onClick={downloadDailyReport}              >
+                onClick={downloadDailyReport}>
                 Download Now
                 <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
 

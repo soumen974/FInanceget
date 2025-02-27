@@ -31,7 +31,7 @@ const LandingPage = () => {
     { title: "Smart Budgeting", description: "Plan and track with ease.", icon: <ChartNoAxesGantt /> },
     { title: "Expense Tracking", description: "Know where your money goes.", icon: <Radar /> },
     { title: "Financial Reports", description: "See your financial story.", icon: <ChartNetwork /> },
-    { title: "Goal Setting", description: "Reach your money milestones.", icon: <Goal /> },
+    { title: "Goal Tracking", description: "Reach your money milestones.", icon: <Goal /> },
   ];
 
   const financialTools = [
@@ -130,8 +130,8 @@ const LandingPage = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
             Master Your <span className="text-indigo-600 dark:text-indigo-400">Finances</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-xl mx-auto">
-            Budget, track, and grow your money with powerful tools.
+          <p className="max-md:text-[0.8rem] md:text-md  text-gray-600 dark:text-gray-300 mb-8 max-w-xl mx-auto">
+            Budget with 50/30/20, track streaks, download reports , accomplish goal—your money, your way.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
@@ -147,6 +147,9 @@ const LandingPage = () => {
               Sign In
             </Link>
           </div>
+          
+          
+
         </div>
       </header>
 
@@ -214,7 +217,7 @@ const LandingPage = () => {
                 key={index}
                 className={`p-6 rounded-xl shadow-md transition-all duration-300 border ${
                   plan.highlighted
-                    ? 'bg-indigo-600 text-white border-indigo-700 transform -translate-y-2 shadow-lg'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg  border border-blue-400 dark:border-blue-700 transform -translate-y-2 shadow-lg'
                     : 'bg-gray-50 dark:bg-[#ffffff17] border-gray-100 dark:border-gray-700/50 hover:shadow-lg hover:-translate-y-1'
                 }`}
               >
@@ -245,7 +248,7 @@ const LandingPage = () => {
                   className={`inline-flex items-center justify-center w-full gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                     plan.highlighted
                       ? 'bg-white text-indigo-600 hover:bg-indigo-50 shadow-sm'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg  border border-blue-400 dark:border-blue-700 shadow-sm'
                   }`}
                 >
                   {plan.cta} <ChevronRight size={16} />
@@ -257,14 +260,14 @@ const LandingPage = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-12 px-4 bg-indigo-600 dark:bg-[#14141485] text-white dark:text-indigo-600">
+      <section className="py-12 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-[#14141485] dark:to-[#14141485]   shadow-lg border border-blue-400 dark:border-none dark:bg-[#14141485] text-white dark:text-indigo-600">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
           <div>
-            <div className="text-4xl font-bold mb-2">10+</div>
+            <div className="text-4xl font-bold mb-2">15+</div>
             <div className="text-sm text-indigo-100">Users</div>
           </div>
           <div>
-            <div className="text-4xl font-bold mb-2">₹15K+</div>
+            <div className="text-4xl font-bold mb-2">₹150K+</div>
             <div className="text-sm text-indigo-100">Tracked</div>
           </div>
           <div>

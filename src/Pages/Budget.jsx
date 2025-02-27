@@ -3,14 +3,14 @@ import {
   DollarSign, PieChart, Edit2, Trash2, AlertCircle, CheckCircle, X,
   Coffee, Home, Smartphone, Users, Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown, Twitter, Percent,HeartHandshake,Lightbulb,Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
+import { Car, Crown, Twitter, Percent, HeartHandshake, Lightbulb, Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
-import { BudgetData } from "../Pages/Components/Budget/BudgetData";
 import { Link } from 'react-router-dom';
+import { api } from "../AxiosMeta/ApiAxios";
 
 // Main Budget Component
 const Budget = () => {
@@ -26,7 +26,6 @@ const Budget = () => {
 
   const { userType } = authCheck();
   const { totalIncomeFortheCurrentMonth, setsearchYearForList, setMonthForList } = useGlobalTransactionData('income');
-  const { addBudget, setrule, error, setBudgetMonth, setBudgetYear, Personalizedbudget } = BudgetData();
 
   const currentYear = new Date().getFullYear();
   const lastYear = currentYear - 1;
@@ -70,17 +69,6 @@ const Budget = () => {
     SavingsInvestments: 0
   });
 
-  useEffect(() => {
-    if (financeRule === 'Personalized' && isPremiumOrAdmin && error === '') {
-      setbudgetPercentages13rd(prev => ({
-        ...prev,
-        ...Personalizedbudget,
-      }));
-    }
-  }, [financeRule, userType, selectedYear, selectedMonth, Personalizedbudget, error, isPremiumOrAdmin]);
-
-  const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : budgetPercentages13rd;
-
   const years = useMemo(() => 
     Availableyears.length > 0 ? Availableyears : [currentYear], 
     [Availableyears]
@@ -91,10 +79,20 @@ const Budget = () => {
     setMonth(selectedMonth);
     setsearchYearForList(selectedYear);
     setMonthForList(selectedMonth);
-    setrule(financeRule);
-    setBudgetMonth(selectedMonth);
-    setBudgetYear(selectedYear);
-  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin]);
+    if (financeRule === 'Personalized' && isPremiumOrAdmin) {
+      fetchBudget();
+    }
+  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin, setsearchYear, setMonth, setsearchYearForList, setMonthForList]);
+
+  const fetchBudget = async () => {
+    try {
+      const response = await api.get(`/api/budget/${selectedYear}/${selectedMonth}`);
+      const budget = response.data || {};
+      setbudgetPercentages13rd(budget.allocations || budgetPercentages13rd);
+    } catch (err) {
+      console.error('Failed to fetch budget:', err);
+    }
+  };
 
   const DemocategoryData = [{ name: 'No data found', value: 404 }];
   const actualData = categoryData.categoryExpenseData;
@@ -114,7 +112,6 @@ const Budget = () => {
     return [];
   }, [TransactionData]);
 
-  // Optimized spent amount lookup
   const spentMap = useMemo(() => {
     const map = {};
     Data.forEach(item => {
@@ -136,10 +133,12 @@ const Budget = () => {
     { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, percentageKey: 'SavingsInvestments', type: 'Investments' }
   ];
 
+  const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : budgetPercentages13rd;
+
   const budgetCategories = useMemo(() => 
     CATEGORIES.map(category => ({
       ...category,
-      budget: monthlyIncome * budgetPercentages[category.percentageKey] * 0.01,
+      budget: monthlyIncome * (budgetPercentages[category.percentageKey] || 0) * 0.01,
       spent: spentMap[category.name] || 0,
     }))
   , [monthlyIncome, budgetPercentages, spentMap]);
@@ -147,7 +146,7 @@ const Budget = () => {
   const shareBudget = () => {
     const tweet = `Managed my ${MONTH_NAMES[selectedMonth]} budget on FinanceGet! Total: ₹${monthlyIncome}. Join me: https://financeget.vercel.app #FinanceGet @Soumen81845556`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
-};
+  };
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
@@ -242,8 +241,6 @@ const Budget = () => {
                     Budget Categories for {MONTH_NAMES[selectedMonth].charAt(0).toUpperCase() + MONTH_NAMES[selectedMonth].slice(1)} {selectedYear}
                   </h2>
                 </div>
-
-                {/* Limelight: Share Budget */}
                 <div className="mt-4">
                   <button
                     onClick={shareBudget}
@@ -255,7 +252,9 @@ const Budget = () => {
                 </div>
               </div>
             </div>
-            {monthlyIncome === 0 ? loadingReport ? <Spinner /> : <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div> :
+            {monthlyIncome === 0 ? loadingReport ? <Spinner /> : (
+              <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div>
+            ) : (
               <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
                 {(financeRule !== '50/30/20' || selectedYear !== currentYear) && !isPremiumOrAdmin ? (
                   <div className="absolute inset-0 backdrop-blur-sm bg-opacity-75">
@@ -322,11 +321,11 @@ const Budget = () => {
                   </div>
                 ))}
               </div>
-            }
+            )}
           </div>
         </div>
         <div>
-          <div className="rounded-xl ">
+          <div className="rounded-xl">
             <div className="">
               <div className="space-y-2">
                 <BudgetAllocationTable 
@@ -340,7 +339,6 @@ const Budget = () => {
             </div>
           </div>
 
-          
           {/* Monetization: Budget-Related Affiliates */}
           <div className="mt-6 p-4 bg-white dark:bg-[#0a0a0a] rounded-lg shadow-sm border border-gray-200 dark:border-[#ffffff24]">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -349,7 +347,7 @@ const Budget = () => {
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
               Learn the 50/30/20 rule with{' '}
               <a
-                href="https://www.amazon.in/Budgeting-101-Tracking-Financial-Essential/dp/150720907X?crid=2SO5M4BKAXMAX&dib=eyJ2IjoiMSJ9.rAVtOtjFQ0T6Q-Opl2qtqQiN-13co4hMTqZoHCv5j8B4gwFd4rgGwOhEAhdUOsbdB7EonGh0vzpZPJtcKz8z-A.04ZYPY0lmHFO2oFNmgNGdIuk_0m12q9wGV7r1lQ0N1M&dib_tag=se&keywords=Budgeting+101+by+Michele+Cagan.&qid=1740651360&sprefix=budgeting+101+by+michele+cagan.%2Caps%2C385&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=58a0d044aec974be4f45aa27f9783f04&language=en_IN&ref_=as_li_ss_tl" // Replace with your Amazon Associates ID
+                href="https://www.amazon.in/Budgeting-101-Tracking-Financial-Essential/dp/150720907X?crid=2SO5M4BKAXMAX&dib=eyJ2IjoiMSJ9.rAVtOtjFQ0T6Q-Opl2qtqQiN-13co4hMTqZoHCv5j8B4gwFd4rgGwOhEAhdUOsbdB7EonGh0vzpZPJtcKz8z-A.04ZYPY0lmHFO2oFNmgNGdIuk_0m12q9wGV7r1lQ0N1M&dib_tag=se&keywords=Budgeting+101+by+Michele+Cagan.&qid=1740651360&sprefix=budgeting+101+by+michele+cagan.%2Caps%2C385&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=58a0d044aec974be4f45aa27f9783f04&language=en_IN&ref_=as_li_ss_tl"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-indigo-600 dark:text-indigo-400 hover:underline"
@@ -368,17 +366,6 @@ const Budget = () => {
                 Policybazaar Insurance—compare & save
               </a>.
             </p>
-            {/* <p className="text-sm text-gray-600 dark:text-gray-300">
-              Cut food costs with{' '}
-              <a
-                href="https://www.bigbasket.com/affiliate?yourcode" // Replace with BigBasket affiliate link
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                BigBasket—groceries delivered cheap
-              </a>.
-            </p> */}
           </div>
 
           {/* Usage: Budget Tip */}
@@ -409,16 +396,15 @@ const Budget = () => {
           setEditPersonalBudget={setEditPersonalBudget} 
           editPersonalBudget={editPersonalBudget} 
           budgetPercentages13rd={budgetPercentages13rd} 
+          setFinanceRule={setFinanceRule}
+          isPremiumOrAdmin={isPremiumOrAdmin}
         />
       )}
     </div>
   );
 };
 
-export default Budget;
-
-// components
-
+// BudgetAllocationTable Component
 const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13rd, editPersonalBudget, setEditPersonalBudget }) => {
   const { userType } = authCheck();
   const currentYear = new Date().getFullYear();
@@ -428,7 +414,6 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
   const categories = [
     {
       title: 'Needs',
-      percentage: 50,
       items: [
         { name: 'Housing', icon: <Home size={16} />, key: 'Housing' },
         { name: 'Utilities', icon: <Lightbulb size={16} />, key: 'Utilities' },
@@ -440,7 +425,6 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
     },
     {
       title: 'Wants',
-      percentage: 30,
       items: [
         { name: 'Entertainment', icon: <Tv size={16} />, key: 'Entertainment' },
         { name: 'Miscellaneous', icon: <Package size={16} />, key: 'OtherMiscellaneous' },
@@ -449,12 +433,25 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
     },
     {
       title: 'Savings',
-      percentage: 20,
       items: [
         { name: 'Savings', icon: <PiggyBank size={16} />, key: 'SavingsInvestments' },
       ],
     },
   ];
+
+  // Calculate dynamic percentages for main categories
+  const getCategoryPercentage = (title) => {
+    switch (title) {
+      case 'Needs':
+        return budgetPercentages.Needs || 0;
+      case 'Wants':
+        return budgetPercentages.Wants || 0;
+      case 'Savings':
+        return budgetPercentages.SavingsInvestments || 0;
+      default:
+        return 0;
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
@@ -495,7 +492,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
           {categories.map((category) => (
             <div key={category.title} className="space-y-1">
               <h3 className="text-sm font-medium text-gray-900 dark:text-gray-200">
-                {category.title} <span className="text-gray-500 dark:text-gray-400">({category.percentage}%)</span>
+                {category.title} <span className="text-gray-500 dark:text-gray-400">({getCategoryPercentage(category.title)}%)</span>
               </h3>
               {category.items.map((item) => (
                 <div
@@ -506,7 +503,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
                     <span className="text-gray-500 dark:text-gray-400">{item.icon}</span>
                     <span>{item.name}</span>
                   </div>
-                  <span className="font-medium">{budgetPercentages[item.key]}%</span>
+                  <span className="font-medium">{budgetPercentages[item.key] || 0}%</span>
                 </div>
               ))}
             </div>
@@ -517,20 +514,20 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
   );
 };
 
-
 // BudgetCategory Component
-const BudgetCategory = ({ title, percentage, children }) => (
+const BudgetCategory = ({ title, percentage, children, error }) => (
   <div className="mb-3">
-    <div className="flex items-center gap-2 mb-1">
+    <div className="flex items-center justify-between mb-1">
       <h3 className="text-sm font-medium text-gray-900 dark:text-white">{title}</h3>
       <span className="text-xs text-gray-500 dark:text-gray-400">({percentage}%)</span>
     </div>
-    <div className="grid grid-cols-2 gap-2">{children}</div>
+    {error && <p className="text-xs text-red-600 dark:text-red-400 mb-1">{error}</p>}
+    <div className="space-y-2">{children}</div>
   </div>
 );
 
 // BudgetInput Component
-const BudgetInput = ({ label, emoji, name, value, onChange, error, disabled }) => (
+const BudgetInput = ({ label, emoji, name, value, onChange, error, disabled, max }) => (
   <div className="relative">
     <label className="block text-xs text-gray-700 dark:text-gray-300 mb-1">
       <span className="mr-1">{emoji}</span>
@@ -543,7 +540,7 @@ const BudgetInput = ({ label, emoji, name, value, onChange, error, disabled }) =
       type="number"
       step="0.01"
       min="0"
-      max="100"
+      max={max}
       name={name}
       value={value}
       onChange={onChange}
@@ -566,87 +563,114 @@ const PersonalizedBudgetAllocationForm = ({
   setEditPersonalBudget,
   setbudgetPercentages13rd,
   budgetPercentages13rd,
+  setFinanceRule,
+  isPremiumOrAdmin,
 }) => {
-  const {
-    addBudget,
-    updateBudget,
-    setrule,
-    setBudgetMonth,
-    setBudgetYear,
-    loading,
-    error: apiError,
-    message,
-  } = BudgetData();
-
+  const [formData, setFormData] = useState({
+    Needs: 0,
+    Housing: 0,
+    Utilities: 0,
+    FoodAndDining: 0,
+    Healthcare: 0,
+    Transportation: 0,
+    Insurance: 0,
+    Wants: 0,
+    Entertainment: 0,
+    OtherMiscellaneous: 0,
+    Education: 0,
+    SavingsInvestments: 0,
+  });
   const [errors, setErrors] = useState({});
   const [saveStatus, setSaveStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [apiError, setApiError] = useState('');
   const [isExistingBudget, setIsExistingBudget] = useState(false);
 
+  // Fetch budget on form open
   useEffect(() => {
     if (editPersonalBudget) {
-      setBudgetYear(selectedYear);
-      setBudgetMonth(selectedMonth);
-      setrule('Personalized');
-      const hasData = Object.keys(budgetPercentages13rd).length > 0 && 
-        (budgetPercentages13rd.Needs > 0 || budgetPercentages13rd.Wants > 0 || budgetPercentages13rd.SavingsInvestments > 0);
-      setIsExistingBudget(hasData);
+      fetchBudget();
     }
-  }, [editPersonalBudget, selectedYear, selectedMonth, setBudgetYear, setBudgetMonth, setrule, budgetPercentages13rd]);
+  }, [editPersonalBudget, selectedYear, selectedMonth]);
 
+  // Fetch budget using api instance
+  const fetchBudget = async () => {
+    setLoading(true);
+    setApiError('');
+    setErrors({});
+    try {
+      const response = await api.get(`/api/budget/${selectedYear}/${selectedMonth}`);
+      const budget = response.data || {};
+      const allocations = budget.allocations || budgetPercentages13rd;
+      setFormData(allocations);
+      setbudgetPercentages13rd(allocations);
+      setIsExistingBudget(!!budget.allocations && Object.values(budget.allocations).some(val => val > 0));
+      if (budget.allocations) setFinanceRule('Personalized');
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || err.message || 'Failed to fetch budget';
+      setApiError(errorMsg);
+      setFormData(budgetPercentages13rd); // Fallback to parent data
+      setIsExistingBudget(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numValue = parseFloat(value) || 0;
+    const numValue = Math.max(0, Math.min(100, parseFloat(value) || 0)); // Clamp 0-100
 
-    setbudgetPercentages13rd((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: numValue,
     }));
 
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: null,
-      }));
-    }
+    setErrors(prev => ({
+      ...prev,
+      [name]: null,
+      total: null,
+      needsSub: null,
+      wantsSub: null,
+    }));
   };
 
+  // Validate form
   const validateForm = () => {
     const newErrors = {};
 
-    const mainTotal = budgetPercentages13rd.Needs + budgetPercentages13rd.Wants + budgetPercentages13rd.SavingsInvestments;
+    const mainTotal = formData.Needs + formData.Wants + formData.SavingsInvestments;
     if (mainTotal !== 100) {
-      newErrors.total = 'Main categories must total 100%';
+      newErrors.total = `Main categories must total 100% (Current: ${mainTotal.toFixed(2)}%)`;
     }
 
     const needsSubcategories = ['Housing', 'Utilities', 'FoodAndDining', 'Healthcare', 'Transportation', 'Insurance'];
     const wantsSubcategories = ['Entertainment', 'OtherMiscellaneous', 'Education'];
 
-    const needsSubTotal = needsSubcategories.reduce((sum, key) => sum + (budgetPercentages13rd[key] || 0), 0);
-    if (needsSubTotal !== budgetPercentages13rd.Needs) {
-      newErrors.needsSub = 'Needs subcategories must match Needs total';
-      needsSubcategories.forEach((key) => (newErrors[key] = ''));
-      newErrors.Needs = '';
+    const needsSubTotal = needsSubcategories.reduce((sum, key) => sum + (formData[key] || 0), 0);
+    if (needsSubTotal > formData.Needs) {
+      newErrors.needsSub = `Needs subcategories (${needsSubTotal.toFixed(2)}%) exceed Needs (${formData.Needs}%)`;
     }
 
-    const wantsSubTotal = wantsSubcategories.reduce((sum, key) => sum + (budgetPercentages13rd[key] || 0), 0);
-    if (wantsSubTotal !== budgetPercentages13rd.Wants) {
-      newErrors.wantsSub = 'Wants subcategories must match Wants total';
-      wantsSubcategories.forEach((key) => (newErrors[key] = ''));
-      newErrors.Wants = '';
+    const wantsSubTotal = wantsSubcategories.reduce((sum, key) => sum + (formData[key] || 0), 0);
+    if (wantsSubTotal > formData.Wants) {
+      newErrors.wantsSub = `Wants subcategories (${wantsSubTotal.toFixed(2)}%) exceed Wants (${formData.Wants}%)`;
     }
-
-    Object.entries(budgetPercentages13rd).forEach(([key, value]) => {
-      if (value < 0 || value > 100) {
-        newErrors[key] = '0-100% only';
-      }
-    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isPremiumOrAdmin) {
+      setApiError('Unlock Premium Features');
+      setSaveStatus('error');
+      return;
+    }
 
     if (!validateForm()) {
       setSaveStatus('error');
@@ -654,26 +678,36 @@ const PersonalizedBudgetAllocationForm = ({
     }
 
     setSaveStatus('pending');
-    setBudgetMonth(selectedMonth);
-    setBudgetYear(selectedYear);
+    setLoading(true);
+    setApiError('');
+    setMessage('');
 
-    const action = isExistingBudget ? updateBudget : addBudget;
-    action(budgetPercentages13rd);
-  };
-
-  useEffect(() => {
-    if (loading) return;
-
-    if (saveStatus === 'pending' && message) {
+    try {
+      const response = await (isExistingBudget ? api.put : api.post)(
+        `/api/budget/${selectedYear}/${selectedMonth}`,
+        { allocations: formData }
+      );
+      const data = response.data || {};
+      setMessage(isExistingBudget ? 'Budget updated successfully' : 'Budget added successfully');
+      setFormData(data.allocations || formData);
+      setbudgetPercentages13rd(data.allocations || formData);
+      setFinanceRule('Personalized');
       setSaveStatus('success');
       setTimeout(() => {
-        setSaveStatus(null);
         setEditPersonalBudget(false);
+        setSaveStatus(null);
       }, 1500);
-    } else if (saveStatus === 'pending' && apiError) {
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || err.message || 'Failed to save budget';
+      setApiError(errorMsg);
       setSaveStatus('error');
+    } finally {
+      setLoading(false);
     }
-  }, [loading, message, apiError, saveStatus, setEditPersonalBudget]);
+  };
+
+  // Calculate main total for display
+  const mainTotal = formData.Needs + formData.Wants + formData.SavingsInvestments;
 
   return (
     <>
@@ -688,56 +722,67 @@ const PersonalizedBudgetAllocationForm = ({
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b dark:border-[#ffffff24]">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Budget Allocation</h2>
-            <div className={`text-xs font-medium ${errors.total || apiError ? 'text-red-500' : 'text-green-500'}`}>
-              Total: {(budgetPercentages13rd.Needs + budgetPercentages13rd.Wants + budgetPercentages13rd.SavingsInvestments)}%
+          <div className="flex items-center justify-between p-3 border-b dark:border-[#ffffff24] bg-gradient-to-r from-indigo-50 dark:from-[#1F2937] to-gray-100 dark:to-[#374151]">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Personalized Budget</h2>
+            <div className={`text-xs font-medium ${mainTotal !== 100 ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}`}>
+              Total: {mainTotal.toFixed(2)}%
             </div>
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2">
-            <form id="budgetForm" onSubmit={handleSubmit}>
-              {(errors.total || apiError) && (
-                <div className="mb-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded">
-                  <p className="text-xs text-red-600 dark:text-red-400">{errors.total || apiError}</p>
+          <div className="flex-1 overflow-y-auto p-3 space-y-4">
+            {(apiError || Object.keys(errors).length > 0) && (
+              <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded">
+                <p className="text-xs text-red-600 dark:text-red-400">{apiError || errors.total || errors.needsSub || errors.wantsSub}</p>
+              </div>
+            )}
+            {saveStatus === 'success' && message && (
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded">
+                <p className="text-xs text-green-600 dark:text-green-400">{message}</p>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <Spinner />
+              </div>
+            ) : (
+              <form id="budgetForm" onSubmit={handleSubmit}>
+                <div className="space-y-6">
+                  {/* Needs Section */}
+                  <BudgetCategory title="Needs" percentage={formData.Needs} error={errors.needsSub}>
+                    <BudgetInput label="Needs" emoji="" name="Needs" value={formData.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} max="100" />
+                    <BudgetInput label="Housing" emoji="🏠" name="Housing" value={formData.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} max={formData.Needs} />
+                    <BudgetInput label="Utilities" emoji="💡" name="Utilities" value={formData.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} max={formData.Needs} />
+                    <BudgetInput label="Food" emoji="🍽️" name="FoodAndDining" value={formData.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} max={formData.Needs} />
+                    <BudgetInput label="Health" emoji="⚕️" name="Healthcare" value={formData.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} max={formData.Needs} />
+                    <BudgetInput label="Transport" emoji="🚗" name="Transportation" value={formData.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} max={formData.Needs} />
+                    <BudgetInput label="Insurance" emoji="🛡️" name="Insurance" value={formData.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} max={formData.Needs} />
+                  </BudgetCategory>
+
+                  {/* Wants Section */}
+                  <BudgetCategory title="Wants" percentage={formData.Wants} error={errors.wantsSub}>
+                    <BudgetInput label="Wants" emoji="" name="Wants" value={formData.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} max="100" />
+                    <BudgetInput label="Fun" emoji="🎬" name="Entertainment" value={formData.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} max={formData.Wants} />
+                    <BudgetInput label="Misc" emoji="📦" name="OtherMiscellaneous" value={formData.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} max={formData.Wants} />
+                    <BudgetInput label="Edu" emoji="📚" name="Education" value={formData.Education} onChange={handleChange} error={errors.Education} disabled={loading} max={formData.Wants} />
+                  </BudgetCategory>
+
+                  {/* Savings Section */}
+                  <BudgetCategory title="Savings" percentage={formData.SavingsInvestments}>
+                    <BudgetInput label="Savings" emoji="💰" name="SavingsInvestments" value={formData.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} max="100" />
+                  </BudgetCategory>
                 </div>
-              )}
-              {saveStatus === 'success' && message && (
-                <div className="mb-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded">
-                  <p className="text-xs text-green-600 dark:text-green-400">{message}</p>
-                </div>
-              )}
-
-              <BudgetCategory title="Needs" percentage={budgetPercentages13rd.Needs}>
-                <BudgetInput label="Needs" emoji="" name="Needs" value={budgetPercentages13rd.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} />
-                <BudgetInput label="Housing" emoji="🏠" name="Housing" value={budgetPercentages13rd.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} />
-                <BudgetInput label="Utilities" emoji="💡" name="Utilities" value={budgetPercentages13rd.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} />
-                <BudgetInput label="Food" emoji="🍽️" name="FoodAndDining" value={budgetPercentages13rd.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} />
-                <BudgetInput label="Health" emoji="⚕️" name="Healthcare" value={budgetPercentages13rd.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} />
-                <BudgetInput label="Transport" emoji="🚗" name="Transportation" value={budgetPercentages13rd.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} />
-                <BudgetInput label="Insurance" emoji="🛡️" name="Insurance" value={budgetPercentages13rd.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} />
-              </BudgetCategory>
-
-              <BudgetCategory title="Wants" percentage={budgetPercentages13rd.Wants}>
-                <BudgetInput label="Wants" emoji="" name="Wants" value={budgetPercentages13rd.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} />
-                <BudgetInput label="Fun" emoji="🎬" name="Entertainment" value={budgetPercentages13rd.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} />
-                <BudgetInput label="Misc" emoji="📦" name="OtherMiscellaneous" value={budgetPercentages13rd.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} />
-                <BudgetInput label="Edu" emoji="📚" name="Education" value={budgetPercentages13rd.Education} onChange={handleChange} error={errors.Education} disabled={loading} />
-              </BudgetCategory>
-
-              <BudgetCategory title="Savings" percentage={budgetPercentages13rd.SavingsInvestments}>
-                <BudgetInput label="Savings" emoji="💰" name="SavingsInvestments" value={budgetPercentages13rd.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} />
-              </BudgetCategory>
-            </form>
+              </form>
+            )}
           </div>
 
           {/* Footer */}
-          <div className="border-t dark:border-[#ffffff24] p-3 flex justify-end gap-2">
+          <div className="border-t dark:border-[#ffffff24] p-3 flex justify-end gap-2 bg-gray-50 dark:bg-[#141414]">
             <button
               type="button"
               onClick={() => setEditPersonalBudget(false)}
-              className="px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
+              className="px-4 py-1.5 text-sm bg-gray-200 dark:bg-[#ffffff17] text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-[#ffffff24] transition-all disabled:opacity-50"
               disabled={loading}
             >
               Cancel
@@ -745,10 +790,10 @@ const PersonalizedBudgetAllocationForm = ({
             <button
               form="budgetForm"
               type="submit"
-              className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-400"
+              className="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-sm"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save'}
+              {loading ? 'Saving...' : 'Save Budget'}
             </button>
           </div>
         </div>
@@ -757,4 +802,5 @@ const PersonalizedBudgetAllocationForm = ({
   );
 };
 
-export { BudgetCategory, BudgetInput, PersonalizedBudgetAllocationForm };
+export { BudgetCategory, BudgetInput, BudgetAllocationTable, PersonalizedBudgetAllocationForm };
+export default Budget;
