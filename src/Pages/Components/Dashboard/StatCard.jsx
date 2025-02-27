@@ -30,7 +30,7 @@ const StatCard = ({ title, amount, type, icon }) => {
   return (
     <div 
       className={`rounded-xl p-5 bg-gradient-to-br ${styles.gradient} ${styles.border} shadow-sm 
-        transition-all duration-300 hover:shadow-lg hover:scale-105 animate-fade-in`}
+        transition-all duration-300  animate-fade-in`}
       aria-label={`${title}: ${formatCurrency(amount)}`}
     >
       <div className="flex items-center justify-between mb-4">

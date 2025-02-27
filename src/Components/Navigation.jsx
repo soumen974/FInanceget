@@ -360,7 +360,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
         <div className="flex items-center gap-3">
           <Wallet className="h-6 w-6 text-blue-600  flex-shrink-0" />
           {!isCollapsed && (
-            <Link to="/" className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+            <Link to="/" className="font-bold text-gray-800 dark:text-gray-200 truncate">
               FinanceGet
             </Link>
           )}

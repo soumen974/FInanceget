@@ -82,7 +82,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatCard 
           title="Total Balance"
           amount={totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth}

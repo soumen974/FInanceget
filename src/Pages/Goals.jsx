@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { 
-  CheckCircle, Goal, Wallet, Trash2, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
+  CheckCircle, Goal, Wallet,PiggyBank, Trash2,MoreVertical, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
 } from 'lucide-react';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -37,6 +37,7 @@ const Goals = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { userType } = authCheck();
+   const menuRef = useRef(null); 
 
   const baseStyles = {
     container: `bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
@@ -53,6 +54,7 @@ const Goals = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [hidePopup, setHidePopup] = useState(null);
+ const [showMenu, setShowMenu] = useState(null);
 
   useEffect(() => {
     fetchGoals();
@@ -162,7 +164,7 @@ const Goals = () => {
   };
 
   const handleGoalSubmit = async () => {
-    if (!newGoal.name || !newGoal.target || !newGoal.deadline || parseFloat(newGoal.target) <= 0) return; // Basic validation
+    if (!newGoal.name || !newGoal.target || !newGoal.deadline || parseFloat(newGoal.target) <= 0) return; 
 
     try {
       setLoading(true);
@@ -282,9 +284,24 @@ const Goals = () => {
     setHidePopup(hidePopup === id ? null : id);
   };
 
+  const handleMenuClick = (id) => {
+    setShowMenu(showMenu === id ? null : id);
+  };
+
   // if (userType === 'user') {
   //   return <div className="dark:text-white flex justify-center items-center h-[90vh]">Under Construction for 1 day</div>;
   // }
+
+   useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+          setShowMenu(null);
+        }
+      };
+      document.body.addEventListener('click', handleClickOutside);
+      return () => document.body.removeEventListener('click', handleClickOutside);
+    }, []);
+
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
@@ -392,7 +409,7 @@ const Goals = () => {
                         title={goal.name} 
                       />
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex relative items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
                             <Goal size={20} className="text-[#6B7280] dark:text-gray-300" />
@@ -411,7 +428,7 @@ const Goals = () => {
                             <div className="mt-1 text-sm text-[#6B7280] dark:text-gray-400">{new Date(goal.deadline).toLocaleDateString()}</div>
                           </div>
                         </div>
-                        <div className="flex gap-2">
+                        {/* <div className="flex gap-2">
                           <button 
                             onClick={() => handleEditGoal(goal)} 
                             className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-[#8B5CF6] dark:hover:text-[#8B5CF6] hover:bg-purple-50 dark:hover:bg-[#8B5CF6]/10 transition-colors"
@@ -426,6 +443,77 @@ const Goals = () => {
                           >
                             <Trash2 size={16} />
                           </button>
+                        </div> */}
+
+                         {/* buttons menu*/}
+                          <div className="flex gap-2 mt-1">
+                          
+                          <button
+                            onClick={(e) => { e.stopPropagation();handleMenuClick(goal._id)}}
+                            className="p-1  rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
+                          >
+                            <MoreVertical size={16} className="text-gray-500 dark:text-gray-400 " />
+                          </button> 
+                          {(showMenu===goal._id) && (
+                          <div 
+                          ref={menuRef}
+                          onClick={()=>{setShowMenu(null)}}
+                          className={`
+                            absolute right-0 mt-2 w-24 rounded-xl shadow-lg py-2 px-1.5
+                            bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
+                            z-10 transform  scale-95 animate-in
+                            data-[state=open]:opacity-100 data-[state=open]:scale-100
+                            transition-all duration-200 ease-out
+                          `}
+                        >
+
+                          <button
+                            // onClick={() => handleEditGoal(goal)} 
+                            className="w-full flex items-center gap-2 p-2 rounded-lg
+                              text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50 dark:hover:bg-opacity-20
+                              transition-colors duration-150 group"
+                            title="Add saving to this goal"
+                          >
+                            <PiggyBank 
+                              size={16} 
+                              className="group-hover:scale-110 transition-transform duration-150" 
+                            />
+                            <span className="text-sm font-medium">Add</span>
+                          </button>
+
+                          {/* Edit Action */}
+                          <button
+                            onClick={() => handleEditGoal(goal)} 
+                            className="w-full flex items-center gap-2 p-2 rounded-lg
+                              text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300
+                              hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20
+                              transition-colors duration-150 group"
+                            title="Edit transaction"
+                          >
+                            <Edit2 
+                              size={16} 
+                              className="group-hover:scale-110 transition-transform duration-150" 
+                            />
+                            <span className="text-sm font-medium">Edit</span>
+                          </button>
+                        
+                          {/* Delete Action */}
+                          <button
+                            onClick={() => handlePopupopner(goal._id)}
+                            className="w-full flex items-center gap-2 p-2 rounded-lg mt-1
+                              text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-300
+                              hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20
+                              transition-colors duration-150 group"
+                            title="Delete transaction"
+                          >
+                            <Trash2 
+                              size={16} 
+                              className="group-hover:scale-110 transition-transform duration-150" 
+                            />
+                            <span className="text-sm font-medium">Delete</span>
+                          </button>
+                          </div>
+                            )}
                         </div>
                       </div>
 

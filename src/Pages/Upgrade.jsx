@@ -144,7 +144,7 @@ const Upgrade = () => {
           <p className="text-[#6B7280] dark:text-gray-400 mb-1">Payment done but didn't get premium?</p>
           <a
             href="mailto:me.soumen.bhunia@gmail.com"
-            className="flex items-center justify-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-150"
+            className="flex items-center justify-center gap-1  text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-150"
           >
             <Mail size={14} />
             me.soumen.bhunia@gmail.com
@@ -217,7 +217,7 @@ const Upgrade = () => {
               <img src="/gpay-icon.png" alt="Google Pay" className="h-6 w-auto opacity-70" />
               <img src="/phonepe-icon.png" alt="PhonePe" className="h-6 w-auto opacity-70" />
               <img src="/paytm-icon.png" alt="Paytm" className="h-6 w-auto opacity-70" /> */}
-              <Link to="upi://pay?pa=sob99338@okaxis&pn=Soumen&am=29.00&cu=INR&aid=uGICAgIDt7YC4Qw" className="h-6 flex justify-center items-center p-5 rounded-full font-bold opacity-70 bg-indigo-600 w-full">Pay</Link>
+              <Link to="upi://pay?pa=sob99338@okaxis&pn=Soumen&am=29.00&cu=INR&aid=uGICAgIDt7YC4Qw" className="h-6 flex justify-center text-white items-center p-5 rounded-full font-bold opacity-70 bg-indigo-600 w-full">Pay</Link>
             </div>
           </div>
         </div>
