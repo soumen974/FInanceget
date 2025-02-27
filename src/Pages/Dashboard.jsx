@@ -5,7 +5,7 @@ import { formatCurrency } from "./Components/Income/formatCurrency";
 import RecentTransactions from "../Pages/Components/Dashboard/RecentTransactions";
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { TrendingUp, Activity, CreditCard } from 'react-feather'; 
-import { TrendingDown,ChevronRight ,Sparkles} from "lucide-react";
+import { TrendingDown,ChevronRight ,Crown,FileText} from "lucide-react";
 import { Link } from 'react-router-dom';
 import { authCheck } from '../Auth/Components/ProtectedCheck';
 import { api } from "../AxiosMeta/ApiAxios"
@@ -141,51 +141,53 @@ export default function Dashboard() {
       {/* Monetization: Micro-Transaction + Premium Teaser */}
       {/* Monetization: Micro-Transaction + Premium Teaser */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-4 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg">
+        <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700">
           <div className="flex items-center gap-3">
-            <svg className="h-8 w-8" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2l1.09 3.41L16.5 10l-3.41 1.09L12 14l-1.09-3.41L7.5 10l3.41-1.09L12 2z" />
-            </svg>
-            <div>
-              <h2 className="text-base font-semibold">Download Your Report</h2>
-              <p className="mt-1 text-xs">Get a detailed PDF of your transactions for just $2.</p>
+            <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
+              <FileText className="h-6 w-6 text-yellow-300" />
+            </div>
+          <div>
+              <h2 className="text-lg font-bold tracking-tight">Download Your Report</h2>
+              <p className="mt-1 text-sm text-blue-100">Get a detailed PDF of your transactions for just ₹49/-.</p>
               <button 
-                className="mt-2 inline-block px-2 py-1 bg-white dark:bg-black dark:text-white text-blue-700 text-xs font-medium rounded hover:bg-gray-100"
+                className="group mt-3 inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
                 onClick={downloadDailyReport}              >
                 Download Now
+                <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+
               </button>
             </div>
           </div>
         </div>
 
-         <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700">
-      <div className="flex items-center gap-4">
-        <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
-          <Sparkles className="h-6 w-6 text-yellow-300" />
-        </div>
-        
-        <div className="flex-grow">
-          <h2 className="text-lg font-bold tracking-tight">Go Premium</h2>
-          <p className="mt-1 text-sm text-blue-100">
-            {userType === 'user' 
-              ? 'Unlock multi-year reports and custom budgets for $5/month.'
-              : 'You’re a Premium user—enjoy all features!'}
-          </p>
-          
-          {userType === 'user' && (
-            <div className="mt-3">
-              <Link 
-                to="/upgrade" 
-                className="group inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-              >
-                Upgrade Now
-                <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
+        <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
+              <Crown className="h-6 w-6 text-yellow-300" />
             </div>
-          )}
+            
+            <div className="flex-grow">
+              <h2 className="text-lg font-bold tracking-tight">Go Premium</h2>
+              <p className="mt-1 text-sm text-blue-100">
+                {userType === 'user' 
+                  ? 'Unlock multi-year reports and custom budgets for ₹2.4/month.'
+                  : 'You’re a Premium user—enjoy all features!'}
+              </p>
+              
+              {userType === 'user' && (
+                <div className="mt-3">
+                  <Link 
+                    to="/upgrade" 
+                    className="group inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+                  >
+                    Upgrade Now
+                    <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
       </div>
     </div>
   );
