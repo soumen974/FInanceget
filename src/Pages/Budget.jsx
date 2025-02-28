@@ -379,7 +379,7 @@ const Budget = () => {
           </div>
 
           {/* Usage: Budget Tip */}
-          <div className="mt-4 p-4 bg-gray-100 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
+          <div className="mt-4 p-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
             <div className="flex items-start gap-3">
               <div className="p-2 bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-20 rounded-full">
                 <LightbulbIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />

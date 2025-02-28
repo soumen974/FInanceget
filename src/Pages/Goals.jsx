@@ -1,11 +1,13 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  CheckCircle, Goal, Wallet,PiggyBank, Trash2,MoreVertical, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
+  CheckCircle, Goal, Wallet, PiggyBank, Trash2, MoreVertical, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
 } from 'lucide-react';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { api } from "../AxiosMeta/ApiAxios";
 import Spinner from "../Loaders/Spinner";
+// import { GoalsData } from './Goals';
+
 // Color Palette
 const COLORS = {
   primary: '#8B5CF6',
@@ -25,19 +27,22 @@ const COLORS = {
 const Goals = () => {
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState({ 
-    _id: null, // Added to track if editing
-    current:0,
+    _id: null,
+    current: '',
     name: '', 
     target: '', 
     deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
     contributionAmount: '',
     contributionFrequency: 'month',
-
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { userType } = authCheck();
-   const menuRef = useRef(null); 
+  const menuRef = useRef(null); 
+  const { UpdateGoal } = GoalsData();
+
+  const [showSavingsForm, setShowSavingsForm] = useState(null);
+  const [savingsAmount, setSavingsAmount] = useState('');
 
   const baseStyles = {
     container: `bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
@@ -45,7 +50,7 @@ const Goals = () => {
     input: `w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200`,
     button: `px-4 py-2 rounded-lg font-medium transition-colors duration-150 text-sm`,
     activeButton: `bg-[#8B5CF6] text-white hover:bg-[#7C3AED]`,
-    stickyForm: `sticky top-4 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
+    stickyForm: ` bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
   };
 
   const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -54,19 +59,17 @@ const Goals = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [hidePopup, setHidePopup] = useState(null);
- const [showMenu, setShowMenu] = useState(null);
+  const [showMenu, setShowMenu] = useState(null);
 
   useEffect(() => {
     fetchGoals();
-    // console.log(goals);
-
   }, []);
 
   const fetchGoals = async () => {
     try {
       setLoading(true);
       const response = await api.get('/api/goals');
-      setGoals(response.data.map(goal => ({ ...goal, current: goal.current  })));
+      setGoals(response.data.map(goal => ({ ...goal, current: goal.current || 0 })));
     } catch (error) {
       console.error('Error fetching goals:', error);
     } finally {
@@ -103,11 +106,12 @@ const Goals = () => {
     const perDay = remaining / daysDiff;
 
     let monthsLeftDisplay = monthsDiff > 12 
-      ? `${Math.floor(monthsDiff / 12)} year${Math.floor(monthsDiff / 12) > 1 ? 's' : ''}${monthsDiff % 12 > 0 ? ` ${monthsDiff % 12} month${monthsDiff % 12 > 1 ? 's' : ''}` : ''}`
-      : `${monthsDiff} month${monthsDiff > 1 ? 's' : ''}`;
+      ? `${Math.floor(monthsDiff / 12)} year${Math.floor(monthsDiff / 12) > 1 ? 's' : ''}${monthsDiff % 12 > 0 ? ` ${monthsDiff % 12}` : ''}`
+      : `${monthsDiff} `;
 
     return {
       perMonth: formatCurrency(Math.max(0, perMonth)),
+      perYear: formatCurrency(Math.max(0, perMonth * 12)),
       perDay: formatCurrency(Math.max(0, perDay)),
       remaining: Math.max(0, remaining),
       monthsLeft: monthsLeftDisplay,
@@ -158,7 +162,7 @@ const Goals = () => {
 
   const setCompletionAsDeadline = () => {
     if (newGoal.contributionAmount && newGoal.target) {
-      const timeToGoal = calculateTimeToGoal(newGoal.target, newGoal.deadline, 0, newGoal.contributionAmount, newGoal.contributionFrequency);
+      const timeToGoal = calculateTimeToGoal(newGoal.target, newGoal.deadline, newGoal.current || 0, newGoal.contributionAmount, newGoal.contributionFrequency);
       setNewGoal({ ...newGoal, deadline: timeToGoal.completionDate });
     }
   };
@@ -172,22 +176,20 @@ const Goals = () => {
         name: newGoal.name, 
         target: parseFloat(newGoal.target), 
         deadline: newGoal.deadline,
-        current: newGoal.current || 0 
+        current: parseFloat(newGoal.current) || 0 // Ensure current is included
       };
 
       if (newGoal._id) {
-        // Update existing goal
         const response = await api.put(`/api/goals/${newGoal._id}`, goalData);
         setGoals(goals.map(goal => goal._id === newGoal._id ? response.data : goal));
       } else {
-        // Add new goal
         const response = await api.post('/api/goals', goalData);
-        setGoals([...goals, response.data]);
+        setGoals([...goals, response.data]); // New goal added to the end
       }
 
       setNewGoal({ 
         _id: null,
-        current:0,
+        current: '',
         name: '', 
         target: '', 
         deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0], 
@@ -211,21 +213,21 @@ const Goals = () => {
       deadline: new Date(goal.deadline).toISOString().split('T')[0],
       contributionAmount: '',
       contributionFrequency: 'month',
-      current: goal.current
+      current: goal.current.toString() || ''
     });
   };
 
   const cancelEditGoal = () => {
     setNewGoal({
       _id: null, 
-      current:'',
+      current: '',
       name: '', 
       target: '', 
       deadline: (new Date(new Date().setDate(new Date().getDate() + 1))).toISOString().split('T')[0],
       contributionAmount: '',
       contributionFrequency: 'month',
     });
-  }
+  };
 
   const handleRemoveGoal = async (id) => {
     try {
@@ -235,6 +237,29 @@ const Goals = () => {
       setHidePopup(null);
     } catch (error) {
       console.error('Error deleting goal:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddSavings = async (goalId) => {
+    if (!savingsAmount || parseFloat(savingsAmount) <= 0) return;
+
+    try {
+      setLoading(true);
+      const goalToUpdate = goals.find(goal => goal._id === goalId);
+      const newCurrent = parseFloat(goalToUpdate.current) + parseFloat(savingsAmount);
+      
+      await UpdateGoal(goalId, newCurrent);
+      setGoals(goals.map(goal => 
+        goal._id === goalId ? { ...goal, current: newCurrent } : goal
+      ));
+      setShowSavingsForm(null);
+      setSavingsAmount('');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
+    } catch (error) {
+      console.error('Error adding savings:', error);
     } finally {
       setLoading(false);
     }
@@ -288,20 +313,15 @@ const Goals = () => {
     setShowMenu(showMenu === id ? null : id);
   };
 
-  // if (userType === 'user') {
-  //   return <div className="dark:text-white flex justify-center items-center h-[90vh]">Under Construction for 1 day</div>;
-  // }
-
-   useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-          setShowMenu(null);
-        }
-      };
-      document.body.addEventListener('click', handleClickOutside);
-      return () => document.body.removeEventListener('click', handleClickOutside);
-    }, []);
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(null);
+      }
+    };
+    document.body.addEventListener('click', handleClickOutside);
+    return () => document.body.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
@@ -353,7 +373,7 @@ const Goals = () => {
       {showSuccess && (
         <div className="fixed top-4 right-4 z-50 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
           <CheckCircle size={20} />
-          <span>{newGoal._id ? 'Goal updated successfully!' : 'Goal added successfully!'}</span>
+          <span>{newGoal._id ? 'Goal updated successfully!' : showSavingsForm ? 'Savings added successfully!' : 'Goal added successfully!'}</span>
           <button onClick={() => setShowSuccess(false)} className="ml-2 p-1 hover:bg-green-100 dark:hover:bg-green-800/20 rounded-full">
             <X size={16} />
           </button>
@@ -361,7 +381,7 @@ const Goals = () => {
       )}
 
       {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:grid grid-cols-1 flex flex-col-reverse lg:grid-cols-3 gap-8">
         {/* Goals List */}
         <div className="lg:col-span-2">
           <div className={baseStyles.container}>
@@ -409,6 +429,41 @@ const Goals = () => {
                         title={goal.name} 
                       />
 
+                      {showSavingsForm === goal._id && (
+                        <div className="fixed inset-0 z-40 flex items-center justify-center">
+                          <div className="fixed inset-0 bg-black bg-opacity-70" onClick={() => setShowSavingsForm(null)}></div>
+                          <div className="z-50 bg-white dark:bg-[#0a0a0a] rounded-lg shadow-xl p-6 w-full max-w-sm border border-[#F3F4F6] dark:border-[#ffffff24]">
+                            <h3 className="text-lg font-semibold text-[#1F2937] dark:text-white mb-4">Add Savings to {goal.name}</h3>
+                            <div className="relative mb-4">
+                              <input 
+                                type="number" 
+                                placeholder="Savings Amount" 
+                                value={savingsAmount} 
+                                onChange={(e) => setSavingsAmount(e.target.value)} 
+                                className={baseStyles.input}
+                                autoFocus
+                              />
+                              <ReceiptIndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            </div>
+                            <div className="flex gap-2">
+                              <button 
+                                onClick={() => handleAddSavings(goal._id)} 
+                                className={`${baseStyles.button} ${baseStyles.activeButton} flex-1`}
+                                disabled={loading || !savingsAmount || parseFloat(savingsAmount) <= 0}
+                              >
+                                {loading ? 'Saving...' : 'Add Savings'}
+                              </button>
+                              <button 
+                                onClick={() => setShowSavingsForm(null)} 
+                                className={`${baseStyles.button} bg-gray-200 dark:bg-[#ffffff17] text-[#1F2937] dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-[#ffffff24] flex-1`}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex relative items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
@@ -428,99 +483,78 @@ const Goals = () => {
                             <div className="mt-1 text-sm text-[#6B7280] dark:text-gray-400">{new Date(goal.deadline).toLocaleDateString()}</div>
                           </div>
                         </div>
-                        {/* <div className="flex gap-2">
-                          <button 
-                            onClick={() => handleEditGoal(goal)} 
-                            className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-[#8B5CF6] dark:hover:text-[#8B5CF6] hover:bg-purple-50 dark:hover:bg-[#8B5CF6]/10 transition-colors"
-                            title="Edit Goal"
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                          <button 
-                            onClick={() => handlePopupopner(goal._id)} 
-                            className="p-1.5 rounded-lg text-gray-400 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-200 hover:bg-red-50 dark:hover:bg-red-600/20 transition-colors"
-                            title="Delete Goal"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div> */}
 
-                         {/* buttons menu*/}
-                          <div className="flex gap-2 mt-1">
-                          
+                        <div className="flex gap-2 mt-1">
                           <button
-                            onClick={(e) => { e.stopPropagation();handleMenuClick(goal._id)}}
-                            className="p-1  rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
+                            onClick={(e) => { e.stopPropagation(); handleMenuClick(goal._id); }}
+                            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
                           >
-                            <MoreVertical size={16} className="text-gray-500 dark:text-gray-400 " />
+                            <MoreVertical size={16} className="text-gray-500 dark:text-gray-400" />
                           </button> 
-                          {(showMenu===goal._id) && (
-                          <div 
-                          ref={menuRef}
-                          onClick={()=>{setShowMenu(null)}}
-                          className={`
-                            absolute right-0 mt-2 w-24 rounded-xl shadow-lg py-2 px-1.5
-                            bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
-                            z-10 transform  scale-95 animate-in
-                            data-[state=open]:opacity-100 data-[state=open]:scale-100
-                            transition-all duration-200 ease-out
-                          `}
-                        >
+                          {showMenu === goal._id && (
+                            <div 
+                              ref={menuRef}
+                              onClick={() => setShowMenu(null)}
+                              className={`
+                                absolute right-0 mt-2 w-24 rounded-xl shadow-lg py-2 px-1.5
+                                bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24]
+                                z-10 transform scale-95 animate-in
+                                data-[state=open]:opacity-100 data-[state=open]:scale-100
+                                transition-all duration-200 ease-out
+                              `}
+                            >
+                              <button
+                                onClick={() => setShowSavingsForm(goal._id)}
+                                className="w-full flex items-center gap-2 p-2 rounded-lg
+                                  text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50 dark:hover:bg-opacity-20
+                                  transition-colors duration-150 group"
+                                title="Add saving to this goal"
+                              >
+                                <PiggyBank 
+                                  size={16} 
+                                  className="group-hover:scale-110 transition-transform duration-150" 
+                                />
+                                <span className="text-sm font-medium">Add</span>
+                              </button>
 
-                          <button
-                            // onClick={() => handleEditGoal(goal)} 
-                            className="w-full flex items-center gap-2 p-2 rounded-lg
-                              text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50 dark:hover:bg-opacity-20
-                              transition-colors duration-150 group"
-                            title="Add saving to this goal"
-                          >
-                            <PiggyBank 
-                              size={16} 
-                              className="group-hover:scale-110 transition-transform duration-150" 
-                            />
-                            <span className="text-sm font-medium">Add</span>
-                          </button>
+                              <button
+                                onClick={() => handleEditGoal(goal)} 
+                                className="w-full flex items-center gap-2 p-2 rounded-lg
+                                  text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300
+                                  hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20
+                                  transition-colors duration-150 group"
+                                title="Edit transaction"
+                              >
+                                <Edit2 
+                                  size={16} 
+                                  className="group-hover:scale-110 transition-transform duration-150" 
+                                />
+                                <span className="text-sm font-medium">Edit</span>
+                              </button>
 
-                          {/* Edit Action */}
-                          <button
-                            onClick={() => handleEditGoal(goal)} 
-                            className="w-full flex items-center gap-2 p-2 rounded-lg
-                              text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300
-                              hover:bg-blue-50 dark:hover:bg-blue-600 dark:hover:bg-opacity-20
-                              transition-colors duration-150 group"
-                            title="Edit transaction"
-                          >
-                            <Edit2 
-                              size={16} 
-                              className="group-hover:scale-110 transition-transform duration-150" 
-                            />
-                            <span className="text-sm font-medium">Edit</span>
-                          </button>
-                        
-                          {/* Delete Action */}
-                          <button
-                            onClick={() => handlePopupopner(goal._id)}
-                            className="w-full flex items-center gap-2 p-2 rounded-lg mt-1
-                              text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-300
-                              hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20
-                              transition-colors duration-150 group"
-                            title="Delete transaction"
-                          >
-                            <Trash2 
-                              size={16} 
-                              className="group-hover:scale-110 transition-transform duration-150" 
-                            />
-                            <span className="text-sm font-medium">Delete</span>
-                          </button>
-                          </div>
-                            )}
+                              <button
+                                onClick={() => handlePopupopner(goal._id)}
+                                className="w-full flex items-center gap-2 p-2 rounded-lg mt-1
+                                  text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-300
+                                  hover:bg-red-50 dark:hover:bg-red-600 dark:hover:bg-opacity-20
+                                  transition-colors duration-150 group"
+                                title="Delete transaction"
+                              >
+                                <Trash2 
+                                  size={16} 
+                                  className="group-hover:scale-110 transition-transform duration-150" 
+                                />
+                                <span className="text-sm font-medium">Delete</span>
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
 
                       <div className="mt-3">
-                      <div className="w-full bg-[#F3F4F6] dark:bg-[#ffffff0f] rounded-full h-2">
-                        <div className={`h-2 rounded-full ${percentage >= 95 ? 'bg-purple-600' : percentage >= 80 ? 'bg-[#FBBF24]' : 'bg-[#10B981]'}`} style={{ width: `${Math.min(percentage, 100)}%` }} />
-                      </div>
+                        <div className="w-full bg-[#F3F4F6] dark:bg-[#ffffff0f] rounded-full h-2">
+                          <div className={`h-2 rounded-full ${percentage >= 95 ? 'bg-purple-600' : percentage >= 80 ? 'bg-[#FBBF24]' : 'bg-[#10B981]'}`} style={{ width: `${Math.min(percentage, 100)}%` }} />
+                        </div>
                         <div className="mt-1 flex justify-between text-xs text-[#6B7280] dark:text-gray-400">
                           <span>{percentage.toFixed(0)}% achieved</span>
                           <span>₹{savings.remaining.toLocaleString()} remaining</span>
@@ -531,14 +565,14 @@ const Goals = () => {
                         {Array.from({ length: 4 }).map((_, index) => (
                           <div 
                             key={index} 
-                            className={`p-3 rounded-lg ${
+                            className={`p-3 rounded-lg  overflow-hidden ${
                               savings.monthsLeft === 0 ? 'bg-red-500/10' :
                               percentage >= 95 ? 'bg-purple-500/10' : 
                               percentage >= 80 ? 'bg-amber-500/10' : 
                               'bg-emerald-500/10'
                             }`}
                           >
-                            <div className={`text-sm font-medium ${
+                            <div className={`text-sm font-medium truncate md:w-[7rem] w-[5.6rem] ${
                               savings.monthsLeft === 0 ? 'text-red-600 dark:text-red-400' :
                               percentage >= 95 ? 'text-purple-600 dark:text-purple-400' :
                               percentage >= 80 ? 'text-amber-600 dark:text-amber-400' :
@@ -548,12 +582,15 @@ const Goals = () => {
                               {index === 1 && `${savings.perDay}`}
                               {index === 2 && `${savings.monthsLeft}`}
                               {index === 3 && `${savings.daysLeft}`}
+                              {index === 4 && `${savings.perYear}`}
                             </div>
                             <div className="text-xs text-[#6B7280] dark:text-gray-400">
                               {index === 0 && 'per month'}
                               {index === 1 && 'per day'}
                               {index === 2 && 'months left'}
                               {index === 3 && 'days left'}
+                              {index === 4 && 'per year'}
+                              
                             </div>
                           </div>
                         ))}
@@ -564,10 +601,27 @@ const Goals = () => {
               )}
             </div>
           </div>
+
+          {/* <div className="mt-6 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-[#F3F4F6]">
+            <h3 className="text-lg font-semibold text-[#1F2937] dark:text-white mb-2">Fund Your Goals with SoFi</h3>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400 mb-4">Low-rate personal loans for debt consolidation or big dreams—no fees.</p>
+            <a 
+              href="https://www.sofi.com/invite/personal-loans?gcp=YOUR_SOFI_REF_CODE" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="inline-block px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors duration-200"
+            >
+              Apply Now
+            </a>
+          </div> */}
+
+
         </div>
 
+        
+
         {/* Sticky Form */}
-        <div>
+        <div className='space-y-5'>
           <div className={baseStyles.stickyForm}>
             <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
               <div className="flex items-center justify-between">
@@ -585,13 +639,12 @@ const Goals = () => {
             </div>
 
             <div className="space-y-3 p-6">
-
-            <div>
+              <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Set Saving</label>
                 <div className="relative mt-1">
                   <input 
                     type="number" 
-                    placeholder="Set saved amount" 
+                    placeholder="Set initial saved amount" 
                     value={newGoal.current} 
                     onChange={(e) => setNewGoal({ ...newGoal, current: e.target.value })} 
                     className={baseStyles.input} 
@@ -667,8 +720,8 @@ const Goals = () => {
               {newGoal.target && newGoal.deadline && (
                 <div className="text-xs text-[#6B7280] dark:text-gray-400 bg-gray-50 dark:bg-[#ffffff0f] p-2 rounded">
                   {(() => {
-                    const savings = calculateSavings(newGoal.target, newGoal.deadline);
-                    const timeToGoal = newGoal.contributionAmount ? calculateTimeToGoal(newGoal.target, newGoal.deadline, 0, newGoal.contributionAmount, newGoal.contributionFrequency) : null;
+                    const savings = calculateSavings(newGoal.target, newGoal.deadline, newGoal.current || 0);
+                    const timeToGoal = newGoal.contributionAmount ? calculateTimeToGoal(newGoal.target, newGoal.deadline, newGoal.current || 0, newGoal.contributionAmount, newGoal.contributionFrequency) : null;
                     return (
                       <>
                         <div>Monthly savings (by deadline): {savings.perMonth}</div>
@@ -698,7 +751,7 @@ const Goals = () => {
                 </div>
               )}
 
-              <div className="flex justify-between gap-2 ">
+              <div className="flex justify-between gap-2">
                 <button 
                   onClick={handleGoalSubmit} 
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 dark:bg-opacity-10 focus:ring-4 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed bg-purple-500 dark:bg-[#8B5CF6] text-white dark:text-[#8B5CF6] w-full`}
@@ -706,18 +759,58 @@ const Goals = () => {
                 >
                   {loading ? 'Processing...' : newGoal._id ? 'Update Goal' : 'Add Goal'}
                 </button>
-                {newGoal._id &&
+                {newGoal._id && (
                   <button 
                     onClick={cancelEditGoal} 
                     className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all duration-200 dark:bg-opacity-10 focus:ring-4 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed bg-purple-500 dark:bg-[#8B5CF6] text-white dark:text-[#8B5CF6] w-full`}
                     disabled={loading || !newGoal.name || !newGoal.target || parseFloat(newGoal.target) <= 0 || !newGoal.deadline}
                   >
-                    {loading ? 'Processing...' : newGoal._id ? 'Cancel' : null}
+                    {loading ? 'Processing...' : 'Cancel'}
                   </button>
-                  }
+                )}
               </div>
             </div>
           </div>
+
+          {/* <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
+              <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Upgrade Your Finances</h3>
+              <p className="text-sm text-[#6B7280] dark:text-gray-400">No annual fee credit card with 1.5% cash back—low APR options available.</p>
+              <a 
+                href="https://www.upgrade.com/r/YOUR_UPGRADE_REF_CODE" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="mt-2 inline-block text-[#8B5CF6] dark:text-[#8B5CF6] hover:underline"
+              >
+                Get Upgrade Card
+              </a>
+          </div> */}
+
+          {/* <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
+            <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Bajaj Finance</h3>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">Quick loans up to ₹35 lakh—low rates from 11% p.a. for your dreams.</p>
+            <a 
+              href="https://bitli.in/yx5SGoa" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="mt-2 inline-block text-[#8B5CF6] dark:text-[#8B5CF6] hover:underline"
+            >
+              Get Loan
+            </a>
+          </div> */}
+
+          <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
+            <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Axis Bank Card</h3>
+            <p className="text-sm text-[#6B7280] dark:text-gray-400">Low APR from 1.5% p.m.—cashback on daily spends.</p>
+            <a 
+              href="https://bitli.in/YVz6YDB" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="mt-2 inline-block text-[#8B5CF6] dark:text-[#8B5CF6] hover:underline"
+            >
+              Apply Today
+            </a>
+          </div>
+
         </div>
       </div>
     </div>
@@ -759,8 +852,7 @@ export const GoalsData = () => {
 
   useEffect(() => {
     fetchGoals();
-    // console.log(goals);
   }, []);
 
-  return { goals, loading, fetchGoals,UpdateGoal };
+  return { goals, loading, fetchGoals, UpdateGoal };
 };
