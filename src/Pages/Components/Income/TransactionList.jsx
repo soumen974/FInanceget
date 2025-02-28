@@ -179,7 +179,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
   
     {/* Main Content Area */}
     <div className="p-4 sm:p-6">
-      <div className="space-y-3 min-h-[48vh] md:min-h-[48vh]">
+      <div className="md:space-y-3 space-y-2 min-h-[46vh] md:min-h-[48.8vh]">
         {/* Loading State with Smooth Animation */}
         {loading && filteredTransactions.length === 0 && (
           <div className="space-y-3">
@@ -208,7 +208,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
         { filteredTransactions.map(transaction => (
             <div
               key={transaction._id}
-              className="group relative flex items-center justify-between p-4 md:pr-1 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
+              className="group relative flex items-center justify-between p-3 md:p-4 md:pr-1 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
               >
                 <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
                
@@ -292,7 +292,7 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
       </div>
   
       {/* Pagination Footer */}
-      <div className="mt-6 border-t border-gray-200 dark:border-[#ffffff24] pt-4">
+      <div className="mt-6 border-t border-gray-200 dark:border-[#ffffff24] pt-3 md:pt-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             Showing {updating5 + 1} to {Math.min(updating5 + 5, GetData.length)} of {GetData.length} entries

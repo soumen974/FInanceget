@@ -7,7 +7,7 @@ import { useGlobalTransactionData } from './Components/Income/TransactionList';
 import { formatCurrency } from './Components/Income/formatCurrency';
 import { useMediaQuery } from 'react-responsive';
 import { ReportsData } from './Components/Reports/ReportsData';
-import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar } from 'react-feather';
+import { TrendingUp, PieChart as PieChartIcon, BarChart2, Calendar ,Download } from 'react-feather';
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import Spinner from "../Loaders/Spinner";
 import { Link } from 'react-router-dom';
@@ -98,6 +98,18 @@ const Reports = () => {
 
   const isPremiumLocked = dateRange !== currentYear && !isPremiumOrAdmin;
 
+  const exportReport = () => {
+    const csvContent = [
+      ['Month', 'Income', 'Expense', 'Net Savings'],
+      ...TransactionData.map(item => [item.name, item.income, item.expense, item.Net_Savings]),
+    ].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Financial_Report_${dateRange}_${MONTH_NAMES[dateRangeMonth]}.csv`;
+    link.click();
+  };
+
   return (
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Header */}
@@ -158,14 +170,25 @@ const Reports = () => {
                   {reportType} Trends
                 </h2>
               </div>
-              <select
-                value={trendChartType}
-                onChange={(e) => setTrendChartType(e.target.value)}
-                className="mt-1 px-4 py-2 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              >
-                <option value="lineChart">Line Chart</option>
-                <option value="BarChart">Bar Chart</option>
-              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  value={trendChartType}
+                  onChange={(e) => setTrendChartType(e.target.value)}
+                  className="mt-1 px-4 py-2 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-200 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="lineChart">Line Chart</option>
+                  <option value="BarChart">Bar Chart</option>
+                </select>
+
+                <button
+                    onClick={exportReport}
+                    className="p-3  bg-blue-50 text-blue-600 dark:text-gray-50 rounded-md text-sm hover:bg-blue-100 dark:bg-gray-600 dark:hover:bg-gray-500 dark:hover:bg-opacity-20 dark:bg-opacity-20 transition-all duration-200 flex items-center gap-2 "
+                    title="Export as CSV"
+                  >
+                    <Download size={16} />
+                    {/* <span className="hidden sm:inline">Export</span> */}
+                </button>
+             </div>
             </div>
           </div>
           <div className="p-6">
@@ -262,7 +285,7 @@ const Reports = () => {
                       value={index}
                       disabled={!monthsForIncome.includes(month)}
                     >
-                      {month} {!monthsForIncome.includes(month) && '(No Data)'}
+                      {month} {!monthsForIncome.includes(month) && ''}
                     </option>
                   ))}
                 </select>
@@ -330,8 +353,8 @@ const Reports = () => {
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-600 dark:bg-opacity-20">
-                <BarChart2 className="w-6 h-6 text-yellow-600" />
+              <div className="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-900 dark:bg-opacity-20">
+                <BarChart2 className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Expenses</p>

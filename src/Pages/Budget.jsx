@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   DollarSign, PieChart, Edit2, Trash2, AlertCircle, CheckCircle, X,
-  Coffee, Home, Smartphone, Users, Book, Gift, Shield, Sun, TrendingUp
+  Coffee, Home, Smartphone, Users,Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown, Twitter, Percent, HeartHandshake, Lightbulb, Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
+import { Car, Crown, Twitter,LightbulbIcon, Percent, HeartHandshake, Lightbulb, Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -181,7 +181,7 @@ const Budget = () => {
                 value={index}
                 disabled={!monthsForIncome.includes(month) && TransactionData.length > 0}
               >
-                {month} {!monthsForIncome.includes(month) && TransactionData.length > 0 ? ' (No Income)' : ''}
+                {month} {!monthsForIncome.includes(month) && TransactionData.length > 0 ? '' : ''}
               </option>
             ))}
           </select>
@@ -341,50 +341,67 @@ const Budget = () => {
 
           {/* Monetization: Budget-Related Affiliates */}
           <div className="mt-6 p-4 bg-white dark:bg-[#0a0a0a] rounded-lg shadow-sm border border-gray-200 dark:border-[#ffffff24]">
+            
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
               Master Your Budget
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-              Learn the 50/30/20 rule with{' '}
-              <a
-                href="https://www.amazon.in/Budgeting-101-Tracking-Financial-Essential/dp/150720907X?crid=2SO5M4BKAXMAX&dib=eyJ2IjoiMSJ9.rAVtOtjFQ0T6Q-Opl2qtqQiN-13co4hMTqZoHCv5j8B4gwFd4rgGwOhEAhdUOsbdB7EonGh0vzpZPJtcKz8z-A.04ZYPY0lmHFO2oFNmgNGdIuk_0m12q9wGV7r1lQ0N1M&dib_tag=se&keywords=Budgeting+101+by+Michele+Cagan.&qid=1740651360&sprefix=budgeting+101+by+michele+cagan.%2Caps%2C385&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=58a0d044aec974be4f45aa27f9783f04&language=en_IN&ref_=as_li_ss_tl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                Budgeting 101 by Michele Cagan
-              </a>.
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-              Protect your finances with{' '}
-              <a
-                href="https://www.policybazaar.com/health-insurance/health-insurance-india/" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                Policybazaar Insurance—compare & save
-              </a>.
-            </p>
+
+            <div className="flex items-center justify-start gap-2">
+              <div className="mt-0 flex items-center text-indigo-600 dark:text-indigo-400">•</div>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                Learn the 50/30/20 rule with{' '}
+                <a
+                  href="https://www.amazon.in/Budgeting-101-Tracking-Financial-Essential/dp/150720907X?crid=2SO5M4BKAXMAX&dib=eyJ2IjoiMSJ9.rAVtOtjFQ0T6Q-Opl2qtqQiN-13co4hMTqZoHCv5j8B4gwFd4rgGwOhEAhdUOsbdB7EonGh0vzpZPJtcKz8z-A.04ZYPY0lmHFO2oFNmgNGdIuk_0m12q9wGV7r1lQ0N1M&dib_tag=se&keywords=Budgeting+101+by+Michele+Cagan.&qid=1740651360&sprefix=budgeting+101+by+michele+cagan.%2Caps%2C385&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=58a0d044aec974be4f45aa27f9783f04&language=en_IN&ref_=as_li_ss_tl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
+                >
+                  Budgeting 101 by Michele Cagan
+                </a>.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-start gap-2">
+              <div className="mt-0 flex items-center text-indigo-600 dark:text-indigo-400">•</div>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                Protect your finances with{' '}
+                <a
+                  href="https://www.policybazaar.com/health-insurance/health-insurance-india/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
+                >
+                   Policybazaar Insurance—compare & save
+                </a>.
+              </p>
+            </div>
+
           </div>
 
           {/* Usage: Budget Tip */}
           <div className="mt-4 p-4 bg-gray-100 dark:bg-[#0a0a0a] rounded-lg shadow-sm border dark:border-[#ffffff24]">
-            <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Budget Tip
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Optimize your 50/30/20 rule—read{' '}
-              <a
-                href="https://www.amazon.in/All-Your-Worth-Ultimate-Lifetime/dp/0743269888?crid=1AT6TVOE80K5J&dib=eyJ2IjoiMSJ9.5GUJ8kYj9yMBf1P4L6hjyyWufTADqvLSO2Y3NXI6atLGjHj071QN20LucGBJIEps.kp-zR_ssenKYA62lIPJyK5oeO-fFHEm-kvSTh13B6jQ&dib_tag=se&keywords=All+Your+Worth+by+Elizabeth+Warren.&qid=1740651460&sprefix=all+your+worth+by+elizabeth+warren.%2Caps%2C419&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=55e98425506ed95278a1913f390aed59&language=en_IN&ref_=as_li_ss_tl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                All Your Worth
-              </a>{' '}
-              by Elizabeth Warren.
-            </p>
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-yellow-100 dark:bg-yellow-900 dark:bg-opacity-20 rounded-full">
+                <LightbulbIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div className="">
+                <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Budget Tip
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Optimize your 50/30/20 rule—read{' '}
+                  <a
+                    href="https://www.amazon.in/All-Your-Worth-Ultimate-Lifetime/dp/0743269888?crid=1AT6TVOE80K5J&dib=eyJ2IjoiMSJ9.5GUJ8kYj9yMBf1P4L6hjyyWufTADqvLSO2Y3NXI6atLGjHj071QN20LucGBJIEps.kp-zR_ssenKYA62lIPJyK5oeO-fFHEm-kvSTh13B6jQ&dib_tag=se&keywords=All+Your+Worth+by+Elizabeth+Warren.&qid=1740651460&sprefix=all+your+worth+by+elizabeth+warren.%2Caps%2C419&sr=8-1&linkCode=ll1&tag=financegetbys-21&linkId=55e98425506ed95278a1913f390aed59&language=en_IN&ref_=as_li_ss_tl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
+                  >
+                    All Your Worth
+                  </a>{' '}
+                  by Elizabeth Warren.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -711,93 +728,106 @@ const PersonalizedBudgetAllocationForm = ({
 
   return (
     <>
-      <div
-        className={`${editPersonalBudget ? 'block' : 'hidden'} fixed inset-0 bg-gray-500 dark:bg-[#000000aa] backdrop-blur-[0.01rem] bg-opacity-75 z-40`}
-        onClick={() => setEditPersonalBudget(false)}
-      />
-      <div
-        className={`bg-white dark:bg-[#0a0a0a] border-gray-200 border dark:border-[#ffffff24] fixed 
-          ${editPersonalBudget ? 'right-0' : '-right-96'} transition-all duration-300 
-          top-0 h-screen w-80 sm:w-96 shadow-lg z-50`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b dark:border-[#ffffff24] bg-gradient-to-r from-indigo-50 dark:from-[#1F2937] to-gray-100 dark:to-[#374151]">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white">Personalized Budget</h2>
-            <div className={`text-xs font-medium ${mainTotal !== 100 ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}`}>
-              Total: {mainTotal.toFixed(2)}%
-            </div>
-          </div>
-
-          {/* Form Content */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-4">
-            {(apiError || Object.keys(errors).length > 0) && (
-              <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 rounded">
-                <p className="text-xs text-red-600 dark:text-red-400">{apiError || errors.total || errors.needsSub || errors.wantsSub}</p>
-              </div>
-            )}
-            {saveStatus === 'success' && message && (
-              <div className="p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded">
-                <p className="text-xs text-green-600 dark:text-green-400">{message}</p>
-              </div>
-            )}
-
-            {loading ? (
-              <div className="flex justify-center items-center h-full">
-                <Spinner />
-              </div>
-            ) : (
-              <form id="budgetForm" onSubmit={handleSubmit}>
-                <div className="space-y-6">
-                  {/* Needs Section */}
-                  <BudgetCategory title="Needs" percentage={formData.Needs} error={errors.needsSub}>
-                    <BudgetInput label="Needs" emoji="" name="Needs" value={formData.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} max="100" />
-                    <BudgetInput label="Housing" emoji="🏠" name="Housing" value={formData.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} max={formData.Needs} />
-                    <BudgetInput label="Utilities" emoji="💡" name="Utilities" value={formData.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} max={formData.Needs} />
-                    <BudgetInput label="Food" emoji="🍽️" name="FoodAndDining" value={formData.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} max={formData.Needs} />
-                    <BudgetInput label="Health" emoji="⚕️" name="Healthcare" value={formData.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} max={formData.Needs} />
-                    <BudgetInput label="Transport" emoji="🚗" name="Transportation" value={formData.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} max={formData.Needs} />
-                    <BudgetInput label="Insurance" emoji="🛡️" name="Insurance" value={formData.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} max={formData.Needs} />
-                  </BudgetCategory>
-
-                  {/* Wants Section */}
-                  <BudgetCategory title="Wants" percentage={formData.Wants} error={errors.wantsSub}>
-                    <BudgetInput label="Wants" emoji="" name="Wants" value={formData.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} max="100" />
-                    <BudgetInput label="Fun" emoji="🎬" name="Entertainment" value={formData.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} max={formData.Wants} />
-                    <BudgetInput label="Misc" emoji="📦" name="OtherMiscellaneous" value={formData.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} max={formData.Wants} />
-                    <BudgetInput label="Edu" emoji="📚" name="Education" value={formData.Education} onChange={handleChange} error={errors.Education} disabled={loading} max={formData.Wants} />
-                  </BudgetCategory>
-
-                  {/* Savings Section */}
-                  <BudgetCategory title="Savings" percentage={formData.SavingsInvestments}>
-                    <BudgetInput label="Savings" emoji="💰" name="SavingsInvestments" value={formData.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} max="100" />
-                  </BudgetCategory>
-                </div>
-              </form>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="border-t dark:border-[#ffffff24] p-3 flex justify-end gap-2 bg-gray-50 dark:bg-[#141414]">
-            <button
-              type="button"
-              onClick={() => setEditPersonalBudget(false)}
-              className="px-4 py-1.5 text-sm bg-gray-200 dark:bg-[#ffffff17] text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-[#ffffff24] transition-all disabled:opacity-50"
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              form="budgetForm"
-              type="submit"
-              className="px-4 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-sm"
-              disabled={loading}
-            >
-              {loading ? 'Saving...' : 'Save Budget'}
-            </button>
-          </div>
+    <div
+      className={`${editPersonalBudget ? 'block' : 'hidden'} fixed inset-0 bg-black bg-opacity-70 backdrop-blur-[0.1rem]  z-40`}
+      onClick={() => setEditPersonalBudget(false)}
+    />
+    <div
+      className={`bg-white dark:bg-[#0a0a0a] border-gray-200 border dark:border-white/10 fixed 
+        ${editPersonalBudget ? 'right-0' : '-right-full'} transition-all duration-300 ease-in-out 
+        top-0 h-screen w-[85%] max-w-md shadow-xl z-50 flex flex-col`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b dark:border-white/10 bg-gradient-to-r from-indigo-50/80 dark:from-gray-800/80 to-gray-100/80 dark:to-gray-700/80">
+        <div className="flex items-center space-x-2">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">Personalized Budget</h2>
+        </div>
+        <div className={`text-sm font-medium rounded-full px-2 py-0.5 ${
+          mainTotal !== 100 
+            ? 'text-red-700 bg-red-50 dark:text-red-300 dark:bg-red-900/20' 
+            : 'text-green-700 bg-green-50 dark:text-green-300 dark:bg-green-900/20'
+        }`}>
+          {mainTotal.toFixed(1)}%
         </div>
       </div>
+
+      {/* Form Content */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {(apiError || Object.keys(errors).length > 0) && (
+          <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-400">{apiError || errors.total || errors.needsSub || errors.wantsSub}</p>
+          </div>
+        )}
+        {saveStatus === 'success' && message && (
+          <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg">
+            <p className="text-sm text-green-600 dark:text-green-400">{message}</p>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <Spinner />
+          </div>
+        ) : (
+          <form id="budgetForm" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              {/* Needs Section */}
+              <BudgetCategory title="Needs" percentage={formData.Needs} error={errors.needsSub}>
+                <BudgetInput label="Needs" emoji="" name="Needs" value={formData.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} max="100" />
+                <div className="grid grid-cols-2 gap-2">
+                  <BudgetInput label="Housing" emoji="🏠" name="Housing" value={formData.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Utilities" emoji="💡" name="Utilities" value={formData.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} max={formData.Needs} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <BudgetInput label="Food" emoji="🍽️" name="FoodAndDining" value={formData.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Health" emoji="⚕️" name="Healthcare" value={formData.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} max={formData.Needs} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <BudgetInput label="Transport" emoji="🚗" name="Transportation" value={formData.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Insurance" emoji="🛡️" name="Insurance" value={formData.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} max={formData.Needs} />
+                </div>
+              </BudgetCategory>
+
+              {/* Wants Section */}
+              <BudgetCategory title="Wants" percentage={formData.Wants} error={errors.wantsSub}>
+                <BudgetInput label="Wants" emoji="" name="Wants" value={formData.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} max="100" />
+                <div className="grid grid-cols-3 gap-2">
+                  <BudgetInput label="Fun" emoji="🎬" name="Entertainment" value={formData.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} max={formData.Wants} />
+                  <BudgetInput label="Misc" emoji="📦" name="OtherMiscellaneous" value={formData.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} max={formData.Wants} />
+                  <BudgetInput label="Edu" emoji="📚" name="Education" value={formData.Education} onChange={handleChange} error={errors.Education} disabled={loading} max={formData.Wants} />
+                </div>
+              </BudgetCategory>
+
+              {/* Savings Section */}
+              <BudgetCategory title="Savings" percentage={formData.SavingsInvestments}>
+                <BudgetInput label="Savings" emoji="💰" name="SavingsInvestments" value={formData.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} max="100" />
+              </BudgetCategory>
+            </div>
+          </form>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="border-t dark:border-white/10 p-4 flex justify-end gap-3 bg-gray-50 dark:bg-[#111111]">
+        <button
+          type="button"
+          onClick={() => setEditPersonalBudget(false)}
+          className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-white/15 transition-all disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600"
+          disabled={loading}
+        >
+          Cancel
+        </button>
+        <button
+          form="budgetForm"
+          type="submit"
+          className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+          disabled={loading}
+        >
+          {loading ? 'Saving...' : 'Save Budget'}
+        </button>
+      </div>
+    </div>
+
     </>
   );
 };
