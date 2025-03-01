@@ -267,8 +267,8 @@ const LandingPage = () => {
             <div className="text-sm text-indigo-100">Users</div>
           </div>
           <div>
-            <div className="text-4xl font-bold mb-2">₹150K+</div>
-            <div className="text-sm text-indigo-100">Tracked</div>
+            <div className="text-4xl font-bold mb-2">₹10M+</div>
+            <div className="text-sm text-indigo-100">Trackable</div>
           </div>
           <div>
             <div className="text-4xl font-bold mb-2">4.9/5</div>

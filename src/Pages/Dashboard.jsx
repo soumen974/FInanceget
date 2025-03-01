@@ -1,5 +1,5 @@
 // Dashboard.jsx
-import React,{ useEffect, useState } from 'react';
+import React,{ useEffect, useState ,useMemo} from 'react';
 import StatCard from "../Pages/Components/Dashboard/StatCard";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import RecentTransactions from "../Pages/Components/Dashboard/RecentTransactions";
@@ -9,7 +9,11 @@ import { TrendingDown,ChevronRight ,Crown,FileText} from "lucide-react";
 import { Link } from 'react-router-dom';
 import { authCheck } from '../Auth/Components/ProtectedCheck';
 import { api } from "../AxiosMeta/ApiAxios"
+import { ReportsData } from './Components/Reports/ReportsData';
+
 export default function Dashboard() {
+
+  const {TransactionData} = ReportsData();
   const { totalIncomeFortheCurrentMonth, incomeData, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
   const { isAuthenticated,userType } = authCheck();
@@ -26,6 +30,11 @@ export default function Dashboard() {
     }
   };
   
+   const totalNetSavingsPerYear = useMemo(() => 
+      TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0), 
+      [TransactionData]
+    );
+    
 
   useEffect(()=>{getStreaks()},[])
 
@@ -67,7 +76,8 @@ export default function Dashboard() {
             Current Balance
           </p>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)}
+            {/* {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)} */}
+            {formatCurrency(totalNetSavingsPerYear)}
           </p>
         </div>
       </div>
@@ -92,7 +102,7 @@ export default function Dashboard() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <StatCard 
         title="Total Balance"
-        amount={totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth}
+        amount={totalNetSavingsPerYear}
         type="balance"
         icon={<Activity className="dark:text-gray-300" />}
       />
