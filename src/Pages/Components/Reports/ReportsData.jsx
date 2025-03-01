@@ -3,6 +3,7 @@ import { api } from "../../../AxiosMeta/ApiAxios";
 
 export function ReportsData() {
   const [TransactionData, setTransactionData] = useState([]);
+  const [lifeTimeballence, setLifeTimeballence] = useState([]);
   const [Availableyears, setAvailableyears] = useState([]);
   const [errorReports, setError] = useState('');
   const [messageReports, setMessage] = useState('');
@@ -14,8 +15,14 @@ export function ReportsData() {
   const GetTransactionData = async () => {
     try {
       const response = await api.post(`api/reports/LineChartData/${searchYear}`);
-      setTransactionData(response.data);
-      setMessage(response.data?.msg);
+      setTransactionData(response.data.monthlyData);
+      setLifeTimeballence({
+        totalBalance: response.data.lifetimeTotalBalance,
+        totalIncome: response.data.lifetimeTotalIncome,
+        totalExpense: response.data.lifetimeTotalExpense
+      });
+      // console.log(response.data.lifetimeTotalBalance);
+      // setMessage(response.data?.msg);
     } catch (error) {
       setError('Error fetching transaction data');
       console.warn('Warning:', error.message);
@@ -51,5 +58,5 @@ export function ReportsData() {
     fetchCategoryData();
   }, [searchYear, month]);
 
-  return { TransactionData, errorReports, messageReports, loadingReport, Availableyears, searchYear, setsearchYear, setMonth, month, categoryData };
+  return { TransactionData,lifeTimeballence, errorReports, messageReports, loadingReport, Availableyears, searchYear, setsearchYear, setMonth, month, categoryData };
 }

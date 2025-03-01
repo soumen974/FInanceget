@@ -13,7 +13,7 @@ import { ReportsData } from './Components/Reports/ReportsData';
 
 export default function Dashboard() {
 
-  const {TransactionData} = ReportsData();
+  const {TransactionData ,lifeTimeballence} = ReportsData();
   const { totalIncomeFortheCurrentMonth, incomeData, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
   const { isAuthenticated,userType } = authCheck();
@@ -77,7 +77,7 @@ export default function Dashboard() {
           </p>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {/* {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)} */}
-            {formatCurrency(totalNetSavingsPerYear)}
+            {formatCurrency(lifeTimeballence.totalBalance)}
           </p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function Dashboard() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <StatCard 
         title="Total Balance"
-        amount={totalNetSavingsPerYear}
+        amount={lifeTimeballence.totalBalance}
         type="balance"
         icon={<Activity className="dark:text-gray-300" />}
       />

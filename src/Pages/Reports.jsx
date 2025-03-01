@@ -34,6 +34,7 @@ const Reports = () => {
 
   const {
     TransactionData,
+    lifeTimeballence,
     errorReports,
     messageReports,
     loadingReport,
@@ -72,15 +73,15 @@ const Reports = () => {
   }, [TransactionData, reportType]);
 
   const totalExpensePerYear = useMemo(() => 
-    TransactionData.reduce((acc, expense) => acc + expense.expense, 0), 
+    TransactionData.reduce((acc, { expense }) => acc + (expense || 0), 0), 
     [TransactionData]
   );
   const totalIncomePerYear = useMemo(() => 
-    TransactionData.reduce((acc, income) => acc + income.income, 0), 
+    TransactionData.reduce((acc, { income }) => acc + (income || 0), 0), 
     [TransactionData]
   );
   const totalNetSavingsPerYear = useMemo(() => 
-    TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0), 
+    TransactionData.reduce((acc, { Net_Savings }) => acc + (Net_Savings || 0), 0), 
     [TransactionData]
   );
 
