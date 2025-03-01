@@ -45,7 +45,7 @@ const Goals = () => {
   const [savingsAmount, setSavingsAmount] = useState('');
 
   const baseStyles = {
-    container: `bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
+    container: `bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border overflow-hidden border-[#F3F4F6] dark:border-[#ffffff24]`,
     card: `p-4 hover:bg-gray-50 dark:hover:bg-[#ffffff06] transition-colors duration-150`,
     input: `w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200`,
     button: `px-4 py-2 rounded-lg font-medium transition-colors duration-150 text-sm`,
@@ -401,7 +401,7 @@ const Goals = () => {
               </div>
             </div>
 
-            <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24]">
+            <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24] ">
               {loading ? (
                 <Spinner />
               ) : goals.length === 0 ? (
@@ -418,7 +418,7 @@ const Goals = () => {
                   const savings = calculateSavings(goal.target, goal.deadline, goal.current);
 
                   return (
-                    <div key={goal._id} className={baseStyles.card}>
+                    <div key={goal._id} className={`${baseStyles.card} ${savings.daysLeft === 0 ? 'bg-red-50 dark:bg-red-900/10 dark:bg-opacity-75' : ''}`}>
                       <Popupbox 
                         hidePopup={hidePopup} 
                         type={'Goal'} 
@@ -505,16 +505,16 @@ const Goals = () => {
                             >
                               <button
                                 onClick={() => setShowSavingsForm(goal._id)}
-                                className="w-full flex items-center gap-2 p-2 rounded-lg
+                                className={`w-full ${savings.remaining===0? 'hidden':'flex'}  items-center gap-2 p-2 rounded-lg
                                   text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50 dark:hover:bg-opacity-20
-                                  transition-colors duration-150 group"
+                                  transition-colors duration-150 group`}
                                 title="Add saving to this goal"
                               >
                                 <PiggyBank 
                                   size={16} 
                                   className="group-hover:scale-110 transition-transform duration-150" 
                                 />
-                                <span className="text-sm font-medium">Add</span>
+                                <span className="text-sm font-medium">Add </span>
                               </button>
 
                               <button
@@ -566,7 +566,7 @@ const Goals = () => {
                           <div 
                             key={index} 
                             className={`p-3 rounded-lg  overflow-hidden ${
-                              savings.monthsLeft === 0 ? 'bg-red-500/10' :
+                              savings.daysLeft === 0 ? 'bg-red-500/10' :
                               percentage >= 95 ? 'bg-purple-500/10' : 
                               percentage >= 80 ? 'bg-amber-500/10' : 
                               'bg-emerald-500/10'
@@ -661,10 +661,12 @@ const Goals = () => {
                     type="number" 
                     placeholder="Current saving " 
                     value={newGoal.current} 
+                    // max={newGoal.target}
+                    // disabled={newGoal.current >= newGoal.target}
                     onChange={(e) => setNewGoal({ ...newGoal, current: e.target.value })} 
                     className={baseStyles.input} 
                   />
-                  <Goal size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
+                  <PiggyBank size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
                 </div>
               </div>
 

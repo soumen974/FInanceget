@@ -355,7 +355,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
     <>
     <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout conformation?"} />
     <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24] transition-all duration-300 
-      ${isCollapsed ? 'w-16' : 'w-62'}`}>
+      ${isCollapsed ? 'w-16' : 'w-[14rem]'}`}>
      <div className="p-4 border-b dark:border-[#ffffff24]">
         <div className="flex items-center gap-3">
           <Wallet className="h-6 w-6 text-blue-600  flex-shrink-0" />

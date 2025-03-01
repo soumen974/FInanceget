@@ -13,13 +13,13 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
   };
 
   return (
-    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-gray-100 dark:border-[#ffffff24]">
+    <div className="bg-white dark:bg-[#0a0a0a] rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-[#ffffff24]">
       <div className="border-b border-gray-100 dark:border-[#ffffff24] p-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Transactions</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Your latest financial activities</p>
       </div>
 
-      <div className="divide-y divide-gray-100 dark:divide-[#ffffff24]">
+      <div className="divide-y divide-gray-100 dark:divide-[#ffffff24] ">
         {loading ? (
           <div className="p-6">
             <div className="animate-pulse space-y-4">
@@ -41,7 +41,7 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
           </div>
         ) : (
           allTransactions.map(transaction => (
-            <div key={transaction._id} className="sm:p-4 p-2 hover:bg-gray-50 dark:hover:bg-[#ffffff17] transition-colors">
+            <div key={transaction._id} className="sm:p-4 p-2 hover:bg-gray-50 dark:hover:bg-[#ffffff17]  transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className={`p-2 rounded-lg ${
