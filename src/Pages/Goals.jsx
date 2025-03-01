@@ -639,12 +639,27 @@ const Goals = () => {
             </div>
 
             <div className="space-y-3 p-6">
+
+              <div>
+                <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Goal target Amount</label>
+                <div className="relative mt-1">
+                  <input 
+                    type="number" 
+                    placeholder="Target Amount" 
+                    value={newGoal.target} 
+                    onChange={(e) => setNewGoal({ ...newGoal, target: e.target.value })} 
+                    className={baseStyles.input} 
+                  />
+                  <ReceiptIndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                </div>
+              </div>
+
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Set Saving</label>
                 <div className="relative mt-1">
                   <input 
                     type="number" 
-                    placeholder="Set initial saved amount" 
+                    placeholder="Current saving " 
                     value={newGoal.current} 
                     onChange={(e) => setNewGoal({ ...newGoal, current: e.target.value })} 
                     className={baseStyles.input} 
@@ -666,19 +681,9 @@ const Goals = () => {
                   <Goal size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
                 </div>
               </div>
-              <div>
-                <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Target Amount</label>
-                <div className="relative mt-1">
-                  <input 
-                    type="number" 
-                    placeholder="Target Amount" 
-                    value={newGoal.target} 
-                    onChange={(e) => setNewGoal({ ...newGoal, target: e.target.value })} 
-                    className={baseStyles.input} 
-                  />
-                  <ReceiptIndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
+
+             
+
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Deadline</label>
                 <div className="relative mt-1">
