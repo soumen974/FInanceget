@@ -78,31 +78,50 @@ const Headder = () => {
             <div className="py-2">
               {/* User Badge */}
               <div className={`
-                flex items-center gap-3 px-3 py-2 mb-2 rounded-lg
+                flex justify-between items-center gap-3 px-3 py-2 mb-2 rounded-lg
                 ${(userType === 'premium' || userType === 'admin')
                   ? 'bg-amber-50 dark:bg-amber-900/20'
-                  : 'bg-gray-50 dark:bg-[#ffffff17]'}
+                  : 'bg-gray-50 dark:bg-[#2d2b2b3b]'}
               `}>
-                <div className="relative">
-                  <User 
-                    size={18} 
-                    className={(userType === 'premium' || userType === 'admin') ? 'text-amber-500' : 'text-indigo-500'} 
-                  />
-                  <span className={`
-                    absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
-                    ${(userType === 'premium' || userType === 'admin') ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
-                  `} />
+                <div className=" flex  items-center gap-3">
+                  
+                  <div className="relative">
+                    <User 
+                      size={18} 
+                      className={(userType === 'premium' || userType === 'admin') ? 'text-amber-500' : 'text-indigo-500'} 
+                    />
+                    <span className={`
+                      absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full
+                      ${(userType === 'premium' || userType === 'admin') ? 'bg-amber-500 animate-pulse' : 'bg-indigo-500'}
+                    `} />
+                  </div>
+
+                  <div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white truncate block max-w-[150px]">
+                      {name || 'User'}
+                    </span>
+                    <span className={`
+                      text-xs font-medium uppercase tracking-wide
+                      ${(userType === 'premium' || userType === 'admin') ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400'}
+                    `}>
+                      {(userType === 'premium') ? 'Premium' : userType === 'admin'? 'Admin' : 'Basic'}
+                    </span>
+                  </div>
+
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white truncate block max-w-[150px]">
-                    {name || 'User'}
-                  </span>
-                  <span className={`
-                    text-xs font-medium uppercase tracking-wide
-                    ${(userType === 'premium' || userType === 'admin') ? 'text-amber-600 dark:text-amber-400' : 'text-indigo-600 dark:text-indigo-400'}
-                  `}>
-                    {(userType === 'premium') ? 'Premium' : userType === 'admin'? 'Admin' : 'Basic'}
-                  </span>
+
+                <div className="">
+                  {(userType === 'premium' || userType === 'admin') ? (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                        PRO
+                      </span>
+                    ):
+                    (
+                      <Link to={'/upgrade'} className="text-sm font-medium px-4 py-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                        UPGRADE PREMIUM
+                      </Link>
+                    )
+                    }
                 </div>
               </div>
 

@@ -54,7 +54,7 @@ const LandingPage = () => {
       description: "Break down spending patterns over time.",
       icon: <BarChart2 className="text-indigo-600 dark:text-indigo-400" />,
       free: "Current Year",
-      premium: "Historical Data",
+      premium: "Previous Year",
     },
     {
       title: "Forecasting",
@@ -89,6 +89,8 @@ const LandingPage = () => {
         "Default 50/30/20 budgeting rule",
         "Real-time expense tracking",
         "Basic financial reports",
+        "Reports download to CSV",
+        "Transactions download to pdf",
       ],
       cta: "Start Free",
       link: "/register",
@@ -131,8 +133,7 @@ const LandingPage = () => {
             Master Your <span className="text-indigo-600 dark:text-indigo-400">Finances</span>
           </h1>
           <p className="max-md:text-[0.8rem] md:text-md  text-gray-600 dark:text-gray-300 mb-8 max-w-xl mx-auto">
-            Budget with 50/30/20, track streaks, download reports , accomplish goal—your money, your way.
-          </p>
+          Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you.          </p>
           <div className="flex gap-4 justify-center">
             <Link
               to="/register"
@@ -156,7 +157,9 @@ const LandingPage = () => {
       {/* Features Section */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Your Money, Simplified</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-center  mb-3">Your Money, Simplified</h2>
+          <p className="dark:text-gray-200 text-center mb-10 max-w-2xl mx-auto">Everything you need to manage your finances in one place.</p>
+ 
           <div className="grid md:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <div
@@ -175,7 +178,7 @@ const LandingPage = () => {
       {/* Financial Planning Tools Section */}
       <section className="py-16 px-4 bg-gray-50 dark:bg-[#1414145e]">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Financial Planning Tools</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">Financial Planning Tools</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 text-center mb-12">
             Take control with tools designed for every financial goal.
           </p>
@@ -193,7 +196,7 @@ const LandingPage = () => {
                     {tool.free === true ? 'Free' : typeof tool.free === 'string' ? tool.free : 'Premium Only'}
                   </span>
                   {tool.premium && (
-                    <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+                    <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900 dark:bg-opacity-20 dark:text-amber-300">
                       {tool.premium}
                     </span>
                   )}
@@ -207,7 +210,7 @@ const LandingPage = () => {
       {/* Pricing Section */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Choose Your Plan</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">Choose Your Plan</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 text-center mb-12">
             Start for free or unlock premium financial tools.
           </p>
@@ -215,9 +218,9 @@ const LandingPage = () => {
             {pricingPlans.map((plan, index) => (
               <div
                 key={index}
-                className={`p-6 rounded-xl shadow-md transition-all duration-300 border ${
+                className={`p-6 rounded-[1.4rem] shadow-md transition-all duration-300 border ${
                   plan.highlighted
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg  border border-blue-400 dark:border-blue-700 transform -translate-y-2 shadow-lg'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white   border border-blue-400 dark:border-blue-700 transform -translate-y-2 shadow-lg'
                     : 'bg-gray-50 dark:bg-[#ffffff17] border-gray-100 dark:border-gray-700/50 hover:shadow-lg hover:-translate-y-1'
                 }`}
               >
@@ -243,12 +246,13 @@ const LandingPage = () => {
                     </li>
                   ))}
                 </ul>
+
                 <Link
                   to={plan.link}
-                  className={`inline-flex items-center justify-center w-full gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                  className={`inline-flex items-center justify-center w-full gap-2 px-6 py-4 rounded-[.7rem]  font-medium transition-all duration-200 ${
                     plan.highlighted
                       ? 'bg-white text-indigo-600 hover:bg-indigo-50 shadow-sm'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg  border border-blue-400 dark:border-blue-700 shadow-sm'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white   border border-blue-400 dark:border-blue-700 shadow-sm'
                   }`}
                 >
                   {plan.cta} <ChevronRight size={16} />
@@ -280,7 +284,9 @@ const LandingPage = () => {
       {/* Testimonials */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">User Love</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">User Love</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-center mb-10 max-w-2xl mx-auto">Don't just take our word for it. See what our users have to say.</p>
+
           <div className="grid md:grid-cols-2 gap-6">
             {testimonials.map((testimonial, index) => (
               <div
@@ -306,7 +312,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get Started Now</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">Get Started Now</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">Join the financial revolution with FinanceGet.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

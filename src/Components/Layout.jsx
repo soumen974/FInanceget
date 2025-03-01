@@ -22,6 +22,13 @@ const Layout = () => {
       <div className="   max-lg:pt-[5rem] mx-3 md:mx-5 lg:mt-6">
         <Outlet />
       </div>
+
+    <footer className='md:max-w-6xl hidden flex pl-1 md:justify-center py-6  md:mx-auto'>
+      <div className="dark:text-white space-y-5 ">
+        <h1 className='text-[5rem] leading-none  font-extrabold max-md:w-[12rem]'>Live it up!</h1>
+        <h2 className='text-xl'>Crafted with ❤️ by <a href="https://x.com/Soumen81845556">Soumen Bhunia</a> </h2>
+      </div>
+    </footer>
       
       </main>
     </div>
