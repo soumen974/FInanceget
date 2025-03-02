@@ -17,6 +17,7 @@ import Budget from "./Pages/Budget";
 import Goals from "./Pages/Goals";
 import Upgrade from "./Pages/Upgrade";
 import Spinner from "./Loaders/Spinner";
+import Users from "./Admin/Pages/Users";
 
 
 
@@ -80,7 +81,7 @@ const PublicRoute = ({ children }) => {
 
 const App = () => {
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const { auth: isAuthenticated, loading, error  } = authCheck();
+  const { auth: isAuthenticated, loading, error ,userType } = authCheck();
 
   // if(loading){
   //   return <div className='flex justify-center place-content-center h-screen '><Spinner/></div>
@@ -148,6 +149,7 @@ const App = () => {
             <Route path="/budget" element={<Budget />} />
             <Route path="/goal" element={<Goals />} />
             <Route path="/upgrade" element={<Upgrade />} />
+            {userType==='admin'&& <Route path="/Users" element={<Users />} />}
 
 
             <Route path='*' element={
@@ -157,6 +159,10 @@ const App = () => {
              </div>
             }/>
             </Route>:
+
+            
+
+
           <Route path="/" element={<Landing />} />}
 
           

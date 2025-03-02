@@ -2,7 +2,7 @@ import React, { useState,useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { 
   Wallet, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut, 
-  Menu, X, User, Home,Goal, CreditCard 
+  Menu, X, User, Home,Goal, CreditCard ,Users
 } from 'lucide-react';
 import Logout from "../../Auth/Components/Logout";
 import { authCheck } from "../../Auth/Components/ProtectedCheck";
@@ -35,6 +35,7 @@ const Headder = () => {
     { icon: <PieChart size={18} />, label: 'Reports', to: '/reports' },
     { icon: <Goal size={18} />, label: 'Goal', to: '/goal',isBeta: true },
     { icon: <Settings size={18} />, label: 'Settings', to: '/settings' },
+    { icon: <Users size={18} />, label: 'Users', to: '/Users',admin:true },
   ];
 
      const navItems = useMemo(() => NAV_ITEMS, []);
@@ -128,6 +129,7 @@ const Headder = () => {
               {/* Navigation */}
               <div className="space-y-1">
                 {navItems.map(item => (
+                   item.admin && userType !== 'admin' ? null : (
                   <NavLink
                     key={item.label}
                     to={item.to}
@@ -147,7 +149,7 @@ const Headder = () => {
                         BETA
                       </span>
                     )}
-                  </NavLink>
+                  </NavLink>)
                 ))}
                 <button
                   onClick={() => {

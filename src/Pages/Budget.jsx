@@ -170,13 +170,13 @@ const Budget = () => {
         </div>
       </div>
 
-      <div className="mb-8 flex gap-4">
+      <div className="mb-8 flex  sm:gap-4">
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Month</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ">Select Month</label>
           <select 
             value={selectedMonth} 
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300"
+            className="w-[26vw] truncate sm:w-full   mt-1 px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300"
           >
             {MONTH_NAMES.map((month, index) => (
               <option 
@@ -189,12 +189,13 @@ const Budget = () => {
             ))}
           </select>
         </div>
+
         <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Year</label>
           <select 
             value={selectedYear} 
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
+            className="w-[23vw]  sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             {years.map((year, index) => (
               <option key={index} value={year}>
@@ -203,12 +204,13 @@ const Budget = () => {
             ))}
           </select>
         </div>
+
         <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Finance Rule</label>
           <select 
             value={financeRule} 
             onChange={(e) => setFinanceRule(e.target.value)}
-            className="w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
+            className="w-[29vw] sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
           >
             <option value="50/30/20">50/30/20 Rule</option>
             <option value="Personalized">

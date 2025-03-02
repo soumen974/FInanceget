@@ -1,5 +1,5 @@
 import React, { useState ,useLocation, useEffect,useMemo } from 'react';
-import { User,Home,Goal,CreditCard , Wallet,ChevronRight,ChevronLeft, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
+import { User,Home,Goal,CreditCard, Users , Wallet,ChevronRight,ChevronLeft, ArrowUpCircle, ArrowDownCircle, PieChart, Settings, LogOut } from 'lucide-react';
 import { Link, Links, NavLink } from 'react-router-dom';
 import { 
     DollarSign, 
@@ -346,6 +346,8 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
     { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },
     { icon: <Goal size={20} />, label: 'Goal', to: '/goal', isBeta: true },
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
+    { icon: <Users size={20} />, label: 'Users', to: '/users' ,admin:true },
+
   ];
 
    const navItems = useMemo(() => NAV_ITEMS, []);
@@ -417,38 +419,42 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
       {/* Navigation Links */}
       <nav className="p-3 space-y-2  ">
-     {navItems.map((item) => (
-        <NavLink
-        key={item.label}
-        to={item.to}
-        className={({ isActive }) => `
-          flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-          transition-colors relative
-          ${
-            isActive 
-              ? 'text-blue-600   bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10 ' 
-              : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600  hover:bg-gray-50 '
-          }
-          ${isCollapsed ? 'justify-center' : ''}
-        `}
-      >
-        <span className="flex-shrink-0">{item.icon}</span>
-        {!isCollapsed && <span>{item.label}</span>}
-        
-        {isCollapsed && (
-          <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs
-                        rounded opacity-0 hover:opacity-100 pointer-events-none
-                        whitespace-nowrap">
-            {item.label}
-          </div>
-        )}
-        {!isCollapsed && item.isBeta && (
-            <span className="text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 text-white shadow-md shadow-blue-500/30">
-              BETA
-            </span>
-          )}
-
-      </NavLink>
+      {navItems.map((item) => (
+        item.admin && userType !== 'admin' ? null : (
+          <NavLink
+            key={item.label}
+            to={item.to}
+            className={({ isActive }) => `
+              flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+              transition-colors relative
+              ${
+                isActive 
+                  ? 'text-blue-600 bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10' 
+                  : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50'
+              }
+              ${isCollapsed ? 'justify-center' : ''}
+            `}
+          >
+            <span className="flex-shrink-0">{item.icon}</span>
+            {!isCollapsed && <span>{item.label}</span>}
+            
+            {isCollapsed && (
+              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs
+                            rounded opacity-0 hover:opacity-100 pointer-events-none
+                            whitespace-nowrap">
+                {item.label}
+              </div>
+            )}
+            {!isCollapsed && item.isBeta && (
+              <span className="text-[9px] font-semibold uppercase px-[0.6rem] py-[0.1] rounded-full 
+                            bg-gradient-to-r from-blue-500 to-blue-600 
+                            dark:from-blue-400 dark:to-blue-500 text-white 
+                            shadow-md shadow-blue-500/30">
+                BETA
+              </span>
+            )}
+          </NavLink>
+        )
       ))}
     </nav>
    
