@@ -171,7 +171,7 @@ const Reports = () => {
                   {reportType} Trends
                 </h2>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex max-sm:flex-wrap items-center gap-2">
                 <select
                   value={trendChartType}
                   onChange={(e) => setTrendChartType(e.target.value)}
@@ -266,7 +266,7 @@ const Reports = () => {
                   Category Distribution
                 </h2>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex max-sm:flex-wrap items-center gap-2">
                 <select
                   value={categoryChartType}
                   onChange={(e) => setCategoryChartType(e.target.value)}

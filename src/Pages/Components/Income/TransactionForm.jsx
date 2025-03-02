@@ -142,14 +142,14 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
 
   return (
     <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] max-w-2xl mx-auto">
-      <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
+      <div className="border-b border-gray-200 dark:border-[#ffffff24] p-4 sm:p-6">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl ${
             type === 'income' ? 'bg-green-50 text-green-600 dark:bg-green-600/10 dark:bg-opacity-10' : 'bg-red-50 text-red-600 dark:text-red-500 dark:bg-red-600/10 dark:bg-opacity-10'
           }`}>
             {type === 'income' ? <ArrowUpCircle size={24} /> : <ArrowDownCircle size={24} />}
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          <h2 className="text-[1rem] md:text-xl font-semibold text-gray-800 dark:text-gray-100">
             {editId ? `Edit ${type}` : `Add New ${type}`}
           </h2>
         </div>

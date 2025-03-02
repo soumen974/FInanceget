@@ -214,11 +214,11 @@ export default function TransactionList({ type ,action ,setAction ,setEditId ,ed
                
               
               <div className="flex-1">
-                <p className="font-medium text-gray-900 dark:text-white truncate">{transaction.description}</p>
-                <div className="flex items-center gap-2 text-sm text-gray-500 truncate">
-                  <span>{transaction.source || transaction.category}</span>
+                <p className="font-medium text-gray-900 dark:text-white  max-sm:truncate max-sm:w-[6.2rem]">{transaction.description}</p>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 truncate">
+                  <span className='max-md:truncate max-md:w-[4rem]'>{transaction.source || transaction.category}</span>
                   <span>•</span>
-                  <span className=''>{(new Date(transaction.date).toLocaleDateString()=== new Date().toLocaleDateString()? 'Today': new Date(transaction.date).toLocaleDateString())}</span>
+                  <span className='max-md:truncate max-md:w-[4rem]'>{(new Date(transaction.date).toLocaleDateString()=== new Date().toLocaleDateString()? 'Today': new Date(transaction.date).toLocaleDateString())}</span>
                   {/* <span>{new (Date()-1).toLocaleDateString()}</span> */}
                 </div>
               </div>

@@ -14,9 +14,9 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
 
   return (
     <div className="bg-white dark:bg-[#0a0a0a] rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-[#ffffff24]">
-      <div className="border-b border-gray-100 dark:border-[#ffffff24] p-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Transactions</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Your latest financial activities</p>
+      <div className="border-b border-gray-100 dark:border-[#ffffff24] p-4 sm:p-6">
+        <h2 className=" text-[1rem] md:text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Transactions</h2>
+        <p className="text-[0.7rem] md:text-sm text-gray-500 dark:text-gray-400 mt-1">Your latest financial activities</p>
       </div>
 
       <div className="divide-y divide-gray-100 dark:divide-[#ffffff24] ">
@@ -56,12 +56,12 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
                     )}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{transaction.description}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-500 dark:text-gray-500">{transaction.source}</span>
+                    <p className="font-medium text-gray-900 dark:text-gray-100 max-md:truncate max-md:w-[5.7rem]">{transaction.description}</p>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <span className="text-sm text-gray-500 dark:text-gray-500 max-md:truncate max-md:w-[5.7rem]">{transaction.source}</span>
                       <span className="text-gray-300 dark:text-gray-700">•</span>
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-500">
-                        <Calendar className="w-4 h-4 mr-1 dark:text-gray-600" />
+                      <div className="flex items-center  text-sm text-gray-500 dark:text-gray-500">
+                        <Calendar className="w-4  h-4 mr-1 dark:text-gray-600 " />
                         {new Date(transaction.date).toLocaleDateString() === new Date().toLocaleDateString() 
                           ? 'Today' 
                           : new Date(transaction.date).toLocaleDateString()}

@@ -67,7 +67,7 @@ export default function Dashboard() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
             Dashboard
           </h1>
-          <p className="mt-1 text-[0.7rem] md:text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-[0.7rem] sm:text-sm text-gray-500 dark:text-gray-400">
             Overview of your financial status
           </p>
         </div>
@@ -83,13 +83,13 @@ export default function Dashboard() {
       </div>
 
     {/* Usage Booster: Streak Notification - Enhanced with better gradient and animations */}
-    <div className="mb-6 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
+    <div className="mb-6 p-4 sm:p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-center gap-3">
         <div>
-          <h3 className="text-lg font-bold tracking-tight">
+          <h3 className="text-[1rem] md:text-lg font-bold tracking-tight">
             Your Money Streak
           </h3>
-          <p className="mt-1 text-sm text-blue-100">
+          <p className="mt-1 text-[0.7rem] sm:text-sm text-blue-100">
             {streak > 0 
               ? `Nice! You've logged in ${streak} days straight. Keep it up!`
               : `Start tracking daily to build your streak!`}
@@ -121,16 +121,16 @@ export default function Dashboard() {
     </div>
 
     {/* Monetization: Affiliate Links - Enhanced styling */}
-    <div className="mb-8 p-6 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="mb-8 sm:p-6 p-4 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
       <div className="flex items-start gap-3">
         <div className="p-2 bg-indigo-100 dark:bg-indigo-600 dark:bg-opacity-20 rounded-full">
           <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-[1rem] md:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Recommended Tools
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-[0.7rem] sm:text-sm text-gray-600 dark:text-gray-300">
             Learn trading with{' '}
             <a 
               href="https://www.amazon.in/Financial-Statement-Analysis-Handbook-ZebraLearn/dp/8195895077?content-id=amzn1.sym.288d7cd9-bdfb-4778-882a-c15de0f76151%3Aamzn1.sym.288d7cd9-bdfb-4778-882a-c15de0f76151&crid=26ZU6ASO9Q43R&cv_ct_cx=finance+books+50+30+20+rules&keywords=finance+books+50+30+20+rules&pd_rd_i=8195895077&pd_rd_r=7a572262-4405-4d43-886a-a03417a6344a&pd_rd_w=WBfLv&pd_rd_wg=H5eGC&pf_rd_p=288d7cd9-bdfb-4778-882a-c15de0f76151&pf_rd_r=S5JT6B90R0G4X9B0A7XZ&qid=1740588213&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=finance+books+50+30+20+rule%2Caps%2C1988&sr=1-1-9131241a-a358-4619-a7b8-0f5a65d91d81&linkCode=ll1&tag=financegetbys-21&linkId=5428e948533236cb005d4a454e71e7d5&language=en_IN&ref_=as_li_ss_tl" 
@@ -167,20 +167,20 @@ export default function Dashboard() {
 
     {/* Monetization: Enhanced section with better visual appeal */}
     <div className="mt-8 grid grid-cols-1 gap-6">
-      <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
+      <div className="sm:p-6 p-4 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
               <FileText className="h-6 w-6 text-yellow-300" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight">Download Your Report</h2>
-              <p className="mt-1 text-sm text-blue-100">Get a detailed PDF of your transactions for just <span className="text-md font-bold">₹0/-</span> <span className="line-through">₹49/-</span></p>
+              <h2 className="text-[1rem] md:text-lg font-bold tracking-tight">Download Your Report</h2>
+              <p className="mt-1 text-[0.7rem] sm:text-sm text-blue-100">Get a detailed PDF of your transactions for just <span className="text-md font-bold">₹0/-</span> <span className="line-through">₹49/-</span></p>
             </div>
           </div>
           
           <button 
-            className="group disabled:cursor-wait inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+            className="group disabled:cursor-wait inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-[0.7rem] md:text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
             disabled={downloadin}
             onClick={downloadDailyReport}>
             {downloadin?'Downloading..':'Download Now'} 

@@ -342,7 +342,7 @@ const Goals = () => {
       </div>
 
       {/* Filters */}
-      <div className="mb-8 flex gap-4">
+      <div className="mb-8 max-sm:flex-wrap flex gap-4">
         <div>
           <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Select Month</label>
           <select 
@@ -383,9 +383,9 @@ const Goals = () => {
       {/* Main Grid Layout */}
       <div className="lg:grid grid-cols-1 flex flex-col-reverse lg:grid-cols-3 gap-8">
         {/* Goals List */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 ">
           <div className={baseStyles.container}>
-            <div className="p-6 border-b border-[#F3F4F6] dark:border-[#ffffff24]">
+            <div className="p-6 border-b  border-[#F3F4F6] dark:border-[#ffffff24]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-50 dark:bg-opacity-20 dark:bg-[#8B5CF6] rounded-lg">
@@ -401,7 +401,7 @@ const Goals = () => {
               </div>
             </div>
 
-            <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24] ">
+            <div className="divide-y  divide-[#F3F4F6] dark:divide-[#ffffff24] ">
               {loading ? (
                 <Spinner />
               ) : goals.length === 0 ? (
@@ -465,18 +465,18 @@ const Goals = () => {
                       )}
 
                       <div className="flex relative items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
+                        <div className="flex  items-center gap-4">
+                          <div className="p-2  rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
                             <Goal size={20} className="text-[#6B7280] dark:text-gray-300" />
                           </div>
                           <div>
                             <h3 className="font-medium text-[#1F2937] dark:text-white">{goal.name}</h3>
-                            <div className="mt-1 flex items-center gap-2 text-sm">
-                              <span className="text-[#6B7280] dark:text-gray-400">Target:</span>
-                              <span className="font-medium text-[#1F2937] dark:text-white">{formatCurrency(goal.target)}</span>
+                            <div className="mt-1 flex max-sm:flex-wrap items-center gap-2 text-sm">
+                              <span className="text-[#6B7280] dark:text-gray-400 ">Target:</span>
+                              <span className="font-medium text-[#1F2937] dark:text-white max-sm:truncate max-sm:w-[3.6rem]">{formatCurrency(goal.target)}</span>
                               <span className="text-[#D1D5DB] dark:text-gray-500">•</span>
-                              <span className="text-[#6B7280] dark:text-gray-400">Saved:</span>
-                              <span className={`font-medium ${percentage >= 95 ? 'text-purple-600' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
+                              <span className="text-[#6B7280] dark:text-gray-400 ">Saved:</span>
+                              <span className={`font-medium max-sm:truncate max-sm:w-[3.6rem] ${percentage >= 95 ? 'text-purple-600' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
                                 {formatCurrency(goal.current)}
                               </span>
                             </div>
@@ -484,7 +484,7 @@ const Goals = () => {
                           </div>
                         </div>
 
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex  gap-2 mt-1">
                           <button
                             onClick={(e) => { e.stopPropagation(); handleMenuClick(goal._id); }}
                             className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
@@ -621,7 +621,7 @@ const Goals = () => {
         
 
         {/* Sticky Form */}
-        <div className='space-y-5'>
+        <div className='  space-y-5'>
           <div className={baseStyles.stickyForm}>
             <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
               <div className="flex items-center justify-between">

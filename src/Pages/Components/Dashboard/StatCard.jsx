@@ -24,7 +24,7 @@ const TYPE_STYLES = {
 };
 
 const StatCard = ({ title, amount, type, icon }) => {
-  // Memoize styles to avoid recalculation
+ 
   const styles = useMemo(() => TYPE_STYLES[type] || TYPE_STYLES.balance, [type]);
 
   return (
@@ -52,5 +52,5 @@ const StatCard = ({ title, amount, type, icon }) => {
   );
 };
 
-// Apply React.memo to prevent unnecessary re-renders
+
 export default React.memo(StatCard);
