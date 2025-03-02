@@ -75,7 +75,7 @@ export default function Dashboard() {
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             Current Balance
           </p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-2xl truncate w-[10rem] font-bold text-gray-900 dark:text-gray-100">
             {/* {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)} */}
             {formatCurrency(lifeTimeballence.totalBalance)}
           </p>

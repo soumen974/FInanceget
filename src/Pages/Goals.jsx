@@ -473,11 +473,11 @@ const Goals = () => {
                             <h3 className="font-medium text-[#1F2937] dark:text-white">{goal.name}</h3>
                             <div className="mt-1 flex items-center gap-2 text-sm">
                               <span className="text-[#6B7280] dark:text-gray-400">Target:</span>
-                              <span className="font-medium text-[#1F2937] dark:text-white">₹{parseFloat(goal.target).toLocaleString()}</span>
+                              <span className="font-medium text-[#1F2937] dark:text-white">{formatCurrency(goal.target)}</span>
                               <span className="text-[#D1D5DB] dark:text-gray-500">•</span>
                               <span className="text-[#6B7280] dark:text-gray-400">Saved:</span>
                               <span className={`font-medium ${percentage >= 95 ? 'text-purple-600' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
-                                ₹{parseFloat(goal.current).toLocaleString()}
+                                {formatCurrency(goal.current)}
                               </span>
                             </div>
                             <div className="mt-1 text-sm text-[#6B7280] dark:text-gray-400">{new Date(goal.deadline).toLocaleDateString()}</div>
@@ -557,7 +557,7 @@ const Goals = () => {
                         </div>
                         <div className="mt-1 flex justify-between text-xs text-[#6B7280] dark:text-gray-400">
                           <span>{percentage.toFixed(0)}% achieved</span>
-                          <span>₹{savings.remaining.toLocaleString()} remaining</span>
+                          <span>{formatCurrency(savings.remaining)} remaining</span>
                         </div>
                       </div>
 

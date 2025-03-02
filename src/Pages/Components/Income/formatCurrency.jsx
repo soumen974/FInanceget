@@ -1,14 +1,43 @@
-export const formatCurrency = (amount) => {
-  // Return a default formatted string if amount is undefined, null, or not a number
+export const formatCurrency = (amount, currencyCode = 'INR') => {
+  // Currency formatting options and approximate exchange rates (INR to target currency)
+  const currencyOptions = {
+    INR: { locale: 'en-IN', currency: 'INR', symbol: '₹', rate: 1 },        
+    USD: { locale: 'en-US', currency: 'USD', symbol: '$', rate: 0.011 },   
+    EUR: { locale: 'en-GB', currency: 'EUR', symbol: '€', rate: 0.011 },    
+    GBP: { locale: 'en-GB', currency: 'GBP', symbol: '£', rate: 0.0091 },  
+  };
+
+  // Get formatting options, default to INR if currencyCode not found
+  const options = currencyOptions[currencyCode.toUpperCase()] || currencyOptions.INR;
+
+  // Return default formatted string if amount is invalid
   if (amount === undefined || amount === null || isNaN(amount)) {
-    return '₹0.0';
+    return `${options.symbol}0.0`;
   }
-  
-  // Convert to number explicitly and format
+
+  // Convert amount from INR to target currency
   const numericAmount = Number(amount);
-  return numericAmount.toLocaleString('en-IN', { 
-    style: 'currency', 
-    currency: 'INR',
+  const convertedAmount = numericAmount * options.rate;
+
+  // Format large numbers based on currency
+  if (options.currency === 'INR') {
+    if (convertedAmount >= 10000000) { // 1 crore = 10,000,000
+      return `${options.symbol}${(convertedAmount / 10000000).toFixed(1)} Cr`;
+    } else if (convertedAmount >= 1000000) { // 10 lakhs = 1,000,000
+      return `${options.symbol}${(convertedAmount / 1000000).toFixed(1)} M`;
+    } else if (convertedAmount >= 100000) { // 1 lakh = 100,000
+      return `${options.symbol}${(convertedAmount / 100000).toFixed(1)} L`;
+    }
+  } else {
+    if (convertedAmount >= 1000000) { // 1 million = 1,000,000 in target currency
+      return `${options.symbol}${(convertedAmount / 1000000).toFixed(1)} M`;
+    }
+  }
+
+  // Standard formatting for smaller amounts
+  return convertedAmount.toLocaleString(options.locale, {
+    style: 'currency',
+    currency: options.currency,
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });

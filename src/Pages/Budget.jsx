@@ -16,6 +16,7 @@ import { api } from "../AxiosMeta/ApiAxios";
 const Budget = () => {
   const {
     TransactionData,
+    lifeTimeballence,
     Availableyears,
     searchYear,
     setsearchYear,
@@ -35,7 +36,9 @@ const Budget = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [financeRule, setFinanceRule] = useState('50/30/20');
   const [editPersonalBudget, setEditPersonalBudget] = useState(false);
-  const monthlyIncome = totalIncomeFortheCurrentMonth;
+  const monthlyIncome = lifeTimeballence.totalBalance;
+  // const monthlyIncome =totalIncomeFortheCurrentMonth ;
+
 
   const isPremiumOrAdmin = userType === 'premium' || userType === 'admin';
 
@@ -287,7 +290,7 @@ const Budget = () => {
                           <div className="mt-1 flex items-center gap-2 text-sm">
                             <span className="text-gray-500 dark:text-gray-400">Budget:</span>
                             <span className="font-medium text-gray-900 dark:text-gray-100">
-                              ₹{category.budget.toLocaleString()}
+                              {formatCurrency(category.budget)}
                             </span>
                             <span className="text-gray-300 dark:text-gray-500">•</span>
                             <span className="text-gray-500 dark:text-gray-400">Spent:</span>
@@ -296,7 +299,7 @@ const Budget = () => {
                               ((category.spent / (category.budget || 1)) * 100) >= 80 ? 'text-yellow-400 dark:text-yellow-300' : 
                               'text-[#10B981] dark:text-[#10B981]'
                             }`}>
-                              ₹{category.spent.toLocaleString()}
+                              {formatCurrency(category.spent)}
                             </span>
                           </div>
                         </div>
@@ -315,7 +318,7 @@ const Budget = () => {
                       </div>
                       <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
                         <span>{((category.spent / (category.budget || 1)) * 100).toFixed(0)}% used</span>
-                        <span>₹{(category.budget - category.spent).toLocaleString()} remaining</span>
+                        <span>{formatCurrency(category.budget - category.spent)} remaining</span>
                       </div>
                     </div>
                   </div>
