@@ -62,12 +62,12 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl pb-6 mx-auto">
   {/* Dashboard Header - Improved with better spacing and alignment */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-wrap gap-y-2 items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
             Dashboard
           </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-[0.7rem] md:text-sm text-gray-500 dark:text-gray-400">
             Overview of your financial status
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function Dashboard() {
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             Current Balance
           </p>
-          <p className="text-2xl truncate w-[10rem] font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-2xl  font-bold text-gray-900 dark:text-gray-100">
             {/* {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)} */}
             {formatCurrency(lifeTimeballence.totalBalance)}
           </p>

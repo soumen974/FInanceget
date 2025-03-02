@@ -45,7 +45,7 @@ const StatCard = ({ title, amount, type, icon }) => {
         </span>
       </div>
       <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">{title}</h3>
-      <p className={`text-3xl truncate w-[10rem] font-bold ${styles.text}`}>
+      <p className={`text-3xl font-bold ${styles.text}`}>
         {formatCurrency(amount)}
       </p>
     </div>

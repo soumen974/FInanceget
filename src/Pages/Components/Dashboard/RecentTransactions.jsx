@@ -69,7 +69,7 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
                     </div>
                   </div>
                 </div>
-                <p className={`text-lg truncate w-[9rem] font-semibold ${
+                <p className={`text-lg  font-semibold ${
                   isIncomeTransaction(transaction) 
                     ? 'text-green-600 dark:text-green-400' 
                     : 'text-red-600 dark:text-red-400'
