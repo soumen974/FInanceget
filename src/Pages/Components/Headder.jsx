@@ -52,9 +52,9 @@ const Headder = () => {
         title="Logout?" 
       />
       
+      {isMenuOpen &&  <div className="fixed inset-0 z-10 bg-black bg-opacity-70 flex items-center justify-center " onClick={() => setIsMenuOpen(false)}></div>}
 
       <nav className="fixed w-full z-30 lg:hidden bg-white dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-[#ffffff24]">
-      {isMenuOpen &&  <div className="fixed inset-0 -z-10 bg-black bg-opacity-70 flex items-center justify-center " onClick={() => setIsMenuOpen(false)}></div>}
         <div className="max-w-7xl z-30 mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Logo */}

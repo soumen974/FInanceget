@@ -288,7 +288,7 @@ const Budget = () => {
               
               </div>
             ) : (
-              <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
+              <div className="divide-y relative divide-gray-100 dark:divide-[#ffffff24] overflow-hidden">
                 {(financeRule !== '50/30/20' || selectedYear !== currentYear) && !isPremiumOrAdmin ? (
                   <div className="absolute inset-0 backdrop-blur-sm bg-opacity-75">
                     <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
