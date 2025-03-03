@@ -36,9 +36,8 @@ const Budget = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [financeRule, setFinanceRule] = useState('50/30/20');
   const [editPersonalBudget, setEditPersonalBudget] = useState(false);
-  const monthlyIncome = lifeTimeballence.totalBalance;
-  // const monthlyIncome =totalIncomeFortheCurrentMonth ;
-
+  const [monthlyIncome, setMonthlyIncome] = useState(totalIncomeFortheCurrentMonth);
+  const [incomeSource, setIncomeSource] = useState('current'); // 'current' or 'lifetime'
 
   const isPremiumOrAdmin = userType === 'premium' || userType === 'admin';
 
@@ -82,10 +81,14 @@ const Budget = () => {
     setMonth(selectedMonth);
     setsearchYearForList(selectedYear);
     setMonthForList(selectedMonth);
+    // Update monthly income based on selected source
+    setMonthlyIncome(incomeSource === 'current' ? totalIncomeFortheCurrentMonth : lifeTimeballence.totalBalance);
     if (financeRule === 'Personalized' && isPremiumOrAdmin) {
       fetchBudget();
     }
-  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin, setsearchYear, setMonth, setsearchYearForList, setMonthForList]);
+  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin, 
+      setsearchYear, setMonth, setsearchYearForList, setMonthForList, 
+      totalIncomeFortheCurrentMonth, lifeTimeballence.totalBalance, incomeSource]);
 
   const fetchBudget = async () => {
     try {
@@ -162,10 +165,30 @@ const Budget = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Total Budget:</span>
-            <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {formatCurrency(monthlyIncome)}
-            </span>
+            {totalIncomeFortheCurrentMonth===lifeTimeballence.totalBalance?
+             <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500 dark:text-gray-400"> Total Budget by income :</span>
+              <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {formatCurrency(monthlyIncome)}
+              </span>
+            </div>
+            :
+            <div className="flex  items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300  md:w-fit w-[8rem]">
+                Total Budget by {incomeSource === 'current' ? 'Current Income:' : 'Lifetime Balance:'}
+              </label>
+              <select 
+                value={incomeSource} 
+                onChange={(e) => setIncomeSource(e.target.value)}
+                className="w-[26vw] truncate sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300"
+              >
+                <option value="current">{formatCurrency(totalIncomeFortheCurrentMonth)}</option>
+                <option value="lifetime">{formatCurrency(lifeTimeballence.totalBalance)}</option>
+              </select>
+            </div>
+            }
+            
+            
           </div>
         </div>
       </div>
@@ -258,7 +281,12 @@ const Budget = () => {
               </div>
             </div>
             {monthlyIncome === 0 ? loadingReport ? <Spinner /> : (
-              <div className="p-6 text-center text-gray-500 dark:text-gray-400">You don't have sufficient balance</div>
+              <div className="p-6 text-center space-y-6 text-gray-500 dark:text-gray-400">
+               
+                <h1 className=" pb-6">You don't have sufficient balance</h1>
+                <Link to="/income" className="bg-blue-50 dark:bg-blue-600 text-[0.8rem] dark:bg-opacity-20 text-blue-600 p-2 px-3 rounded-md">Start a new transaction</Link>
+              
+              </div>
             ) : (
               <div className="divide-y relative divide-gray-100 dark:divide-gray-700 overflow-hidden">
                 {(financeRule !== '50/30/20' || selectedYear !== currentYear) && !isPremiumOrAdmin ? (

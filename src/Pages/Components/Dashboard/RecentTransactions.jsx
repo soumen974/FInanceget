@@ -36,7 +36,7 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
           </div>
         ) : allTransactions.length === 0 ? (
           <div className="p-6 text-center space-y-6">
-            <p className="text-gray-500 dark:text-gray-600 pb-6">No transactions found</p>
+            <h1 className="text-gray-500 dark:text-gray-600 pb-6">No transactions found</h1>
             <Link to="/income" className="bg-blue-50 dark:bg-blue-600 text-[0.8rem] dark:bg-opacity-20 text-blue-600 p-2 px-3 rounded-md">Start a new transaction</Link>
           </div>
         ) : (
