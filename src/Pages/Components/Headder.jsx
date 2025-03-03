@@ -40,6 +40,7 @@ const Headder = () => {
 
      const navItems = useMemo(() => NAV_ITEMS, []);
   
+     
 
   return (
     <>
@@ -50,8 +51,11 @@ const Headder = () => {
         setHidePopup={setHidePopup} 
         title="Logout?" 
       />
+      
+
       <nav className="fixed w-full z-30 lg:hidden bg-white dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-[#ffffff24]">
-        <div className="max-w-7xl mx-auto px-4">
+      {isMenuOpen &&  <div className="fixed inset-0 -z-10 bg-black bg-opacity-70 flex items-center justify-center " onClick={() => setIsMenuOpen(false)}></div>}
+        <div className="max-w-7xl z-30 mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Logo */}
             <Link 
@@ -138,8 +142,8 @@ const Headder = () => {
                       flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg
                       transition-colors duration-150
                       ${isActive
-                        ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-[#ffffff17]'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-[#ffffff17]'}
+                        ? 'text-indigo-600 bg-indigo-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-[#27272758]'}
                     `}
                   >
                     {item.icon}
@@ -156,7 +160,7 @@ const Headder = () => {
                     setIsMenuOpen(false);
                     setHidePopup(true);
                   }}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium w-full text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 rounded-lg"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium w-full text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:bg-opacity-70 transition-colors duration-150 rounded-lg"
                 >
                   <LogOut size={18} />
                   <span>Logout</span>

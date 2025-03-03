@@ -430,7 +430,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
               ${
                 isActive 
                   ? 'text-blue-600 bg-blue-50 dark:text-blue-600 dark:bg-blue-500 dark:bg-opacity-10' 
-                  : 'text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50'
+                  : 'text-gray-600 dark:hover:bg-[#27272758] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50'
               }
               ${isCollapsed ? 'justify-center' : ''}
             `}
@@ -466,7 +466,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           className={`
             w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium
             text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-600 
-            dark:hover:bg-red-900/30 dark:hover:bg-opacity-20 transition-colors
+            dark:hover:bg-red-900/20 dark:hover:bg-opacity-70 transition-colors
             ${isCollapsed ? 'justify-center' : ''}
           `}
         >

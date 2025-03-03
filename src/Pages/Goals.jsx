@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect,useMemo, useRef } from 'react';
 import { 
   CheckCircle, Goal, Wallet, PiggyBank, Trash2, MoreVertical, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
 } from 'lucide-react';
@@ -184,7 +184,7 @@ const Goals = () => {
         setGoals(goals.map(goal => goal._id === newGoal._id ? response.data : goal));
       } else {
         const response = await api.post('/api/goals', goalData);
-        setGoals([...goals, response.data]); // New goal added to the end
+        setGoals([ response.data,...goals]); 
       }
 
       setNewGoal({ 
@@ -323,6 +323,16 @@ const Goals = () => {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
+   const goalItems = useMemo(() => goals.map((goal, index) => ({
+    _id: goal._id,
+    current: goal.current,
+    name: goal.name, 
+    target: goal.target, 
+    deadline: goal.deadline,
+    contributionAmount: '',
+    contributionFrequency: 'month',
+  })), [goals]);
+
   return (
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Header */}
@@ -404,7 +414,7 @@ const Goals = () => {
             <div className="divide-y  divide-[#F3F4F6] dark:divide-[#ffffff24] ">
               {loading ? (
                 <Spinner />
-              ) : goals.length === 0 ? (
+              ) : goalItems.length === 0 ? (
                 <div className="p-8 text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3F4F6] dark:bg-[#0a0a0a] mb-4">
                     <Goal className="w-6 h-6 text-[#6B7280]" />
@@ -413,7 +423,7 @@ const Goals = () => {
                   <p className="text-[#6B7280] dark:text-gray-400 text-sm mt-1">Start by adding your first financial goal</p>
                 </div>
               ) : (
-                goals.map((goal) => {
+                goalItems.map((goal) => {
                   const percentage = (goal.current / goal.target) * 100;
                   const savings = calculateSavings(goal.target, goal.deadline, goal.current);
 
@@ -846,8 +856,8 @@ export const GoalsData = () => {
     try {
       setLoading(true); 
       const response = await api.put(`/api/goals/${id}`, { current: data });
-      console.log('Goal updated with current:', response.data.current);
-      console.log('Response data:', response.data); 
+      // console.log('Goal updated with current:', response.data.current);
+      // console.log('Response data:', response.data); 
       return response.data;
     } catch (error) {
       console.error('Error updating goal:', error);
