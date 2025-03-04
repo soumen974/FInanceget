@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import React,{ useEffect, useState ,useMemo} from 'react';
 import StatCard from "../Pages/Components/Dashboard/StatCard";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -14,39 +13,38 @@ import RecommendedTools from "../affiliates/RecommendedTools";
 import Streaks from "./Components/Dashboard/Streaks";
 
 export default function Dashboard() {
-
-  const {TransactionData ,lifeTimeballence} = ReportsData();
+  const { TransactionData, lifeTimeballence } = ReportsData();
   const { totalIncomeFortheCurrentMonth, incomeData, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
-  const { isAuthenticated,userType } = authCheck();
+  const { isAuthenticated, userType } = authCheck();
   const [streak, setStreak] = useState(0);
-  const [downloadin,setDownloding]=useState(false);
+  const [downloading, setDownloading] = useState(false);
+
   const getStreaks = async () => {
     try {
-      const response = await api.get('/api/user/streak'); 
-      // console.log(response); 
+      const response = await api.get('/api/user/streak');
       setStreak(response.data.streak || 0);
     } catch (error) {
-      // console.error('Error fetching streak with Axios:', error);
-      setStreak(0); 
+      setStreak(0);
     }
   };
-  
-   const totalNetSavingsPerYear = useMemo(() => 
-      TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0), 
-      [TransactionData]
-    );
-    
 
-  useEffect(()=>{getStreaks()},[])
+  useEffect(() => {
+    getStreaks();
+  }, []);
+
+  const totalNetSavingsPerYear = useMemo(() =>
+    TransactionData.reduce((acc, netSavings) => acc + netSavings.Net_Savings, 0),
+    [TransactionData]
+  );
 
   const downloadDailyReport = async () => {
-    setDownloding(true);
+    setDownloading(true);
     try {
       const response = await api.get('/api/user/streak/daily-current-month', {
         responseType: 'blob',
       });
-      setDownloding(false);
+      setDownloading(false);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -55,15 +53,14 @@ export default function Dashboard() {
       link.click();
       link.remove();
     } catch (error) {
-      setDownloding(false);
+      setDownloading(false);
       console.error('Error downloading report:', error);
     }
   };
-  
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
-  {/* Dashboard Header - Improved with better spacing and alignment */}
+      {/* Dashboard Header - Improved with better spacing and alignment */}
       <div className="flex flex-wrap gap-y-2 items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
@@ -77,105 +74,74 @@ export default function Dashboard() {
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             Current Balance
           </p>
-          <p className="text-2xl  font-bold text-gray-900 dark:text-gray-100">
-            {/* {formatCurrency(totalIncomeFortheCurrentMonth - totalExpenseFortheCurrentMonth)} */}
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {formatCurrency(lifeTimeballence.totalBalance)}
           </p>
         </div>
       </div>
 
-    {/* Usage Booster: Streak Notification - Enhanced with better gradient and animations */}
-    
-    <Streaks streak={streak}/>
+      {/* Usage Booster: Streak Notification - Enhanced with better gradient and animations */}
+      <Streaks streak={streak} />
 
-    {/* Stats Grid - Improved with better visual hierarchy */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <StatCard 
-        title="Total Balance"
-        amount={lifeTimeballence.totalBalance}
-        type="balance"
-        icon={<Activity className="dark:text-gray-300" />}
-      />
-      <StatCard 
-        title="Total Income"
-        amount={totalIncomeFortheCurrentMonth}
-        type="income"
-        icon={<TrendingUp className="dark:text-gray-300" />}
-      />
-      <StatCard 
-        title="Total Expenses"
-        amount={totalExpenseFortheCurrentMonth}
-        type="expense"
-        icon={<TrendingDown className="dark:text-gray-300" />}
-      />
-    </div>
-
-    {/* Monetization: Affiliate Links - Enhanced styling */}
-    <RecommendedTools/>
-
-    {/* Recent Transactions - Added section title */}
-    <div className="mb-8">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h2>
-      <RecentTransactions 
-        incomeData={incomeData} 
-        expenseData={expenseData} 
-        loading={loading}
-        className="dark:bg-gray-800 dark:border-[#ffffff24] dark:text-gray-100"
-      />
-    </div>
-
-    {/* Monetization: Enhanced section with better visual appeal */}
-    <div className="mt-8 grid grid-cols-1 gap-6">
-      <div className="sm:p-6 p-4 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
-              <FileText className="h-6 w-6 text-yellow-300" />
-            </div>
-            <div>
-              <h2 className="text-[1rem] md:text-lg font-bold tracking-tight">Download Your Report</h2>
-              <p className="mt-1 text-[0.7rem] sm:text-sm text-blue-100">Get a detailed PDF of your transactions for just <span className="text-md font-bold">₹0/-</span> <span className="line-through">₹49/-</span></p>
-            </div>
-          </div>
-          
-          <button 
-            className="group disabled:cursor-wait inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-[0.7rem] md:text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-            disabled={downloadin}
-            onClick={downloadDailyReport}>
-            {downloadin?'Downloading..':'Download Now'} 
-            <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-          </button>
-        </div>
+      {/* Stats Grid - Improved with better visual hierarchy */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <StatCard
+          title="Total Balance"
+          amount={lifeTimeballence.totalBalance}
+          type="balance"
+          icon={<Activity className="dark:text-gray-300" />}
+        />
+        <StatCard
+          title="Total Income"
+          amount={totalIncomeFortheCurrentMonth}
+          type="income"
+          icon={<TrendingUp className="dark:text-gray-300" />}
+        />
+        <StatCard
+          title="Total Expenses"
+          amount={totalExpenseFortheCurrentMonth}
+          type="expense"
+          icon={<TrendingDown className="dark:text-gray-300" />}
+        />
       </div>
 
-      {/* {userType === 'user' && 
-      <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
-              <Crown className="h-6 w-6 text-yellow-300" />
+      {/* Monetization: Affiliate Links - Enhanced styling */}
+      <RecommendedTools />
+
+      {/* Recent Transactions - Added section title */}
+      <div className="mb-8">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h2>
+        <RecentTransactions
+          incomeData={incomeData}
+          expenseData={expenseData}
+          loading={loading}
+          className="dark:bg-gray-800 dark:border-[#ffffff24] dark:text-gray-100"
+        />
+      </div>
+
+      {/* Monetization: Enhanced section with better visual appeal */}
+      <div className="mt-8 grid grid-cols-1 gap-6">
+        <div className="sm:p-6 p-4 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 text-white rounded-lg shadow-lg border border-blue-400 dark:border-blue-700 hover:shadow-xl transition-shadow duration-300">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0 bg-blue-400 dark:bg-blue-700 bg-opacity-30 p-3 rounded-full">
+                <FileText className="h-6 w-6 text-yellow-300" />
+              </div>
+              <div>
+                <h2 className="text-[1rem] md:text-lg font-bold tracking-tight">Download Your Report</h2>
+                <p className="mt-1 text-[0.7rem] sm:text-sm text-blue-100">Get a detailed PDF of your transactions for just <span className="text-md font-bold">₹0/-</span> <span className="line-through">₹49/-</span></p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg font-bold tracking-tight">Go Premium</h2>
-              <p className="mt-1 text-sm text-blue-100">
-                Unlock multi-year reports and custom budgets for ₹2.4/month.
-              </p>
-            </div>
+            <button
+              className="group disabled:cursor-wait inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-[0.7rem] md:text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
+              disabled={downloading}
+              onClick={downloadDailyReport}>
+              {downloading ? 'Downloading..' : 'Download Now'}
+              <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+            </button>
           </div>
-          
-          <Link 
-            to="/upgrade" 
-            className="group inline-flex items-center px-4 py-2 bg-white dark:bg-blue-900 dark:border dark:border-blue-700 text-blue-700 dark:text-white text-sm font-medium rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors duration-150 shadow-sm"
-          >
-            Upgrade Now
-            <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-          </Link>
         </div>
       </div>
-      } */}
-
-      
     </div>
-</div>
   );
 }

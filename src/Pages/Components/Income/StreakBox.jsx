@@ -8,7 +8,7 @@ export default function StreakBox({ type,streak,  shareGains }) {
   const getStreakLevel = () => {
     if (streak >= 26) return { text: 'Master', color: 'text-yellow-500', icon: <Trophy className="w-5 h-5 text-yellow-500" /> };
     if (streak >= 7) return { text: 'Pro', color: 'text-orange-500', icon: <Zap className="w-5 h-5 text-orange-500" /> };
-    return { text: 'Starter', color: 'text-gray-100', icon: <Flame className="w-5 h-5 text-gray-100 " /> };
+    return { text: 'Starter', color: 'text-gray-100', icon: <Flame className="w-5 h-5 text-gray-900 dark:text-gray-100 " /> };
   };
 
   const streakLevel = getStreakLevel();

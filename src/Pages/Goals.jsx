@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   CheckCircle, Goal, Wallet, PiggyBank, Trash2, MoreVertical, TriangleAlert, ReceiptIndianRupee, Calendar, X, Edit2 
 } from 'lucide-react';
@@ -6,9 +6,7 @@ import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { formatCurrency } from "./Components/Income/formatCurrency";
 import { api } from "../AxiosMeta/ApiAxios";
 import Spinner from "../Loaders/Spinner";
-// import { GoalsData } from './Goals';
 
-// Color Palette
 const COLORS = {
   primary: '#8B5CF6',
   secondary: '#EC4899',
@@ -37,9 +35,13 @@ const Goals = () => {
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalGoals, setTotalGoals] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const { userType } = authCheck();
-  const menuRef = useRef(null); 
-  const { UpdateGoal } = GoalsData();
+  const menuRef = useRef(null);
+  // Assuming GoalsData is defined elsewhere
+  // const { UpdateGoal } = GoalsData();
 
   const [showSavingsForm, setShowSavingsForm] = useState(null);
   const [savingsAmount, setSavingsAmount] = useState('');
@@ -50,7 +52,7 @@ const Goals = () => {
     input: `w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200`,
     button: `px-4 py-2 rounded-lg font-medium transition-colors duration-150 text-sm`,
     activeButton: `bg-[#8B5CF6] text-white hover:bg-[#7C3AED]`,
-    stickyForm: ` bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
+    stickyForm: `bg-white dark:bg-[#0a0a0a] rounded-xl shadow-sm border border-[#F3F4F6] dark:border-[#ffffff24]`,
   };
 
   const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -63,13 +65,15 @@ const Goals = () => {
 
   useEffect(() => {
     fetchGoals();
-  }, []);
+  }, [currentPage]);
 
   const fetchGoals = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/goals');
-      setGoals(response.data.map(goal => ({ ...goal, current: goal.current || 0 })));
+      const response = await api.get(`/api/goals?page=${currentPage}`);
+      setGoals(response.data.goals.map(goal => ({ ...goal, current: goal.current || 0 })));
+      setTotalGoals(response.data.pagination.totalGoals || 0);
+      setTotalPages(response.data.pagination.totalPages || 0);
     } catch (error) {
       console.error('Error fetching goals:', error);
     } finally {
@@ -176,7 +180,7 @@ const Goals = () => {
         name: newGoal.name, 
         target: parseFloat(newGoal.target), 
         deadline: newGoal.deadline,
-        current: parseFloat(newGoal.current) || 0 // Ensure current is included
+        current: parseFloat(newGoal.current) || 0
       };
 
       if (newGoal._id) {
@@ -184,7 +188,9 @@ const Goals = () => {
         setGoals(goals.map(goal => goal._id === newGoal._id ? response.data : goal));
       } else {
         const response = await api.post('/api/goals', goalData);
-        setGoals([ response.data,...goals]); 
+        setGoals([response.data, ...goals]); 
+        setTotalGoals(prev => prev + 1);
+        setTotalPages(Math.ceil((totalGoals + 1) / 4));
       }
 
       setNewGoal({ 
@@ -234,7 +240,12 @@ const Goals = () => {
       setLoading(true);
       await api.delete(`/api/goals/${id}`);
       setGoals(goals.filter(goal => goal._id !== id));
+      setTotalGoals(prev => prev - 1);
+      setTotalPages(Math.ceil((totalGoals - 1) / 4));
       setHidePopup(null);
+      if (goals.length === 1 && currentPage > 1) {
+        setCurrentPage(prev => prev - 1);
+      }
     } catch (error) {
       console.error('Error deleting goal:', error);
     } finally {
@@ -250,7 +261,9 @@ const Goals = () => {
       const goalToUpdate = goals.find(goal => goal._id === goalId);
       const newCurrent = parseFloat(goalToUpdate.current) + parseFloat(savingsAmount);
       
-      await UpdateGoal(goalId, newCurrent);
+      // Assuming UpdateGoal is a function to update the goal on the backend
+      // await UpdateGoal(goalId, newCurrent);
+      const response = await api.put(`/api/goals/${goalId}`, { current: newCurrent });
       setGoals(goals.map(goal => 
         goal._id === goalId ? { ...goal, current: newCurrent } : goal
       ));
@@ -323,7 +336,7 @@ const Goals = () => {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-   const goalItems = useMemo(() => goals.map((goal, index) => ({
+  const goalItems = useMemo(() => goals.map((goal) => ({
     _id: goal._id,
     current: goal.current,
     name: goal.name, 
@@ -332,6 +345,18 @@ const Goals = () => {
     contributionAmount: '',
     contributionFrequency: 'month',
   })), [goals]);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
 
   return (
     <div className="max-w-6xl pb-6 mx-auto">
@@ -393,9 +418,9 @@ const Goals = () => {
       {/* Main Grid Layout */}
       <div className="lg:grid grid-cols-1 flex flex-col-reverse lg:grid-cols-3 gap-8">
         {/* Goals List */}
-        <div className="lg:col-span-2 ">
+        <div className="lg:col-span-2">
           <div className={baseStyles.container}>
-            <div className="p-6 border-b  border-[#F3F4F6] dark:border-[#ffffff24]">
+            <div className="p-6 border-b border-[#F3F4F6] dark:border-[#ffffff24]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-50 dark:bg-opacity-20 dark:bg-[#8B5CF6] rounded-lg">
@@ -411,7 +436,7 @@ const Goals = () => {
               </div>
             </div>
 
-            <div className="divide-y  divide-[#F3F4F6] dark:divide-[#ffffff24] ">
+            <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24]">
               {loading ? (
                 <Spinner />
               ) : goalItems.length === 0 ? (
@@ -475,17 +500,17 @@ const Goals = () => {
                       )}
 
                       <div className="flex relative items-center justify-between">
-                        <div className="flex  items-center gap-4">
-                          <div className="p-2  rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
+                        <div className="flex items-center gap-4">
+                          <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#0a0a0a]">
                             <Goal size={20} className="text-[#6B7280] dark:text-gray-300" />
                           </div>
                           <div>
                             <h3 className="font-medium text-[#1F2937] dark:text-white">{goal.name}</h3>
                             <div className="mt-1 flex max-sm:flex-wrap items-center gap-2 text-sm">
-                              <span className="text-[#6B7280] dark:text-gray-400 ">Target:</span>
+                              <span className="text-[#6B7280] dark:text-gray-400">Target:</span>
                               <span className="font-medium text-[#1F2937] dark:text-white max-sm:truncate max-sm:w-[3.6rem]">{formatCurrency(goal.target)}</span>
                               <span className="text-[#D1D5DB] dark:text-gray-500">•</span>
-                              <span className="text-[#6B7280] dark:text-gray-400 ">Saved:</span>
+                              <span className="text-[#6B7280] dark:text-gray-400">Saved:</span>
                               <span className={`font-medium max-sm:truncate max-sm:w-[3.6rem] ${percentage >= 95 ? 'text-purple-600' : percentage >= 80 ? 'text-[#FBBF24]' : 'text-[#10B981]'}`}>
                                 {formatCurrency(goal.current)}
                               </span>
@@ -494,7 +519,7 @@ const Goals = () => {
                           </div>
                         </div>
 
-                        <div className="flex  gap-2 mt-1">
+                        <div className="flex gap-2 mt-1">
                           <button
                             onClick={(e) => { e.stopPropagation(); handleMenuClick(goal._id); }}
                             className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-[#ffffff17] transition-colors duration-150"
@@ -515,7 +540,7 @@ const Goals = () => {
                             >
                               <button
                                 onClick={() => setShowSavingsForm(goal._id)}
-                                className={`w-full ${savings.remaining===0? 'hidden':'flex'}  items-center gap-2 p-2 rounded-lg
+                                className={`w-full ${savings.remaining===0? 'hidden':'flex'} items-center gap-2 p-2 rounded-lg
                                   text-gray-600 dark:hover:bg-[#ffffff17] dark:hover:text-white dark:text-gray-400 hover:text-blue-600 hover:bg-gray-50 dark:hover:bg-opacity-20
                                   transition-colors duration-150 group`}
                                 title="Add saving to this goal"
@@ -575,7 +600,7 @@ const Goals = () => {
                         {Array.from({ length: 4 }).map((_, index) => (
                           <div 
                             key={index} 
-                            className={`p-3 rounded-lg  overflow-hidden ${
+                            className={`p-3 rounded-lg overflow-hidden ${
                               savings.daysLeft === 0 ? 'bg-red-500/10' :
                               percentage >= 95 ? 'bg-purple-500/10' : 
                               percentage >= 80 ? 'bg-amber-500/10' : 
@@ -592,15 +617,12 @@ const Goals = () => {
                               {index === 1 && `${savings.perDay}`}
                               {index === 2 && `${savings.monthsLeft}`}
                               {index === 3 && `${savings.daysLeft}`}
-                              {index === 4 && `${savings.perYear}`}
                             </div>
                             <div className="text-xs text-[#6B7280] dark:text-gray-400">
                               {index === 0 && 'per month'}
                               {index === 1 && 'per day'}
                               {index === 2 && 'months left'}
                               {index === 3 && 'days left'}
-                              {index === 4 && 'per year'}
-                              
                             </div>
                           </div>
                         ))}
@@ -610,28 +632,40 @@ const Goals = () => {
                 })
               )}
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && totalGoals > 0 && (
+              <div className="p-6 border-t border-[#F3F4F6] dark:border-[#ffffff24]">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-sm text-[#6B7280] dark:text-gray-400">
+                    Showing {(currentPage - 1) * 4 + 1} to {Math.min(currentPage * 4, totalGoals)} of {totalGoals} goals
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handlePrevious}
+                      disabled={currentPage === 1}
+                      className={`px-4 py-2 text-sm font-medium rounded-lg border border-[#F3F4F6] dark:border-[#ffffff24] transition-all duration-200 
+                        ${currentPage === 1 ? 'bg-gray-50 dark:bg-black dark:text-[#ffffff24] text-gray-300 cursor-not-allowed' : 'text-gray-700 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-[#ffffff17] hover:bg-gray-50 active:bg-gray-100'}`}
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      disabled={currentPage >= totalPages}
+                      className={`px-4 py-2 text-sm font-medium rounded-lg border border-[#F3F4F6] dark:border-[#ffffff24] transition-all duration-200 
+                        ${currentPage >= totalPages ? 'bg-gray-50 dark:bg-black dark:text-[#ffffff24] text-gray-300 cursor-not-allowed' : 'text-gray-700 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-[#ffffff17] hover:bg-gray-50 active:bg-gray-100'}`}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-
-          {/* <div className="mt-6 bg-white dark:bg-[#0a0a0a] dark:border-[#ffffff24] rounded-xl p-6 shadow-sm border border-[#F3F4F6]">
-            <h3 className="text-lg font-semibold text-[#1F2937] dark:text-white mb-2">Fund Your Goals with SoFi</h3>
-            <p className="text-sm text-[#6B7280] dark:text-gray-400 mb-4">Low-rate personal loans for debt consolidation or big dreams—no fees.</p>
-            <a 
-              href="https://www.sofi.com/invite/personal-loans?gcp=YOUR_SOFI_REF_CODE" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-block px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors duration-200"
-            >
-              Apply Now
-            </a>
-          </div> */}
-
-
         </div>
 
-        
-
         {/* Sticky Form */}
-        <div className='  space-y-5'>
+        <div className='space-y-5'>
           <div className={baseStyles.stickyForm}>
             <div className="border-b border-gray-200 dark:border-[#ffffff24] p-6">
               <div className="flex items-center justify-between">
@@ -649,7 +683,6 @@ const Goals = () => {
             </div>
 
             <div className="space-y-3 p-6">
-
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Goal target Amount</label>
                 <div className="relative mt-1">
@@ -671,8 +704,6 @@ const Goals = () => {
                     type="number" 
                     placeholder="Current saving " 
                     value={newGoal.current} 
-                    // max={newGoal.target}
-                    // disabled={newGoal.current >= newGoal.target}
                     onChange={(e) => setNewGoal({ ...newGoal, current: e.target.value })} 
                     className={baseStyles.input} 
                   />
@@ -694,8 +725,6 @@ const Goals = () => {
                 </div>
               </div>
 
-             
-
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Deadline</label>
                 <div className="relative mt-1">
@@ -708,6 +737,7 @@ const Goals = () => {
                   <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
                 </div>
               </div>
+
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Contribution Amount (Optional)</label>
                 <div className="relative mt-1">
@@ -721,6 +751,7 @@ const Goals = () => {
                   <Wallet size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
                 </div>
               </div>
+
               <div>
                 <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Contribution Frequency</label>
                 <select 
@@ -789,32 +820,6 @@ const Goals = () => {
             </div>
           </div>
 
-          {/* <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
-              <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Upgrade Your Finances</h3>
-              <p className="text-sm text-[#6B7280] dark:text-gray-400">No annual fee credit card with 1.5% cash back—low APR options available.</p>
-              <a 
-                href="https://www.upgrade.com/r/YOUR_UPGRADE_REF_CODE" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="mt-2 inline-block text-[#8B5CF6] dark:text-[#8B5CF6] hover:underline"
-              >
-                Get Upgrade Card
-              </a>
-          </div> */}
-
-          {/* <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
-            <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Bajaj Finance</h3>
-            <p className="text-sm text-[#6B7280] dark:text-gray-400">Quick loans up to ₹35 lakh—low rates from 11% p.a. for your dreams.</p>
-            <a 
-              href="https://bitli.in/yx5SGoa" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="mt-2 inline-block text-[#8B5CF6] dark:text-[#8B5CF6] hover:underline"
-            >
-              Get Loan
-            </a>
-          </div> */}
-
           <div className="p-4 bg-gray-50 dark:bg-[#ffffff0f] rounded-lg">
             <h3 className="text-md font-medium text-[#1F2937] dark:text-white">Axis Bank Card</h3>
             <p className="text-sm text-[#6B7280] dark:text-gray-400">Low APR from 1.5% p.m.—cashback on daily spends.</p>
@@ -827,7 +832,6 @@ const Goals = () => {
               Apply Today
             </a>
           </div>
-
         </div>
       </div>
     </div>
@@ -835,7 +839,6 @@ const Goals = () => {
 };
 
 export default Goals;
-
 export const GoalsData = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(false);
