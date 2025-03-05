@@ -11,12 +11,15 @@ import { api } from "../AxiosMeta/ApiAxios"
 import { ReportsData } from './Components/Reports/ReportsData';
 import RecommendedTools from "../affiliates/RecommendedTools";
 import Streaks from "./Components/Dashboard/Streaks";
+import { Helmet } from 'react-helmet';
+import DashboardIMG from "../meta/imgs/Dashboard.png";
+
 
 export default function Dashboard() {
   const { TransactionData, lifeTimeballence } = ReportsData();
   const { totalIncomeFortheCurrentMonth, incomeData, error, message, loading } = useGlobalTransactionData('income');
   const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
-  const { isAuthenticated, userType } = authCheck();
+  const { isAuthenticated, userType,name } = authCheck();
   const [streak, setStreak] = useState(0);
   const [downloading, setDownloading] = useState(false);
 
@@ -61,6 +64,19 @@ export default function Dashboard() {
   };
 
   return (
+    <>
+    <Helmet>
+        <title>FinanceGet ~ {name}'s ' Dashboard</title>
+        <meta name="twitter:card" content={DashboardIMG} />
+        <meta name="twitter:title" content="FinanceGet" />
+        <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
+        <meta name="twitter:image" content={DashboardIMG} />
+        <meta property="og:title" content="Your SaaS Product Name" />
+        <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
+        <meta property="og:image" content={DashboardIMG} />
+        <meta property="og:url" content="https://financeget.vercel.app/" />
+        <meta property="og:type" content="website" />
+      </Helmet>
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Dashboard Header - Improved with better spacing and alignment */}
       <div className="flex flex-wrap gap-y-2 items-center justify-between mb-8">
@@ -145,5 +161,7 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </>
+
   );
 }

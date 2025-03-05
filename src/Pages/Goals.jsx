@@ -62,6 +62,7 @@ const Goals = () => {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [hidePopup, setHidePopup] = useState(null);
   const [showMenu, setShowMenu] = useState(null);
+  const [totalTarget,SettotalTarget] = useState(0);
 
   useEffect(() => {
     fetchGoals();
@@ -74,6 +75,8 @@ const Goals = () => {
       setGoals(response.data.goals.map(goal => ({ ...goal, current: goal.current || 0 })));
       setTotalGoals(response.data.pagination.totalGoals || 0);
       setTotalPages(response.data.pagination.totalPages || 0);
+      SettotalTarget(response.data.pagination.totalTarget);
+      
     } catch (error) {
       console.error('Error fetching goals:', error);
     } finally {
@@ -370,14 +373,14 @@ const Goals = () => {
           <div className="flex items-center gap-3">
             <span className="text-sm text-[#6B7280] dark:text-gray-400">Total Target:</span>
             <span className="text-lg font-semibold text-[#1F2937] dark:text-white">
-              {formatCurrency(goals.reduce((sum, goal) => sum + parseFloat(goal.target), 0))}
+              {formatCurrency(totalTarget)}
             </span>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="mb-8 max-sm:flex-wrap flex gap-4">
+      <div className="mb-8 hidden max-sm:flex-wrap flex gap-4">
         <div>
           <label className="text-sm font-medium text-[#6B7280] dark:text-gray-300">Select Month</label>
           <select 

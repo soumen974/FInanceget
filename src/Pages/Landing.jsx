@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Wallet, PieChart, DollarSign, TrendingUp, Target, Users, Goal, ChartNetwork, Radar, ChartNoAxesGantt, ChevronRight, Shield, Clock, RefreshCw, Moon, Sun, Check, BarChart2, Calendar, TrendingDown } from 'lucide-react';
-
+import { Helmet } from 'react-helmet';
+import LandingIMG from "../meta/imgs/Landing-page-financeGet.png";
 // Original Color Palette
 const COLORS = {
   primary: '#6366F1',    // Modern Indigo
@@ -115,7 +116,23 @@ const LandingPage = () => {
     },
   ];
 
+
   return (
+    <>
+    {/* SEO Metadata */}
+     <Helmet>
+        <title>FinanceGet ~ Master Your Finances</title>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FinanceGet" />
+        <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
+        <meta name="twitter:image" content={LandingIMG} />
+        <meta property="og:title" content="Your SaaS Product Name" />
+        <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
+        <meta property="og:image" content={LandingIMG} />
+        <meta property="og:url" content="https://financeget.vercel.app/" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
       {/* Theme Toggle Button */}
       <button
@@ -366,6 +383,7 @@ const LandingPage = () => {
         <div className="mt-8 text-center text-xs border-t border-[#222222a0] pt-4">© {new Date().getFullYear()} FinanceGet</div>
       </footer>
     </div>
+    </>
   );
 };
 
