@@ -133,6 +133,10 @@ const LandingPage = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
+            {/* <img src={https://financeget.vercel.app/assets/Dashboard-iUIF8u34.png} alt="" /> */}
+      <img src={LandingIMG} alt="" />
+
+
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
       {/* Theme Toggle Button */}
       <button
