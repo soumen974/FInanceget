@@ -77,7 +77,7 @@ export default function Dashboard() {
         <meta property="og:url" content="https://financeget.vercel.app/" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <img src={DashboardIMG} alt="" />
+      {/* <img src={assets/Dashboard-iUIF8u34.png} alt="" /> */}
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Dashboard Header - Improved with better spacing and alignment */}
       <div className="flex flex-wrap gap-y-2 items-center justify-between mb-8">
