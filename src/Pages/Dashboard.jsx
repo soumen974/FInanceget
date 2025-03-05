@@ -68,7 +68,7 @@ export default function Dashboard() {
     <Helmet>
         <title>FinanceGet ~ {name}'s ' Dashboard</title>
         <meta name="twitter:card" content={DashboardIMG} />
-        <meta name="twitter:title" content="FinanceGet" />
+        <meta name="twitter:title" content="FinanceGet - {name}'s ' Dashboard" />
         <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta name="twitter:image" content={DashboardIMG} />
         <meta property="og:title" content="Your SaaS Product Name" />
