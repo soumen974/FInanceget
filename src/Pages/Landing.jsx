@@ -125,16 +125,15 @@ const LandingPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="FinanceGet" />
         <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
-        <meta name="twitter:image" content={LandingIMG} />
+        <meta name="twitter:image" content='https://financeget.vercel.app/assets/Landing-page-financeGet-iyuiiDPm.png' />
         <meta property="og:title" content="FinanceGet" />
         <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
-        <meta property="og:image" content={LandingIMG} />
+        <meta property="og:image" content='https://financeget.vercel.app/assets/Landing-page-financeGet-iyuiiDPm.png' />
         <meta property="og:url" content="https://financeget.vercel.app/" />
         <meta property="og:type" content="website" />
       </Helmet>
 
-            {/* <img src={https://financeget.vercel.app/assets/Dashboard-iUIF8u34.png} alt="" /> */}
-      <img src={LandingIMG} alt="" />
+
 
 
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
