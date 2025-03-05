@@ -122,7 +122,7 @@ const LandingPage = () => {
     {/* SEO Metadata */}
      <Helmet>
         <title>FinanceGet ~ Master Your Finances</title>
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="https://financeget.vercel.app/assets/Landing-page-financeGet-iyuiiDPm.png" />
         <meta name="twitter:title" content="FinanceGet" />
         <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta name="twitter:image" content='https://financeget.vercel.app/assets/Landing-page-financeGet-iyuiiDPm.png' />
