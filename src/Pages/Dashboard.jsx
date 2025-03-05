@@ -20,6 +20,8 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0);
   const [downloading, setDownloading] = useState(false);
 
+  
+
   const getStreaks = async () => {
     try {
       const response = await api.get('/api/user/streak');

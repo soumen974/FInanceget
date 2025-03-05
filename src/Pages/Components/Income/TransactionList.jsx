@@ -283,37 +283,34 @@ export const useGlobalTransactionData = (type) => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [searchYear, setsearchYearForList] = useState(new Date().getFullYear());
+  const [searchYear, setsearchYearForList] = useState(new  Date().getFullYear());
   const [month, setMonthForList] = useState(new Date().getMonth());
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = type === 'income'
-          ? await api.get(`/api/income?page=${currentPage}`)
-          : await api.get(`/api/expenses?page=${currentPage}`);
-
         if (type === 'income') {
-          setIncomeData(response.data.incomes);
+          const response = await api.get('/api/income/incomedata');
+          setIncomeData(response.data);
+          setLoading(false);
         } else if (type === 'expense') {
-          setExpenseData(response.data.expenses);
+          const response = await api.get('/api/expenses/expesnsesdata');
+          setExpenseData(response.data);
+          setLoading(false);
         }
-
-        setTotalPages(response.data.pagination.totalPages);
-        setLoading(false);
       } catch (err) {
+        // console.error(err);
         setError(err.response?.data || err.message || 'Something went wrong');
         setLoading(false);
       }
     };
 
     getData();
-  }, [type, currentPage]);
+  }, [type]);
 
   const totalIncome = incomeData.reduce((acc, income) => acc + income.amount, 0);
-
+  
+  
   const totalIncomeFortheCurrentMonth = incomeData.reduce((acc, income) => {
     const incomeDate = new Date(income.date);
     const incomeYear = incomeDate.getFullYear();
@@ -324,6 +321,7 @@ export const useGlobalTransactionData = (type) => {
     }
     return acc;
   }, 0);
+
 
   const totalExpense = expenseData.reduce((acc, expense) => acc + expense.amount, 0);
 
@@ -338,22 +336,8 @@ export const useGlobalTransactionData = (type) => {
     return acc;
   }, 0);
 
-  return {
-    totalIncome,
-    totalIncomeFortheCurrentMonth,
-    incomeData,
-    error,
-    message,
-    loading,
-    totalExpense,
-    totalExpenseFortheCurrentMonth,
-    expenseData,
-    setsearchYearForList,
-    setMonthForList,
-    currentPage,
-    setCurrentPage,
-    totalPages
-  };
+  // console.log(month);
+  return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData, setsearchYearForList,setMonthForList};
 };
  
 
