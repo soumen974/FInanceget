@@ -126,7 +126,7 @@ const LandingPage = () => {
         <meta name="twitter:title" content="FinanceGet" />
         <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta name="twitter:image" content={LandingIMG} />
-        <meta property="og:title" content="Your SaaS Product Name" />
+        <meta property="og:title" content="FinanceGet" />
         <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta property="og:image" content={LandingIMG} />
         <meta property="og:url" content="https://financeget.vercel.app/" />

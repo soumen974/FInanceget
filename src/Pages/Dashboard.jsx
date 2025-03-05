@@ -71,12 +71,13 @@ export default function Dashboard() {
         <meta name="twitter:title" content="FinanceGet - {name}'s ' Dashboard" />
         <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta name="twitter:image" content={DashboardIMG} />
-        <meta property="og:title" content="Your SaaS Product Name" />
+        <meta property="og:title" content="FinanceGet" />
         <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
         <meta property="og:image" content={DashboardIMG} />
         <meta property="og:url" content="https://financeget.vercel.app/" />
         <meta property="og:type" content="website" />
       </Helmet>
+      <img src={DashboardIMG} alt="" />
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Dashboard Header - Improved with better spacing and alignment */}
       <div className="flex flex-wrap gap-y-2 items-center justify-between mb-8">
