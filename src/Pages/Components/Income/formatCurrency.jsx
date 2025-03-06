@@ -1,4 +1,4 @@
-export const formatCurrency = (amount, currencyCode = 'INR') => {
+export const formatCurrency = (amount, currencyCode = localStorage.getItem('currency') || 'INR') => {
   // Currency formatting options and approximate exchange rates (INR to target currency)
   const currencyOptions = {
     INR: { locale: 'en-IN', currency: 'INR', symbol: '₹', rate: 1 },        
@@ -18,6 +18,7 @@ export const formatCurrency = (amount, currencyCode = 'INR') => {
   // Convert amount from INR to target currency
   const numericAmount = Number(amount);
   const convertedAmount = numericAmount * options.rate;
+  
 
   // Format large numbers based on currency
   if (options.currency === 'INR') {
@@ -27,10 +28,14 @@ export const formatCurrency = (amount, currencyCode = 'INR') => {
       return `${options.symbol}${(convertedAmount / 1000000).toFixed(1)} M`;
     } else if (convertedAmount >= 100000) { // 1 lakh = 100,000
       return `${options.symbol}${(convertedAmount / 100000).toFixed(1)} L`;
+    } else if (convertedAmount >= 10000 && convertedAmount < 100000) { // 10K to 100K
+      return `${options.symbol}${(convertedAmount / 1000).toFixed(1)} K`;
     }
   } else {
     if (convertedAmount >= 1000000) { // 1 million = 1,000,000 in target currency
       return `${options.symbol}${(convertedAmount / 1000000).toFixed(1)} M`;
+    } else if (convertedAmount >= 10000 && convertedAmount < 100000) { // 10K to 100K
+      return `${options.symbol}${(convertedAmount / 1000).toFixed(1)} K`;
     }
   }
 

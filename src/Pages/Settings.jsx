@@ -90,8 +90,29 @@ export default function Settings() {
     const { name , userEmail ,userType,setIsAction,updated_at }= authCheck();
     
   const [activeTab, setActiveTab] = useState('profile');
-  const [currency, setCurrency] = useState('INR');
-  // const [darkMode, setDarkMode] = useState(false);
+  // const [currency, setCurrency] = useState('INR');
+
+  const [currency, setCurrency] = useState(() => {
+    const storedCurrency = localStorage.getItem('currency');
+    return storedCurrency || 'INR'; 
+  });
+  
+  const toggleCurrency = () => {
+    const currencies = ['INR', 'USD', 'EUR', 'GBP'];
+    const newCurrency = currencies.includes(currency) ? currencies[(currencies.indexOf(currency) + 1) % currencies.length] : 'INR';
+    setCurrency(newCurrency);
+    localStorage.setItem('currency', newCurrency);
+    document.documentElement.setAttribute('data-currency', newCurrency);
+  };
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-currency', currency);
+    const storedCurrency = localStorage.getItem('currency');
+    if (storedCurrency && storedCurrency !== currency) {
+      setCurrency(storedCurrency);
+    }
+  }, [currency]);
+
   const [showSuccess, setShowSuccess] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState('');
   const currentUser = name;
@@ -277,7 +298,7 @@ export default function Settings() {
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
-              className={` ${baseStyles.input} appearance-none w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
+              className={` ${baseStyles.input} appearance-auto w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
             >
               {tabs.map(tab => (
                 <option key={tab.id} value={tab.id}>
@@ -368,13 +389,13 @@ export default function Settings() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Currency</label>
+                    <label className={`text-sm font-medium ${baseStyles.headding}`}>Currency</label>
                     <div className="relative">
                       <select
                         value={currency}
-                        onChange={(e) => setCurrency(e.target.value)}
+                        onChange={(e) => {toggleCurrency(e.target.value);toggleCurrency}}
                         
-                        className={` ${baseStyles.input} appearance-none w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
+                        className={` ${baseStyles.input} appearance-auto w-full pl-10 pr-4 py-2.5 rounded-lg border transition-all duration-200`}
                       >
                         <option value="INR">Indian Rupee (₹)</option>
                         <option value="USD">US Dollar ($)</option>

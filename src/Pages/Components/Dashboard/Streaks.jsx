@@ -29,7 +29,7 @@ export default function StreakBox({ type,streak}) {
   const { textColor, level, icon } = getStreakStyle();
 
   const shareStreak = () => {
-    const tweet = `I've maintained a ${streak}-day money tracking streak! #MoneyStreak #FinanceGoals`;
+    const tweet = `I've maintained a ${streak}-day money tracking streak! #MoneyStreak #FinanceGoals https://financeget.vercel.app/`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
   };
 
