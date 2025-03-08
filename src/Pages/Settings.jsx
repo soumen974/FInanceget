@@ -89,7 +89,7 @@ const UserBadge = ({ user, type, darkMode, onUpgradeToPremium }) => {
 export default function Settings() {
     const { name , userEmail ,userType,setIsAction,updated_at }= authCheck();
     
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('preferences');
   // const [currency, setCurrency] = useState('INR');
 
   const [currency, setCurrency] = useState(() => {
@@ -192,8 +192,8 @@ export default function Settings() {
   };
 
   const tabs = [
-    { id: 'profile', label: 'Profile', icon: <User size={18} /> },
     { id: 'preferences', label: 'Preferences', icon: <SettingsIcon size={18} /> },
+    { id: 'profile', label: 'Profile', icon: <User size={18} /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> }
   ];
 

@@ -47,7 +47,7 @@ export default function StreakBox({ type,streak}) {
         </svg>
       </div>
 
-      <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="relative flex flex-row justify-between items-start sm:items-center gap-4">
         {/* Streak Info */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -93,6 +93,7 @@ export default function StreakBox({ type,streak}) {
           className="group inline-flex items-center gap-2 px-4 py-2 bg-white bg-opacity-15 hover:bg-opacity-25 text-white text-sm rounded-xl transition-all duration-200"
         >
           <Twitter className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+
           <span className="font-medium">Brag</span>
         </button>
       </div>

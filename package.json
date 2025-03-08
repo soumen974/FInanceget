@@ -26,6 +26,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.4.10",
     "lucide-react": "^0.469.0",
     "react-feather": "^2.0.10",
     "react-helmet": "^6.1.0",

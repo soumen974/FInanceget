@@ -345,6 +345,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
     { icon: <CreditCard size={20} />, label: 'Budget', to: '/budget', isBeta: true },
     { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },
     { icon: <Goal size={20} />, label: 'Goal', to: '/goal', isBeta: true },
+    // { icon: <Users size={20} />, label: 'Loan Calculator', to: '/users' , isBeta: true },
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
     { icon: <Users size={20} />, label: 'Users', to: '/users' ,admin:true },
 
