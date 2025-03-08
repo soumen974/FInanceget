@@ -3,14 +3,16 @@ import { formatCurrency } from "../Income/formatCurrency";
 import { Calendar, ArrowUp, ArrowDown } from 'react-feather';
 import { Link } from "react-router-dom";
 
-export default function RecentTransactions({ incomeData, expenseData, loading }) {
-  const allTransactions = [...(incomeData || []), ...(expenseData || [])]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5); 
+export default function RecentTransactions({ allTransactions, incomeData, expenseData, loading }) {
+  // const allTransactions = [...(incomeData || []), ...(expenseData || [])]
+  //   .sort((a, b) => new Date(b.date) - new Date(a.date))
+  //   .slice(0, 5); 
 
   const isIncomeTransaction = (transaction) => {
     return incomeData?.some(income => income._id === transaction._id) || false;
   };
+
+  // console.log(allTransactions);
 
   return (
     <div className="bg-white dark:bg-[#0a0a0a] rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-[#ffffff24]">
@@ -41,7 +43,7 @@ export default function RecentTransactions({ incomeData, expenseData, loading })
           </div>
         ) : (
           allTransactions.map(transaction => (
-            <div key={transaction._id} className="sm:p-4 p-2 hover:bg-gray-50 dark:hover:bg-[#ffffff17]  transition-colors">
+            <div key={transaction._id} className="sm:p-4 p-2 hover:bg-gray-50 dark:hover:bg-[#ffffff07]  transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className={`p-2 rounded-lg ${

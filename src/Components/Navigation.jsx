@@ -353,11 +353,15 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
    const navItems = useMemo(() => NAV_ITEMS, []);
 
+  //  className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+  //   isMenuOpen ? 'max-h-[27rem]' : 'max-h-0'
+  // }`}
+
 
   return (
     <>
     <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout conformation?"} />
-    <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24] transition-all duration-300 
+    <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24]  transition-all duration-300 ease-in-out 
       ${isCollapsed ? 'w-16' : 'w-[14rem]'}`}>
      <div className="p-4 border-b dark:border-[#ffffff24]">
         <div className="flex items-center gap-3">
@@ -378,8 +382,8 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
       {/* DateTime & User Info */}
       {!isCollapsed && (
-        <div className="p-4 border-b  dark:border-[#ffffff24] space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="p-4 border-b   dark:border-[#ffffff24] space-y-2">
+          <div className="flex  items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <div className="relative">
               <User className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
               {/* Small status indicator dot */}
@@ -419,7 +423,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
 
       {/* Navigation Links */}
-      <nav className="p-3 space-y-2  ">
+      <nav className="p-3 space-y-2 overflow-hidden ">
       {navItems.map((item) => (
         item.admin && userType !== 'admin' ? null : (
           <NavLink
@@ -461,7 +465,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
    
 
       {/* Logout Button */}
-      <div className="absolute bottom-0 w-full p-2">
+      <div className="absolute bottom-0 w-full p-2 overflow-hidden">
       <button
           onClick={()=>{setHidePopup(true)}}
           className={`

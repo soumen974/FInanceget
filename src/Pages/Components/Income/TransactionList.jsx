@@ -285,13 +285,20 @@ export const useGlobalTransactionData = (type) => {
   const [loading, setLoading] = useState(true);
   const [searchYear, setsearchYearForList] = useState(new  Date().getFullYear());
   const [month, setMonthForList] = useState(new Date().getMonth());
+  const [totalIncomeForCurrentMonth, setTotalIncomeForCurrentMonth] = useState(0);
+  const [totalExpenseForCurrentMonth, setTotalExpenseForCurrentMonth] = useState(0);
+  const[allTransactions,setAllTransactions]=useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
         if (type === 'income') {
           const response = await api.get('/api/income/incomedata');
-          setIncomeData(response.data);
+          setIncomeData(response.data.Wholeincomes);
+          setTotalIncomeForCurrentMonth(response.data.totalIncomeForCurrentMonth);
+          setTotalExpenseForCurrentMonth(response.data.totalExpenseForCurrentMonth);
+          console.log(response.data.allTransactions);
+          setAllTransactions(response.data.allTransactions);
           setLoading(false);
         } else if (type === 'expense') {
           const response = await api.get('/api/expenses/expesnsesdata');
@@ -337,7 +344,7 @@ export const useGlobalTransactionData = (type) => {
   }, 0);
 
   // console.log(month);
-  return { totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData, setsearchYearForList,setMonthForList};
+  return {totalIncomeForCurrentMonth,totalExpenseForCurrentMonth,allTransactions, totalIncome,totalIncomeFortheCurrentMonth, incomeData, error, message, loading ,totalExpense,totalExpenseFortheCurrentMonth, expenseData, setsearchYearForList,setMonthForList};
 };
  
 

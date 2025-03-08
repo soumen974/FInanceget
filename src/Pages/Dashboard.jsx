@@ -17,8 +17,8 @@ import DashboardIMG from "../meta/imgs/Dashboard.png";
 
 export default function Dashboard() {
   const { TransactionData, lifeTimeballence } = ReportsData();
-  const { totalIncomeFortheCurrentMonth, incomeData, error, message, loading } = useGlobalTransactionData('income');
-  const { totalExpenseFortheCurrentMonth, expenseData } = useGlobalTransactionData('expense');
+  const {  incomeData,allTransactions,totalIncomeForCurrentMonth,totalExpenseForCurrentMonth, error, message, loading } = useGlobalTransactionData('income');
+  const {  expenseData } = useGlobalTransactionData('expense');
   const { isAuthenticated, userType,name } = authCheck();
   const [streak, setStreak] = useState(0);
   const [downloading, setDownloading] = useState(false);
@@ -111,13 +111,13 @@ export default function Dashboard() {
         />
         <StatCard
           title="Total Income"
-          amount={totalIncomeFortheCurrentMonth}
+          amount={totalIncomeForCurrentMonth}
           type="income"
           icon={<TrendingUp className="dark:text-gray-300" />}
         />
         <StatCard
           title="Total Expenses"
-          amount={totalExpenseFortheCurrentMonth}
+          amount={totalExpenseForCurrentMonth}
           type="expense"
           icon={<TrendingDown className="dark:text-gray-300" />}
         />
@@ -132,6 +132,7 @@ export default function Dashboard() {
         <RecentTransactions
           incomeData={incomeData}
           expenseData={expenseData}
+          allTransactions={allTransactions}
           loading={loading}
           className="dark:bg-gray-800 dark:border-[#ffffff24] dark:text-gray-100"
         />
