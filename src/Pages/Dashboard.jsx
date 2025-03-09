@@ -67,15 +67,25 @@ export default function Dashboard() {
     <>
     <Helmet>
         <title>FinanceGet ~ {name}'s ' Dashboard</title>
-        <meta name="twitter:card" content='https://financeget.vercel.app/assets/Dashboard-iUIF8u34.png' />
-        <meta name="twitter:title" content="FinanceGet - {name}'s ' Dashboard" />
-        <meta name="twitter:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
-        <meta name="twitter:image" content='https://financeget.vercel.app/assets/Dashboard-iUIF8u34.png' />
-        <meta property="og:title" content="FinanceGet" />
-        <meta property="og:description" content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you." />
-        <meta property="og:image" content='https://financeget.vercel.app/assets/Dashboard-iUIF8u34.png' />
-        <meta property="og:url" content="https://financeget.vercel.app/" />
-        <meta property="og:type" content="website" />
+      <meta property="og:title" content="FinanceGet" />
+      <meta
+        property="og:description"
+        content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you."
+      />
+      <meta property="og:image" content="https://financeget.vercel.app/assets/Landing-page-financeGet-iyuiiDPm.png" />
+      <meta property="og:url" content="https://financeget.vercel.app/" />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="FinanceGet" />
+      <meta property="og:locale" content="en_US" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="FinanceGet" />
+      <meta
+        name="twitter:description"
+        content="Take control of your financial journey with our all-in-one platform. Track, plan, and grow your wealth with intuitive tools designed for you."
+      />
+      <meta name="twitter:image" content="https://financeget.vercel.app/assets/tweet-card-tHslKEPd.png" />
+      <meta name="twitter:url" content="https://financeget.vercel.app/" />
       </Helmet>
     <div className="max-w-6xl pb-6 mx-auto">
       {/* Dashboard Header - Improved with better spacing and alignment */}
