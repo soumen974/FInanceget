@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import LandingIMG from "../meta/imgs/Dashboard.png";
+import tweetCard from "../meta/imgs/tweet-card.png";
+import LandingpageIMG from "../meta/imgs/Landing-page-financeGet.png";
+
 
 const COLORS = {
   primary: '#6366F1',
@@ -130,6 +133,7 @@ const LandingPage = () => {
           </div>
         </motion.header>
 
+
         {/* Demo Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -145,6 +149,9 @@ const LandingPage = () => {
             </p>
             <div className="relative max-w-3xl mx-auto">
               <img src={LandingIMG} alt="FinanceGet Demo" className="rounded-lg shadow-lg w-full" />
+              <img src={tweetCard} alt="FinanceGet Demo" className="rounded-lg shadow-lg w-full" />
+              <img src={LandingpageIMG} alt="FinanceGet Demo" className="rounded-lg shadow-lg w-full" />
+
             </div>
           </div>
         </motion.section>
