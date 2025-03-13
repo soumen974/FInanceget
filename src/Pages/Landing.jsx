@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Wallet, PieChart, DollarSign, TrendingUp, Target, Users, Goal, ChartNetwork, Radar, ChartNoAxesGantt, 
+  Wallet,X, PieChart, DollarSign, TrendingUp, Target, Users, Goal, ChartNetwork, Radar, ChartNoAxesGantt, 
   ChevronRight, Shield, Clock, RefreshCw, Moon, Sun, Check, BarChart2, Calendar, TrendingDown, HandCoins 
 } from 'lucide-react';
 import { Helmet } from 'react-helmet';
@@ -22,6 +22,7 @@ const COLORS = {
 
 const LandingPage = () => {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+  const [CancelStick, setCancelStick] = useState(true);
 
   useEffect(() => {
     if (darkMode) {
@@ -422,13 +423,17 @@ const LandingPage = () => {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="py-8 px-4 bg-indigo-600 dark:bg-indigo-800 text-white sticky bottom-0 z-40"
+          className={` px-4 bg-indigo-600 dark:bg-indigo-800 text-white  ${CancelStick? 'sticky py-4':'py-6' } bottom-0 z-40`}
         >
+          <div className={` justify-end  ${CancelStick?'flex':'hidden'}`}>
+            <div onClick={()=>{setCancelStick(!CancelStick)}} className=" cursor-pointer    hover:bg-blue-200/10  rounded-full p-2 "><X size={18} /></div>
+          </div>
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-lg font-medium">Ready to take control of your finances?</p>
             <Link to="/register" className="inline-flex items-center gap-2 bg-white text-indigo-600 px-6 py-2 rounded-lg font-medium hover:bg-indigo-50 shadow-md transition-all duration-200">
               Start Now <ChevronRight size={18} />
             </Link>
+            
           </div>
         </motion.section>
 
