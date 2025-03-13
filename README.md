@@ -103,7 +103,7 @@ Smart budgeting, expense tracking, and actionable financial insights—unlocked 
 ### Quick Setup: The `.env` Magic ✨
 To get started, create a `.env` file in the root directory of your project and add this line:  
 
-VITE_API_URL=[https://finencegetapi.vercel.app](https://finencegetapi.onrender.com/)
+VITE_API_URL=https://finencegetapi.onrender.com/
 
  
 
