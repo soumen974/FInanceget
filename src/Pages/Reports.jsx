@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   LineChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart as RechartsPieChart, Pie, Cell, Legend
+  PieChart as RechartsPieChart, Pie, Cell, Legend,Area,AreaChart
 } from 'recharts';
 import { useGlobalTransactionData } from './Components/Income/TransactionList';
 import { formatCurrency } from './Components/Income/formatCurrency';
@@ -211,7 +211,16 @@ const Reports = () => {
                   )}
                   <ResponsiveContainer width="100%" height="100%">
                     {trendChartType === 'lineChart' ? (
-                      <LineChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
+                      <AreaChart  width={500}
+                      height={200}
+                      syncId="anyId"
+                      margin={{
+                        top: 10,
+                        right: 40,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                       data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
                         <YAxis stroke="#6B7280" />
@@ -219,15 +228,15 @@ const Reports = () => {
                         <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
                         {reportType === 'whole' && (
                           <>
-                            <Line type="monotone" dataKey="income" stroke="#4F46E5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="expense" stroke="#F97316" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="Net_Savings" stroke="#9333ea" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                            <Area type="monotone" dataKey="income" stroke="#4F46E5" fill='none' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                            <Area type="monotone" dataKey="expense" stroke="#F97316" fill='none' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                            <Area type="monotone" dataKey="Net_Savings" stroke="#9333ea" fill='none' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />
                           </>
                         )}
-                        {reportType === 'Income' && <Line type="monotone" dataKey="income" stroke="#4F46E5" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />}
-                        {reportType === 'Expenses' && <Line type="monotone" dataKey="expense" stroke="#F97316" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />}
-                        {reportType === 'Net Savings' && <Line type="monotone" dataKey="Net_Savings" stroke="#9333ea" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />}
-                      </LineChart>
+                        {reportType === 'Income' && <Area  type="monotone" dataKey="income" stroke="#4F46E5" fill="#4e46e53d" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 5 }} />}
+                        {reportType === 'Expenses' && <Area type="monotone" dataKey="expense" stroke="#F97316" fill='#f9741642' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 8 }} />}
+                        {reportType === 'Net Savings' && <Area type="monotone" dataKey="Net_Savings" stroke="#9333ea" fill='#9233ea23' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 5 }} />}
+                      </AreaChart>
                     ) : (
                       <BarChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />

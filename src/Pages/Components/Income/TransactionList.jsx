@@ -297,7 +297,7 @@ export const useGlobalTransactionData = (type) => {
           setIncomeData(response.data.Wholeincomes);
           setTotalIncomeForCurrentMonth(response.data.totalIncomeForCurrentMonth);
           setTotalExpenseForCurrentMonth(response.data.totalExpenseForCurrentMonth);
-          console.log(response.data.allTransactions);
+          // console.log(response.data.allTransactions);
           setAllTransactions(response.data.allTransactions);
           setLoading(false);
         } else if (type === 'expense') {
