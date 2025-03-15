@@ -361,9 +361,9 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
   return (
     <>
     <Popupbox HidePopup={HidePopup}  loading={loading}  taskFunction={handleLogout} setHidePopup={setHidePopup} title={"Logout conformation?"} />
-    <aside className={ `max-lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-[#ffffff24]  transition-all duration-300 ease-in-out 
+    <aside className={ `max-lg:hidden flex flex-col fixed left-0 top-0 h-screen bg-white dark:bg-[#0a0a0a] border-r dark:border-white/10   transition-all duration-300 ease-in-out 
       ${isCollapsed ? 'w-16' : 'w-[14rem]'}`}>
-     <div className="p-4 border-b dark:border-[#ffffff24]">
+     <div className="p-4 border-b dark:border-white/10 ">
         <div className="flex items-center gap-3">
           <Wallet className="h-6 w-6 text-blue-600  flex-shrink-0" />
           {!isCollapsed && (
@@ -414,7 +414,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
           )}
 
     {(isCollapsed & (userType === 'premium' || userType === 'admin'))?
-       <div className="p-4 border-b dark:border-[#ffffff24]">
+       <div className="p-4 border-b dark:border-white/10 ">
         <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
           PRO
         </span> 
@@ -423,7 +423,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
 
 
       {/* Navigation Links */}
-      <nav className="p-3 space-y-2 overflow-hidden ">
+      <nav className="p-3 space-y-2  flex-1 overflow-x-hidden overflow-y-auto ">
       {navItems.map((item) => (
         item.admin && userType !== 'admin' ? null : (
           <NavLink
@@ -465,7 +465,7 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
    
 
       {/* Logout Button */}
-      <div className="absolute bottom-0 w-full p-2 overflow-hidden">
+      <div className=" border-t dark:border-white/10  w-full p-2 overflow-hidden">
       <button
           onClick={()=>{setHidePopup(true)}}
           className={`

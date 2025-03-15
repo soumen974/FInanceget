@@ -59,15 +59,18 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = type === 'income'
         ? await api.get(`/api/income?page=${currentPage}`)
         : await api.get(`/api/expenses?page=${currentPage}`);
 
       setGetData(response.data[type === 'income' ? 'incomes' : 'expenses']);
       setTotalPages(response.data.pagination.totalPages);
-      setLoading(false);
     } catch (err) {
       console.error(err);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -211,7 +214,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
       </div>
       <div className="p-4 sm:p-6">
         <div className="md:space-y-3 space-y-2 min-h-[46vh] md:min-h-[48.8vh]">
-          {loading && GetData.length === 0 && (
+          {loading && (
             <div className="space-y-3">
               {[...Array(5)].map((_, index) => (
                 <div key={index} className="animate-pulse" style={{ animationDelay: `${index * 150}ms` }}>
@@ -232,7 +235,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
               <p className="text-gray-500 font-medium">No {type} transactions found</p>
             </div>
           )}
-          {renderTransactions}
+          {!loading && renderTransactions}
         </div>
         <div className="mt-6 border-t border-gray-200 dark:border-[#ffffff24] pt-3 md:pt-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -242,7 +245,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
             <div className="flex gap-2">
               <button
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(prev => prev - 1)}
+                onClick={() => {setCurrentPage(prev => prev - 1);setLoading(true);}}
                 className={`
                   px-4 py-2 text-sm font-medium rounded-lg
                   ${currentPage === 1
@@ -255,7 +258,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
               </button>
               <button
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(prev => prev + 1)}
+                onClick={() => {setCurrentPage(prev => prev + 1);setLoading(true);}}
                 className={`
                   px-4 py-2 text-sm font-medium rounded-lg
                   ${currentPage === totalPages

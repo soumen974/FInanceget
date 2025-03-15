@@ -771,7 +771,7 @@ const PersonalizedBudgetAllocationForm = ({
         top-0 h-screen w-[85%] max-w-md shadow-xl z-50 flex flex-col`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b dark:border-white/10 bg-gradient-to-r from-indigo-50/80 dark:from-gray-800/80 to-gray-100/80 dark:to-gray-700/80">
+      <div className="flex items-center justify-between p-4 border-b dark:border-white/10 bg-gradient-to-r  dark:bg-[#111111] ">
         <div className="flex items-center space-x-2">
           <h2 className="text-base font-semibold text-gray-900 dark:text-white">Personalized Budget</h2>
         </div>
@@ -845,7 +845,7 @@ const PersonalizedBudgetAllocationForm = ({
         <button
           type="button"
           onClick={() => setEditPersonalBudget(false)}
-          className="px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-white/15 transition-all disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600"
+          className=" py-3 px-4 text-sm font-medium bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-white/15 transition-all disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600"
           disabled={loading}
         >
           Cancel
@@ -853,7 +853,7 @@ const PersonalizedBudgetAllocationForm = ({
         <button
           form="budgetForm"
           type="submit"
-          className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+          className=" py-3 px-4 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
           disabled={loading}
         >
           {loading ? 'Saving...' : 'Save Budget'}
