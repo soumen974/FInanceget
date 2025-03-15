@@ -441,7 +441,61 @@ const Goals = () => {
 
             <div className="divide-y divide-[#F3F4F6] dark:divide-[#ffffff24]">
               {loading ? (
-                <Spinner />
+                // <Spinner />
+                <div className="space-y-1">
+                  {[...Array(5)].map((_, index) => (
+                    <div
+                      key={index}
+                      className="animate-pulse bg-gray-200 dark:bg-[#ffffff13]  p-4   border-gray-200 dark:border-[#ffffff24]"
+                      style={{ animationDelay: `${index * 150}ms` }}
+                    >
+                      {/* Header Section */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          {/* Icon Placeholder */}
+                          <div className="w-10 h-10 rounded-lg bg-gray-300 dark:bg-[#ffffff1a]" />
+                          <div className="space-y-2">
+                            {/* Title Placeholder */}
+                            <div className="w-32 h-4 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                            {/* Target/Saved Placeholder */}
+                            <div className="flex gap-2">
+                              <div className="w-20 h-3 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                              <div className="w-20 h-3 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                            </div>
+                            {/* Deadline Placeholder */}
+                            <div className="w-24 h-3 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                          </div>
+                        </div>
+                        {/* Menu Button Placeholder */}
+                        <div className="w-6 h-6 rounded-full bg-gray-300 dark:bg-[#ffffff1a]" />
+                      </div>
+
+                      {/* Progress Bar Section */}
+                      <div className="mt-3 space-y-1">
+                        {/* Progress Bar */}
+                        <div className="w-full h-2 bg-gray-300 dark:bg-[#ffffff1a] rounded-full" />
+                        {/* Percentage/Remaining Placeholder */}
+                        <div className="flex justify-between">
+                          <div className="w-16 h-3 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                          <div className="w-20 h-3 bg-gray-300 dark:bg-[#ffffff1a] rounded" />
+                        </div>
+                      </div>
+
+                      {/* Stats Grid Section */}
+                      <div className="mt-4 grid grid-cols-4 gap-3">
+                        {[...Array(4)].map((_, statIndex) => (
+                          <div
+                            key={statIndex}
+                            className="p-3 rounded-lg bg-gray-300 dark:bg-[#ffffff1a]"
+                          >
+                            <div className="w-16 h-4 bg-gray-400 dark:bg-[#ffffff26] rounded" />
+                            <div className="w-12 h-3 mt-1 bg-gray-400 dark:bg-[#ffffff26] rounded" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : goalItems.length === 0 ? (
                 <div className="p-8 text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3F4F6] dark:bg-[#0a0a0a] mb-4">

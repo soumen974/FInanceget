@@ -238,7 +238,12 @@ const Reports = () => {
                         {reportType === 'Net Savings' && <Area type="monotone" dataKey="Net_Savings" stroke="#9333ea" fill='#9233ea23' strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 5 }} />}
                       </AreaChart>
                     ) : (
-                      <BarChart data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
+                      <BarChart  margin={{
+                        top: 10,
+                        right: 40,
+                        left: 0,
+                        bottom: 0,
+                      }} data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
                         <YAxis stroke="#6B7280" />
@@ -339,7 +344,14 @@ const Reports = () => {
                         <Tooltip />
                       </RechartsPieChart>
                     ) : (
-                      <BarChart data={Data}>
+                      <BarChart
+                      margin={{
+                        top: 10,
+                        right: 40,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                       data={Data}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
                         <YAxis stroke="#6B7280" />
