@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { Camera, RefreshCw, X, ZoomIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 
 const Scanner = () => {
   const videoRef = useRef(null);
@@ -295,7 +295,7 @@ const Scanner = () => {
           {isCameraActive && (
             <button
               onClick={()=>{stopCamera;navigate('/');}}
-              className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+              className="absolute top-4 right-4 p-2 bg-red-500  text-white rounded-full hover:bg-red-600 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -318,18 +318,24 @@ const Scanner = () => {
         </div>
 
         {/* Bottom Panel */}
-        <div className="bg-white p-4 rounded-t-xl shadow-lg">
+        <div className="bg-white dark:bg-[#0a0a0a] p-4 rounded-t-xl shadow-lg">
           <div className="flex items-center justify-center mb-4">
             <Camera className="w-6 h-6 mr-2 text-blue-600" />
-            <h1 className="text-xl font-semibold text-gray-800">QR Scanner</h1>
-            <span className="ml-auto text-xs text-gray-500">{currentDate}</span>
+            <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-50">QR Scanner</h1>
+            <span className="ml-auto text-xs text-gray-500 ">{currentDate}</span>
           </div>
 
           {/* QR Data Display */}
           {qrData && (
-            <div className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-gray-700 text-sm mb-1">Scanned Result:</p>
-              <p className="text-gray-900 font-medium break-all bg-white p-3 rounded border border-gray-200">{qrData}</p>
+            <div className="mt-2 p-4 bg-gray-50 dark:bg-[#0a0a0a] rounded-lg border border-gray-200 dark:border-[#ffffff24]">
+              <p className="text-gray-700 dark:text-gray-400 text-sm mb-1">Scanned Result:</p>
+              <p className="text-gray-900 dark:text-gray-400 font-medium break-all bg-white dark:bg-[#0a0a0a] p-3 rounded border border-gray-200 dark:border-[#ffffff24]">{qrData}</p>
+
+               <div className="mt-4 md:hidden pt-4 border-t border-gray-200 dark:border-[#ffffff1a]">
+                  <div className="flex items-center justify-center gap-3">
+                    <Link to={qrData} className="mt-4 w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Pay</Link>
+                  </div>
+                </div>
               <button
                 onClick={handleReset}
                 className="mt-4 w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -341,7 +347,7 @@ const Scanner = () => {
 
           {/* Error Display */}
           {error && (
-            <div className="mt-2 p-3 bg-red-50 rounded-lg border border-red-200 transition-opacity">
+            <div className="mt-2 p-3 bg-red-50 dark:bg-[#0a0a0a] rounded-lg border border-red-200 dark:border-[#ffffff24] transition-opacity">
               <p className="text-red-600 text-sm">{error}</p>
               <div className="flex space-x-2 mt-3">
                 <button
@@ -387,13 +393,13 @@ const Scanner = () => {
 
         {/* Last Capture Preview (for debugging) */}
         {lastCapture && !qrData && (
-          <div className="mt-4 p-2 bg-gray-100 rounded border border-gray-200">
+          <div className="mt-4 p-2 bg-gray-100 dark:bg-[#0a0a0a] rounded border border-gray-200 dark:border-[#ffffff24]">
             <p className="text-xs text-gray-500 mb-1">Last Capture:</p>
             <div className="flex justify-center">
               <img 
                 src={lastCapture} 
                 alt="Last captured frame" 
-                className="max-h-32 rounded border border-gray-300" 
+                className="max-h-32 rounded border border-gray-300 dark:border-[#ffffff24]" 
               />
             </div>
             <details className="mt-2">
