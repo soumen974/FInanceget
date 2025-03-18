@@ -30,6 +30,7 @@
     "html5-qrcode": "^2.3.8",
     "jsqr": "^1.4.0",
     "lucide-react": "^0.469.0",
+    "qr-scanner": "^1.4.2",
     "react-feather": "^2.0.10",
     "react-helmet": "^6.1.0",
     "react-responsive": "^10.0.0",
