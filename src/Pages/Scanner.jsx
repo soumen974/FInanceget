@@ -1,289 +1,218 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
-import { Camera, RefreshCw, Copy, CheckCircle, AlertTriangle } from "lucide-react";
+import { Camera, RefreshCw, X } from "lucide-react";
 
 const Scanner = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const processingRef = useRef(false);
-  const scanIntervalRef = useRef(null);
   const [qrData, setQrData] = useState(null);
-  const [isScanning, setIsScanning] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const [error, setError] = useState(null);
-  const [copied, setCopied] = useState(false);
-  const [scanWarning, setScanWarning] = useState(false);
-  const lastProcessTimeRef = useRef(0);
+  const [isCapturing, setIsCapturing] = useState(false);
 
-  // Process video frame to detect QR code - using interval instead of requestAnimationFrame
-  const processVideoFrame = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current || !isScanning || processingRef.current) return;
-    
-    const now = Date.now();
-    const timeSinceLastProcess = now - lastProcessTimeRef.current;
-    
-    // Only process every 200ms to reduce CPU usage
-    if (timeSinceLastProcess < 200) return;
-    
-    lastProcessTimeRef.current = now;
-    processingRef.current = true;
-    
+  const stopCamera = () => {
     const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-    
-    // Only process if video is ready
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      // Set canvas size once when video data is available
-      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      }
-      
-      // Process the frame
-      try {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: "dontInvert",
-        });
-        
-        if (code && code.data) {
-          setQrData(code.data);
-          stopScanner();
-        } else {
-          processingRef.current = false;
-        }
-      } catch (err) {
-        console.error("Error processing frame:", err);
-        processingRef.current = false;
-      }
-    } else {
-      processingRef.current = false;
+    if (video && video.srcObject) {
+      const stream = video.srcObject;
+      stream.getTracks().forEach((track) => track.stop());
+      video.srcObject = null;
     }
-  }, [isScanning]);
+    setIsCameraActive(false);
+  };
 
-  // Stop scanner and cleanup
-  const stopScanner = useCallback(() => {
-    if (scanIntervalRef.current) {
-      clearInterval(scanIntervalRef.current);
-      scanIntervalRef.current = null;
-    }
-    
-    if (videoRef.current?.srcObject) {
-      const stream = videoRef.current.srcObject;
-      stream.getTracks().forEach(track => track.stop());
-    }
-    
-    setIsScanning(false);
-    processingRef.current = false;
-  }, []);
-
-  // Start scanner with stable video setup
-  const startScanner = useCallback(async () => {
-    setError(null);
-    setQrData(null);
-    setCopied(false);
-    setScanWarning(false);
-    
+  const startCamera = async () => {
     try {
-      const constraints = {
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
           facingMode: "environment",
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
-      };
+      });
       
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      
-      if (videoRef.current) {
-        // Apply the stream to video element
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play()
+      const video = videoRef.current;
+      if (video) {
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play()
             .then(() => {
-              setIsScanning(true);
-              
-              // Start interval for processing frames
-              scanIntervalRef.current = setInterval(() => {
-                if (!processingRef.current) {
-                  processVideoFrame();
-                } else {
-                  // Show warning if processing is taking too long
-                  setScanWarning(true);
-                  setTimeout(() => setScanWarning(false), 3000);
-                }
-              }, 200);
+              setIsCameraActive(true);
+              setError(null);
             })
-            .catch(err => {
+            .catch((err) => {
               setError(`Failed to start video: ${err.message}`);
             });
         };
       }
     } catch (err) {
-      let errorMessage = "Camera access denied or unavailable";
-      if (err.name === "NotAllowedError") {
-        errorMessage = "Camera permission denied. Please allow camera access.";
-      } else if (err.name === "NotFoundError") {
-        errorMessage = "No camera found on this device.";
-      }
-      setError(errorMessage);
+      setError(`Camera access denied or unavailable: ${err.message}`);
     }
-  }, [processVideoFrame]);
-
-  // Initialize scanner on component mount
-  useEffect(() => {
-    startScanner();
-    
-    return () => {
-      stopScanner();
-    };
-  }, [startScanner, stopScanner]);
-
-  // Copy QR code data to clipboard
-  const copyToClipboard = () => {
-    if (!qrData) return;
-    
-    navigator.clipboard.writeText(qrData).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
   };
 
-  // Detect if QR data is a URL
-  const isUrl = qrData && (
-    qrData.startsWith("http://") || 
-    qrData.startsWith("https://") || 
-    qrData.startsWith("www.")
-  );
+  useEffect(() => {
+    // Start camera when component mounts
+    startCamera();
+
+    // Clean up when component unmounts
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  const captureFrame = () => {
+    if (!isCameraActive || !videoRef.current) {
+      return;
+    }
+
+    setIsCapturing(true);
+    
+    try {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d", { alpha: false });
+      
+      // Set canvas dimensions to match video
+      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+      }
+      
+      // Draw current video frame to canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Get image data for QR processing
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      
+      // Process QR code
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      
+      if (code && code.data) {
+        setQrData(code.data);
+        stopCamera(); // Stop camera after successful scan
+      } else {
+        setError("No QR code found. Try again.");
+        setTimeout(() => setError(null), 2000); // Clear error after 2 seconds
+      }
+    } catch (err) {
+      setError(`Error processing image: ${err.message}`);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
+  const handleReset = () => {
+    setQrData(null);
+    setError(null);
+    startCamera();
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md overflow-hidden bg-white rounded-2xl shadow-xl">
-        {/* Video container */}
-        <div className="relative w-full aspect-video bg-black">
-          {/* Video element - fixed size to prevent resize flickering */}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-black">
+      <div className="w-full max-w-md flex flex-col h-screen">
+        {/* Camera/Scanner Area */}
+        <div className="relative flex-grow bg-black">
+          {/* Video element to show camera feed */}
           <video
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="w-full h-full object-cover"
             playsInline
-            muted
+            autoPlay
           />
           
-          {/* Hidden canvas for processing */}
+          {/* Hidden canvas for frame capture and processing */}
           <canvas
             ref={canvasRef}
             className="hidden"
           />
-          
-          {/* Scan target overlay */}
-          {isScanning && !qrData && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-52 h-52 relative">
-                {/* Target frame */}
-                <div className="absolute inset-0 border-2 border-white/50 rounded-lg"></div>
-                
-                {/* Corner indicators */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-500"></div>
-                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-blue-500"></div>
-                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-blue-500"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-blue-500"></div>
-              </div>
+
+          {/* Scanner Overlay */}
+          {isCameraActive && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-64 h-64 border-2 border-white/70 rounded-lg"></div>
             </div>
           )}
+
+          {/* Stop Camera Button */}
+          {isCameraActive && (
+            <button
+              onClick={stopCamera}
+              className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
           
-          {/* Scan warning */}
-          {scanWarning && (
-            <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center">
-              <div className="bg-yellow-500/80 text-white px-4 py-2 rounded-full text-sm flex items-center">
-                <AlertTriangle className="w-4 h-4 mr-2" />
-                Please hold the camera steady
-              </div>
-            </div>
+          {/* Capture Frame Button */}
+          {isCameraActive && (
+            <button
+              onClick={captureFrame}
+              disabled={isCapturing}
+              className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 ${
+                isCapturing ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'
+              } text-white rounded-full transition-colors shadow-lg flex items-center justify-center`}
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              {isCapturing ? "Processing..." : "Capture QR Code"}
+            </button>
           )}
         </div>
-        
-        {/* Content area */}
-        <div className="p-6">
-          {/* Header */}
+
+        {/* Bottom Panel */}
+        <div className="bg-white p-4 rounded-t-xl shadow-lg">
           <div className="flex items-center justify-center mb-4">
             <Camera className="w-6 h-6 mr-2 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-800">QR Scanner</h2>
+            <h1 className="text-xl font-semibold text-gray-800">QR Scanner</h1>
           </div>
-          
-          {/* QR Result */}
+
+          {/* QR Data Display */}
           {qrData && (
-            <div className="mt-3 transition-opacity duration-300 opacity-100">
-              <div className="flex items-center justify-center mb-2">
-                <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-medium text-green-800">QR Code Detected</h3>
-              </div>
-              
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-4">
-                <p className="text-gray-800 text-center break-all font-medium">{qrData}</p>
-              </div>
-              
-              <div className="flex gap-2">
-                {isUrl && (
-                  <a
-                    href={qrData.startsWith("www.") ? `https://${qrData}` : qrData}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg text-center font-medium transition-colors"
-                  >
-                    Open Link
-                  </a>
-                )}
-                
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center justify-center px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
-                >
-                  {copied ? <CheckCircle className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
-                  {copied ? "Copied" : "Copy"}
-                </button>
-                
-                <button
-                  onClick={startScanner}
-                  className="flex items-center justify-center px-4 py-3 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg transition-colors"
-                >
-                  <RefreshCw className="w-4 h-4 mr-1" />
-                  Scan New
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {/* Error State */}
-          {error && (
-            <div className="mt-3 p-4 bg-red-50 rounded-lg border border-red-200">
-              <p className="text-red-700 text-center">{error}</p>
+            <div className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-gray-700 text-sm mb-1">Scanned Result:</p>
+              <p className="text-gray-900 font-medium break-all bg-white p-3 rounded border border-gray-200">{qrData}</p>
               <button
-                onClick={startScanner}
-                className="mt-3 w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                onClick={handleReset}
+                className="mt-4 w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                <RefreshCw className="w-4 h-4 mr-1" />
-                Try Again
+                <RefreshCw className="w-4 h-4 mr-2" /> Scan Again
               </button>
             </div>
           )}
-          
-          {/* Scanning Instructions */}
-          {isScanning && !qrData && !error && (
-            <p className="text-gray-500 text-center text-sm mt-2">
-              Center the QR code within the frame to scan
-            </p>
+
+          {/* Error Display */}
+          {error && (
+            <div className={`mt-2 p-3 bg-red-50 rounded-lg border border-red-200 transition-opacity ${error ? 'opacity-100' : 'opacity-0'}`}>
+              <p className="text-red-600 text-sm">{error}</p>
+              {!isCameraActive && (
+                <button
+                  onClick={startCamera}
+                  className="mt-3 w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" /> Try Again
+                </button>
+              )}
+            </div>
           )}
-          
-          {/* Start Button */}
-          {!isScanning && !qrData && !error && (
-            <button
-              onClick={startScanner}
-              className="mt-3 w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            >
-              <Camera className="w-4 h-4 mr-1" />
-              Start Scanning
-            </button>
+
+          {/* Instructions */}
+          {!qrData && !error && (
+            <div className="text-center">
+              <p className="text-gray-500 text-sm">
+                {isCameraActive 
+                  ? "Position QR code in the center square and tap the capture button" 
+                  : navigator.mediaDevices?.getUserMedia
+                    ? "Start the camera to scan a QR code"
+                    : "Camera not supported on this device"
+                }
+              </p>
+              {!isCameraActive && (
+                <button
+                  onClick={startCamera}
+                  className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+                >
+                  <Camera className="w-4 h-4 mr-2" /> Start Camera
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
