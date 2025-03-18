@@ -18,6 +18,7 @@ import Goals from "./Pages/Goals";
 import Upgrade from "./Pages/Upgrade";
 import Spinner from "./Loaders/Spinner";
 import Users from "./Admin/Pages/Users";
+import Scanner from "./Pages/Scanner";
 
 
 
@@ -149,6 +150,7 @@ const App = () => {
             <Route path="/budget" element={<Budget />} />
             <Route path="/goal" element={<Goals />} />
             <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/scanner" element={<Scanner />} />
             {userType==='admin'&& <Route path="/Users" element={<Users />} />}
 
 

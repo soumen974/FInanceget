@@ -253,7 +253,7 @@ const LoginForm = ({ error, setError, message, setMessage }) => {
       </button>
       
       <div className="pt-4 border-t border-gray-200">
-        <button onClick={handleOAuthGoogleLogin} className={`
+        <button type="button" onClick={handleOAuthGoogleLogin} className={`
           w-full py-3 px-4 rounded-lg font-medium
           transition-all duration-200 transform
           flex items-center justify-center gap-2
