@@ -3,6 +3,9 @@ import {Navigation} from './Navigation';
 import Headder from "../Pages/Components/Headder";
 import { useState } from 'react';
 import {useDarkMode } from '../theam/TheamColorsStyle'
+import { Link } from 'react-router-dom';
+import { TrendingDown,ChevronRight ,Crown,FileText,QrCode} from "lucide-react";
+
 const Layout = () => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
         return localStorage.getItem('isCollapsed') === 'true';
@@ -21,6 +24,14 @@ const Layout = () => {
       <Headder/>
       <div className="   max-lg:pt-[5rem] mx-3 md:mx-5 lg:mt-6">
         <Outlet />
+
+        <div className=" fixed md:hidden  bottom-6 right-6">
+            <Link to="/scanner">
+              <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
+                <QrCode className="h-6 w-6" />
+              </button>
+            </Link>
+          </div>
       </div>
 
     <footer className='md:max-w-6xl hidden flex pl-1 md:justify-center py-6  md:mx-auto'>

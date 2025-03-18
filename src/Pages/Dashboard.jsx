@@ -172,13 +172,13 @@ export default function Dashboard() {
         </div>
       </div>
 
-        <div className=" fixed md:hidden  bottom-6 right-6">
+        {/* <div className=" fixed md:hidden  bottom-6 right-6">
           <Link to="/scanner">
             <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
               <QrCode className="h-6 w-6" />
             </button>
           </Link>
-        </div>
+        </div> */}
     </div>
     </>
 
