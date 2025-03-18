@@ -4,7 +4,7 @@ import { formatCurrency } from "./Components/Income/formatCurrency";
 import RecentTransactions from "../Pages/Components/Dashboard/RecentTransactions";
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { TrendingUp, Activity, CreditCard } from 'react-feather'; 
-import { TrendingDown,ChevronRight ,Crown,FileText} from "lucide-react";
+import { TrendingDown,ChevronRight ,Crown,FileText,QrCode} from "lucide-react";
 import { Link } from 'react-router-dom';
 import { authCheck } from '../Auth/Components/ProtectedCheck';
 import { api } from "../AxiosMeta/ApiAxios"
@@ -171,6 +171,14 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+        <div className=" fixed md:hidden  bottom-6 right-6">
+          <Link to="/scanner">
+            <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
+              <QrCode className="h-6 w-6" />
+            </button>
+          </Link>
+        </div>
     </div>
     </>
 

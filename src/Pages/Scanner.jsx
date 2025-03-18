@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
 import { Camera, RefreshCw, X, ZoomIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Scanner = () => {
   const videoRef = useRef(null);
@@ -22,6 +23,7 @@ const Scanner = () => {
       focusMode: "continuous"
     }
   };
+  const navigate = useNavigate();
 
   const stopCamera = () => {
     const video = videoRef.current;
@@ -30,6 +32,7 @@ const Scanner = () => {
       stream.getTracks().forEach((track) => track.stop());
       video.srcObject = null;
     }
+    // navigate('/');
     setIsCameraActive(false);
   };
 
@@ -257,11 +260,12 @@ const Scanner = () => {
   const currentDate = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md flex flex-col h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-[#0a0a0a]">
+      <div className="w-full max-w-md flex flex-col h-[100svh]">
         {/* Camera/Scanner Area */}
-        <div className="relative flex-grow bg-black">
+        <div className="relative  flex-grow bg-black">
           {/* Video element to show camera feed */}
+          
           <video
             ref={videoRef}
             className="w-full h-full object-cover"
@@ -290,7 +294,7 @@ const Scanner = () => {
           {/* Stop Camera Button */}
           {isCameraActive && (
             <button
-              onClick={stopCamera}
+              onClick={()=>{stopCamera;navigate('/');}}
               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
             >
               <X className="w-5 h-5" />
@@ -302,12 +306,13 @@ const Scanner = () => {
             <button
               onClick={captureFrame}
               disabled={isCapturing}
-              className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 ${
+              className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 px-6 w-[70%] py-3 ${
                 isCapturing ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'
               } text-white rounded-full transition-colors shadow-lg flex items-center justify-center`}
             >
               <Camera className="w-5 h-5 mr-2" />
-              {isCapturing ? "Processing..." : "Capture QR Code"}
+              <h1 className="w-full">{isCapturing ? "Processing..." : "Capture QR Code"}</h1>
+              
             </button>
           )}
         </div>
