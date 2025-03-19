@@ -515,7 +515,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
         {financeRule !== '50/30/20' && isPremiumOrAdmin && (
           <button
             onClick={() => setEditPersonalBudget(true)}
-            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            className="p-1 hover:bg-gray-100 dark:hover:bg-blue-700/30  rounded"
           >
             <Edit2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </button>
