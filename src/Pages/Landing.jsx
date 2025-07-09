@@ -302,7 +302,7 @@ const LandingPage = () => {
         >
           <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-2">15+</div>
+              <div className="text-4xl font-bold mb-2">30+</div>
               <div className="text-sm text-indigo-100">Users</div>
             </div>
             <div>
