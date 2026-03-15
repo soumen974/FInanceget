@@ -464,7 +464,7 @@ const LandingPage = () => {
               </div>
             ))}
           </div>
-          <div className="mt-8 text-center text-xs border-t border-[#222222a0] pt-4">© {new Date().getFullYear()} FinanceGet</div>
+          <div className="mt-8 text-center text-xs border-t border-[#222222a0] pt-4">© {new Date().getFullYear()} FinanceGet , Made By<a href="https://soumenbhunia.site" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300"> Soumen Bhunia </a></div>
         </footer>
       </div>
     </>
