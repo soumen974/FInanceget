@@ -56,8 +56,8 @@ const LandingPage = () => {
   ];
 
   const testimonials = [
-    { name: "Soumen Bhunia", role: "Freelancer", content: "Transformed my finances!", avatar: "SB" },
-    { name: "Monika Pal", role: "Software Engineer", content: "Optimized my expenses.", avatar: "MP" },
+    { name: "Soumen Bhunia", role: "Software Engineer", content: "Transformed my finances!", avatar: "SB" },
+    { name: "Sambit Mahanty", role: "Software Engineer", content: "Optimized my expenses.", avatar: "MP" },
     { name: "Souvagya Dash", role: "Software Engineer", content: "Planning made easy!", avatar: "SRD" },
     { name: "Ritesh Das", role: "Software Engineer", content: "Love the forecasting!", avatar: "RD" },
   ];
