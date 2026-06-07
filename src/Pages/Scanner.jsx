@@ -1,330 +1,473 @@
 import React, { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
-import { Camera, RefreshCw, X, AlertCircle, CheckCircle, Wallet } from "lucide-react";
+import {
+  Camera, X, AlertCircle, Loader, CheckCircle,
+  IndianRupee, Tag, Calendar, FileText, StickyNote
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../AxiosMeta/ApiAxios";
 
+const EXPENSE_CATEGORIES = [
+  { name: "Food & Dining", icon: "🍽️" },
+  { name: "Transportation", icon: "🚗" },
+  { name: "Utilities", icon: "💡" },
+  { name: "Entertainment", icon: "🎬" },
+  { name: "Healthcare", icon: "⚕️" },
+  { name: "Housing", icon: "🏠" },
+  { name: "Education", icon: "📚" },
+  { name: "Insurance", icon: "🛡️" },
+  { name: "Savings/Investments", icon: "💰" },
+  { name: "Other Miscellaneous", icon: "📦" },
+];
+
+const formatDateToString = (date) => {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const parseUpiQrData = (data) => {
+  try {
+    if (data.startsWith("upi://")) {
+      const url = new URL(data);
+      const params = new URLSearchParams(url.search);
+      return {
+        payee: params.get("pa") || "",
+        payeeName: params.get("pn") || "",
+        amount: params.get("am") || "",
+        description: params.get("tn") || params.get("pn") || "UPI Payment",
+        rawUpi: data,
+      };
+    } else {
+      const params = new URLSearchParams(data);
+      return {
+        payee: params.get("pa") || "",
+        payeeName: params.get("pn") || "",
+        amount: params.get("am") || "",
+        description: params.get("tn") || params.get("pn") || "UPI Payment",
+        rawUpi: data,
+      };
+    }
+  } catch {
+    return { payee: "", payeeName: "", amount: "", description: "UPI Payment", rawUpi: data };
+  }
+};
+
 const Scanner = () => {
   const videoRef = useRef(null);
-  const [qrData, setQrData] = useState(null);
-  const [isUpiQr, setIsUpiQr] = useState(false);
+  const qrScannerRef = useRef(null);
+  const navigate = useNavigate();
+
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const qrScannerRef = useRef(null);
-  const navigate = useNavigate();
-  
-  // Simplified expense details - we'll use minimal data
-  const [expenseDetails, setExpenseDetails] = useState({
+  const [success, setSuccess] = useState(false);
+
+  // Popup state
+  const [showPopup, setShowPopup] = useState(false);
+  const [scannedUpiRaw, setScannedUpiRaw] = useState("");
+  const [isUpi, setIsUpi] = useState(false);
+
+  // Expense form fields (same as TransactionForm)
+  const [form, setForm] = useState({
     amount: "",
-    source: "Other Miscellaneous",
-    description: "Payment via QR Scan",
-    date: new Date().toISOString().split("T")[0]
+    source: "",
+    date: formatDateToString(new Date()),
+    description: "",
+    note: "",
   });
 
-  // Optimized camera constraints for better performance
-  const cameraConstraints = {
-    video: {
-      facingMode: "environment",
-      width: { ideal: 1280, min: 640 },  // Reduced resolution for faster startup
-      height: { ideal: 720, min: 480 },  // Reduced resolution for faster startup
-      aspectRatio: { ideal: 1.7777777778 }
-    },
-    audio: false
-  };
-
-  // More efficient camera stop function
+  // ─── Camera ───────────────────────────────────────────────
   const stopCamera = () => {
     if (qrScannerRef.current) {
       try {
         qrScannerRef.current.stop();
         qrScannerRef.current.destroy();
         qrScannerRef.current = null;
-      } catch (error) {
-        console.error("Error stopping camera:", error);
+      } catch (e) {
+        console.error("Error stopping scanner:", e);
       }
     }
-    
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach((t) => t.stop());
       videoRef.current.srcObject = null;
     }
-    
     setIsCameraActive(false);
   };
 
-  // Optimized camera start function
   const startCamera = async () => {
     try {
       stopCamera();
-      
-      // Skip HTTPS check in development for faster testing
-      const stream = await navigator.mediaDevices.getUserMedia(cameraConstraints);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
       const video = videoRef.current;
-      
-      if (video) {
-        video.srcObject = stream;
-        video.setAttribute('playsinline', true); // Important for iOS
-        
-        // Simplified metadata handling
-        video.onloadedmetadata = () => {
-          video.play().catch(err => {
-            console.error("Video play error:", err);
-            setError(`Video playback failed: ${err.message}`);
-          });
-          
-          setIsCameraActive(true);
-          setError(null);
-          
-          // Initialize QR scanner with optimized settings
-          qrScannerRef.current = new QrScanner(
-            video,
-            (result) => handleQrResult(result.data),
-            {
-              returnDetailedScanResult: true,
-              highlightScanRegion: true,
-              highlightCodeOutline: true,
-              maxScansPerSecond: 5, // Increased scan rate
-              calculationMethod: 'fast' // Prioritize speed
-            }
-          );
-          
-          qrScannerRef.current.start().catch(err => {
-            console.error("QR Scanner start error:", err);
-            setError(`Scanner error: ${err.message}`);
-          });
-        };
-      }
-    } catch (err) {
-      console.error("Camera access error:", err);
-      if (err.name === 'NotAllowedError') {
-        setError("Camera access denied. Please allow camera permissions.");
-      } else if (err.name === 'NotFoundError') {
-        setError("No camera detected on this device.");
-      } else {
-        setError(`Camera error: ${err.message}`);
-      }
-    }
-  };
+      if (!video) return;
 
-  // Detect if QR code is UPI or other format and handle redirection
-  const handleQrResult = (data) => {
-    setQrData(data);
-    
-    // Check if it's a UPI QR code
-    const isUpi = data.includes("upi://") || 
-                  data.includes("pa=") || 
-                  data.includes("pn=") || 
-                  data.includes("am=");
-    
-    setIsUpiQr(isUpi);
-    
-    if (isUpi) {
-      // Parse UPI QR and extract payment info
-      const parsedData = parseUpiQrData(data);
-      
-      // Update expense details
-      const updatedExpenseDetails = {
-        ...expenseDetails,
-        amount: parsedData.amount || "",
-        description: parsedData.description || "UPI Payment"
+      video.srcObject = stream;
+      video.setAttribute("playsinline", true);
+      video.onloadedmetadata = () => {
+        video.play().catch((e) => setError(`Video error: ${e.message}`));
+        setIsCameraActive(true);
+        setError(null);
+
+        qrScannerRef.current = new QrScanner(
+          video,
+          (result) => handleQrResult(result.data),
+          {
+            returnDetailedScanResult: true,
+            highlightScanRegion: true,
+            highlightCodeOutline: true,
+            maxScansPerSecond: 5,
+          }
+        );
+        qrScannerRef.current.start().catch((e) => setError(`Scanner error: ${e.message}`));
       };
-      
-      setExpenseDetails(updatedExpenseDetails);
-      
-      // Immediately proceed to UPI app redirection
-      handleDirectUpiPayment(data, updatedExpenseDetails);
-    }
-    
-    // Provide haptic feedback if available
-    if (navigator.vibrate) {
-      try {
-        navigator.vibrate(100);
-      } catch (e) {
-        // Ignore vibration errors
-      }
+    } catch (err) {
+      if (err.name === "NotAllowedError") setError("Camera access denied. Please allow camera permissions.");
+      else if (err.name === "NotFoundError") setError("No camera detected on this device.");
+      else setError(`Camera error: ${err.message}`);
     }
   };
 
-  // Parse UPI QR data
-  const parseUpiQrData = (data) => {
-    try {
-      // Handle standard UPI format
-      if (data.startsWith("upi://")) {
-        try {
-          const url = new URL(data);
-          const params = new URLSearchParams(url.search);
-          
-          return {
-            payee: url.pathname.split('/')[2] || "",
-            amount: params.get("am") || "",
-            description: params.get("tn") || params.get("pn") || "UPI Payment",
-          };
-        } catch (e) {
-          console.error("UPI URL parsing error:", e);
-          return { payee: "", amount: "", description: "UPI Payment" };
-        }
-      } 
-      // Handle other formats with pa=, pn=, etc.
-      else {
-        try {
-          const params = new URLSearchParams(data);
-          return {
-            payee: params.get("pa") || "",
-            amount: params.get("am") || "",
-            description: params.get("tn") || params.get("pn") || "UPI Payment",
-          };
-        } catch (e) {
-          console.error("UPI params parsing error:", e);
-          return { payee: "", amount: "", description: "UPI Payment" };
-        }
-      }
-    } catch (e) {
-      console.error("UPI data parsing error:", e);
-      return { payee: "", amount: "", description: "UPI Payment" };
+  // ─── QR Result ────────────────────────────────────────────
+  const handleQrResult = (data) => {
+    // Pause scanning while popup is open
+    if (qrScannerRef.current) {
+      try { qrScannerRef.current.stop(); } catch { }
     }
+
+    const upiDetected =
+      data.includes("upi://") || data.includes("pa=") || data.includes("pn=") || data.includes("am=");
+
+    setIsUpi(upiDetected);
+    setScannedUpiRaw(data);
+
+    if (upiDetected) {
+      const parsed = parseUpiQrData(data);
+      setForm({
+        amount: parsed.amount || "",
+        source: "Other Miscellaneous",
+        date: formatDateToString(new Date()),
+        description: parsed.description || "UPI Payment",
+        note: parsed.payeeName ? `Paid to ${parsed.payeeName} (${parsed.payee})` : "",
+      });
+    } else {
+      // Non-UPI QR — still show form so user can log it
+      setForm({
+        amount: "",
+        source: "Other Miscellaneous",
+        date: formatDateToString(new Date()),
+        description: "QR Scan Payment",
+        note: data.length < 120 ? data : "",
+      });
+    }
+
+    if (navigator.vibrate) navigator.vibrate(100);
+    setShowPopup(true);
   };
-  
-  // Function to directly redirect to default UPI app
-  const handleDirectUpiPayment = async (upiData, details) => {
+
+  // ─── Confirm: Save expense + redirect ─────────────────────
+  const handleConfirm = async () => {
+    if (!form.amount || !form.source || !form.description) {
+      setError("Please fill in Amount, Category, and Description.");
+      return;
+    }
+
     try {
       setIsProcessing(true);
-      
-      // First save the expense data
-      await api.post("/api/expenses", details);
-      
-      // Then redirect immediately to default UPI app
-      const encodedUpiData = encodeURIComponent(upiData);
-      
-      // Determine platform and redirect accordingly
-      if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = `intent://${upiData}#Intent;scheme=upi;end`;
-      } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        window.location.href = `upi://${encodedUpiData}`;
-      } else {
-        // Fallback for desktop or unsupported devices
-        window.location.href = upiData;
-      }
-      
-    } catch (err) {
-      setError(err.response?.data?.message || err.message || "Failed to process payment");
-      
-      // Reset scanning if there's an error
+      setError(null);
+
+      await api.post("/api/expenses", {
+        ...form,
+        date: new Date(form.date),
+      });
+
+      setSuccess(true);
+
+      // Redirect to UPI app after short delay for visual feedback
       setTimeout(() => {
-        handleReset();
-      }, 2000);
+        if (isUpi && scannedUpiRaw) {
+          const ua = navigator.userAgent;
+          if (/Android/i.test(ua)) {
+            window.location.href = scannedUpiRaw.startsWith("upi://")
+              ? scannedUpiRaw
+              : `upi://pay?${scannedUpiRaw}`;
+          } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            window.location.href = scannedUpiRaw.startsWith("upi://")
+              ? scannedUpiRaw
+              : `upi://pay?${scannedUpiRaw}`;
+          } else {
+            navigate("/expenses");
+          }
+        } else {
+          navigate("/expenses");
+        }
+      }, 800);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to save expense.");
+      setIsProcessing(false);
     }
   };
 
-  const handleReset = () => {
-    setQrData(null);
-    setIsUpiQr(false);
+  // ─── Cancel popup, resume scanning ────────────────────────
+  const handleCancel = () => {
+    setShowPopup(false);
+    setSuccess(false);
+    setIsProcessing(false);
     setError(null);
-    setExpenseDetails({
-      amount: "",
-      source: "Other Miscellaneous",
-      description: "Payment via QR Scan",
-      date: new Date().toISOString().split("T")[0]
-    });
-    
-    // Add a small delay before restarting camera
-    setTimeout(() => {
+    // Resume QR scanner
+    if (qrScannerRef.current) {
+      qrScannerRef.current.start().catch(() => startCamera());
+    } else {
       startCamera();
-    }, 300);
+    }
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
-    // Start camera immediately when component mounts
     startCamera();
-    
-    // Clean up resources when component unmounts
-    return () => {
-      stopCamera();
-    };
+    return () => stopCamera();
   }, []);
 
+  // ─── UI ───────────────────────────────────────────────────
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-[#0a0a0a]">
       <div className="w-full max-w-md flex flex-col h-[100vh] relative overflow-hidden">
-        {/* Camera View */}
-        <div className="relative flex-grow bg-black">
-          <video 
-            ref={videoRef} 
-            className="w-full h-full object-cover" 
-            playsInline 
-          />
 
-          {isCameraActive && !qrData && (
+        {/* ── Camera View ── */}
+        <div className="relative flex-grow bg-black">
+          <video ref={videoRef} className="w-full h-full object-cover" playsInline />
+
+          {/* Scan frame overlay */}
+          {isCameraActive && !showPopup && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative w-72 h-72">
-                {/* Frame for scanning */}
-                <div className="w-72 h-72 border-2 border-white/70 rounded-lg">
-                  <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-blue-500 rounded-tl-lg"></div>
-                  <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-blue-500 rounded-tr-lg"></div>
-                  <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-blue-500 rounded-bl-lg"></div>
-                  <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-blue-500 rounded-br-lg"></div>
-                </div>
-                
-                {/* Animated scan line - moves from top to bottom */}
-                <div 
-                  className="absolute left-0 right-0 h-0.5 bg-blue-500 animate-bounce"
-                  style={{ animation: "scanLine 2s ease-in-out infinite", top: "50%" }}
-                ></div>
+                <div className="w-72 h-72 border-2 border-white/30 rounded-2xl" />
+                <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-blue-400 rounded-tl-2xl" />
+                <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-blue-400 rounded-tr-2xl" />
+                <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-blue-400 rounded-bl-2xl" />
+                <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-blue-400 rounded-br-2xl" />
+                {/* Scan line */}
+                <div
+                  className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full"
+                  style={{ animation: "scanLine 2s ease-in-out infinite" }}
+                />
               </div>
             </div>
           )}
 
-          {/* Top Navigation Bar */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent">
-            <div className="text-white font-semibold flex items-center space-x-2">
+          {/* Top bar */}
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-10 pb-6 bg-gradient-to-b from-black/80 to-transparent">
+            <div className="text-white font-semibold flex items-center gap-2">
               <Camera className="w-5 h-5" />
               <span>Scan & Pay</span>
             </div>
-            
             <button
-              onClick={() => {
-                stopCamera();
-                navigate("/");
-              }}
+              onClick={() => { stopCamera(); navigate("/"); }}
               className="p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Bottom flash message */}
-          {isCameraActive && !qrData && !error && (
-            <div className="absolute bottom-20 left-4 right-4 bg-black/70 text-white py-2 px-4 rounded-full text-center text-sm animate-pulse">
-              Point camera at any QR code
+          {/* Bottom hint */}
+          {isCameraActive && !showPopup && !error && (
+            <div className="absolute bottom-8 left-4 right-4 bg-black/60 backdrop-blur-sm text-white py-2 px-4 rounded-full text-center text-sm">
+              Point camera at any QR code to scan
             </div>
           )}
         </div>
 
-        {/* Status Messages */}
-        {error && (
-          <div className="fixed top-16 left-0 right-0 mx-4 p-3 rounded-xl flex items-center gap-2 bg-red-50 text-red-600 dark:bg-red-900/20 z-50">
+        {/* ── Error Banner ── */}
+        {error && !showPopup && (
+          <div className="fixed top-16 left-0 right-0 mx-4 p-3 rounded-xl flex items-center gap-2 bg-red-50 text-red-600 dark:bg-red-900/20 z-50 shadow">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <p className="text-sm font-medium">{error}</p>
           </div>
         )}
-        
-        {isProcessing && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl max-w-xs w-full text-center">
-              <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-              <p className="text-gray-800 dark:text-white font-medium">Processing payment...</p>
+
+        {/* ── Popup / Bottom Sheet ── */}
+        {showPopup && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={!isProcessing ? handleCancel : undefined} />
+
+            {/* Sheet */}
+            <div className="relative w-full max-w-md bg-white dark:bg-[#111] rounded-t-3xl shadow-2xl max-h-[92vh] overflow-y-auto">
+
+              {/* Handle */}
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+              </div>
+
+              {/* Header */}
+              <div className="px-5 pt-2 pb-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                    {isUpi ? "💳 UPI Payment Scanned" : "🔲 QR Code Scanned"}
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    {isUpi
+                      ? "Review and confirm to pay & log expense"
+                      : "Fill in details to log this expense"}
+                  </p>
+                </div>
+                {!isProcessing && (
+                  <button onClick={handleCancel} className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10">
+                    <X className="w-5 h-5 text-gray-500 dark:text-gray-300" />
+                  </button>
+                )}
+              </div>
+
+              {/* Success state */}
+              {success ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-3">
+                  <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  </div>
+                  <p className="text-green-600 dark:text-green-400 font-semibold">Expense saved!</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {isUpi ? "Redirecting to your UPI app..." : "Redirecting to Expenses..."}
+                  </p>
+                </div>
+              ) : (
+                <div className="px-5 py-4 space-y-4">
+
+                  {/* Amount */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                      <IndianRupee className="w-3.5 h-3.5" /> Amount *
+                    </label>
+                    <input
+                      name="amount"
+                      type="number"
+                      value={form.amount}
+                      onChange={handleFormChange}
+                      placeholder="0.00"
+                      min="0"
+                      step="0.01"
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  {/* Category */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5" /> Category *
+                    </label>
+                    <select
+                      name="source"
+                      value={form.source}
+                      onChange={handleFormChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                    >
+                      <option value="">Select Category</option>
+                      {EXPENSE_CATEGORIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.icon} {c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5" /> Description *
+                    </label>
+                    <input
+                      name="description"
+                      type="text"
+                      value={form.description}
+                      onChange={handleFormChange}
+                      placeholder="What is this expense for?"
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  {/* Date */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" /> Date
+                    </label>
+                    <input
+                      name="date"
+                      type="date"
+                      value={form.date}
+                      onChange={handleFormChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  {/* Note */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                      <StickyNote className="w-3.5 h-3.5" /> Note <span className="normal-case font-normal">(optional)</span>
+                    </label>
+                    <textarea
+                      name="note"
+                      value={form.note}
+                      onChange={handleFormChange}
+                      placeholder="Add any additional details..."
+                      rows={2}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    />
+                  </div>
+
+                  {/* Error in popup */}
+                  {error && (
+                    <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600 dark:text-red-400 text-sm">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-2 pb-2">
+                    <button
+                      onClick={handleCancel}
+                      disabled={isProcessing}
+                      className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-semibold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleConfirm}
+                      disabled={isProcessing}
+                      className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                    >
+                      {isProcessing ? (
+                        <><Loader className="w-4 h-4 animate-spin" /> Saving...</>
+                      ) : isUpi ? (
+                        "💳 Pay & Save"
+                      ) : (
+                        "✅ Save Expense"
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
-        
-        {/* Add keyframe animation in regular CSS */}
+
+        {/* Scan line animation */}
         <style dangerouslySetInnerHTML={{
           __html: `
             @keyframes scanLine {
-              0% { top: 0; }
-              50% { top: 100%; }
-              100% { top: 0; }
+              0%   { top: 5%; opacity: 0; }
+              10%  { opacity: 1; }
+              90%  { opacity: 1; }
+              100% { top: 95%; opacity: 0; }
             }
           `
         }} />
