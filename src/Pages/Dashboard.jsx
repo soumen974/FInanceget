@@ -13,6 +13,7 @@ import RecommendedTools from "../affiliates/RecommendedTools";
 import Streaks from "./Components/Dashboard/Streaks";
 import { Helmet } from 'react-helmet';
 import DashboardIMG from "../meta/imgs/Dashboard.png";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 
 export default function Dashboard() {
@@ -36,6 +37,37 @@ export default function Dashboard() {
 
   useEffect(() => {
     getStreaks();
+  }, []);
+
+  // Calculate daily expenses for the current month only
+  const dailyExpenseData = useMemo(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const dailyMap = Array.from({ length: daysInMonth }, (_, idx) => ({
+      day: `${idx + 1}`,
+      amount: 0
+    }));
+
+    if (Array.isArray(expenseData)) {
+      expenseData.forEach(expense => {
+        const expDate = new Date(expense.date);
+        if (expDate.getFullYear() === currentYear && expDate.getMonth() === currentMonth) {
+          const dayNum = expDate.getDate();
+          if (dayNum >= 1 && dayNum <= daysInMonth) {
+            dailyMap[dayNum - 1].amount += expense.amount;
+          }
+        }
+      });
+    }
+
+    return dailyMap;
+  }, [expenseData]);
+
+  const currentMonthName = useMemo(() => {
+    return new Date().toLocaleString('default', { month: 'long' });
   }, []);
 
   const totalNetSavingsPerYear = useMemo(() =>
@@ -131,6 +163,86 @@ export default function Dashboard() {
           type="expense"
           icon={<TrendingDown className="dark:text-gray-300" />}
         />
+      </div>
+
+      {/* Daily Expense Trend Chart */}
+      <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] p-4 sm:p-6 mb-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex flex-wrap gap-2 justify-between items-start mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Activity className="h-5 w-5 text-red-500" />
+              {currentMonthName} Daily Expense Trend
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Daily spending breakdown for the current month
+            </p>
+          </div>
+          <div className="text-right">
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Total Month Expenses
+            </span>
+            <p className="text-lg font-bold text-red-600 dark:text-red-500">
+              {formatCurrency(totalExpenseForCurrentMonth)}
+            </p>
+          </div>
+        </div>
+
+        <div className="h-[250px] sm:h-[300px] w-full">
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500" />
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={dailyExpenseData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-gray-100 dark:stroke-[#ffffff10]" />
+                <XAxis 
+                  dataKey="day" 
+                  tickLine={false} 
+                  axisLine={false}
+                  dy={10}
+                  tick={{ fill: '#888888', fontSize: 11 }}
+                />
+                <YAxis 
+                  tickLine={false} 
+                  axisLine={false}
+                  dx={-5}
+                  tick={{ fill: '#888888', fontSize: 11 }}
+                  tickFormatter={(val) => formatCurrency(val).replace('₹', '')}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    color: '#334155',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
+                  formatter={(value) => [formatCurrency(value), 'Expense']}
+                  labelFormatter={(label) => `Day ${label}`}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="amount" 
+                  stroke="#ef4444" 
+                  strokeWidth={2}
+                  fillOpacity={1} 
+                  fill="url(#colorExpense)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
 
       {/* Monetization: Affiliate Links - Enhanced styling */}
