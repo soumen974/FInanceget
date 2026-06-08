@@ -66,7 +66,7 @@ export default function Dashboard() {
   return (
     <>
     <Helmet>
-        <title>FinanceGet ~ {name}'s ' Dashboard</title>
+        <title>FinanceGet ~ {name}'s Dashboard</title>
       <meta property="og:title" content="FinanceGet" />
       <meta
         property="og:description"

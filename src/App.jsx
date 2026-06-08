@@ -1,3 +1,5 @@
+import './apm';
+
 import React ,{useState,createContext, useContext} from 'react';
 import { BrowserRouter as Router, Routes, Route , Navigate,useLocation } from 'react-router-dom';
 import Layout from "./Components/Layout";
@@ -151,7 +153,7 @@ const App = () => {
             <Route path="/goal" element={<Goals />} />
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/scanner" element={<Scanner />} />
-            {userType==='admin'&& <Route path="/Users" element={<Users />} />}
+            {userType==='admin'&& <Route path="/users" element={<Users />} />}
 
 
             <Route path='*' element={

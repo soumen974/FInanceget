@@ -27,9 +27,16 @@ const formatDateToString = (date) => {
 
 const parseUpiQrData = (data) => {
   try {
-    const params = data.startsWith("upi://")
-      ? new URLSearchParams(new URL(data).search)
-      : new URLSearchParams(data);
+    let queryString = "";
+    if (data.startsWith("upi://")) {
+      const qIndex = data.indexOf("?");
+      if (qIndex !== -1) {
+        queryString = data.substring(qIndex + 1);
+      }
+    } else {
+      queryString = data;
+    }
+    const params = new URLSearchParams(queryString);
     return {
       payee: params.get("pa") || "",
       payeeName: params.get("pn") || "",
@@ -38,6 +45,40 @@ const parseUpiQrData = (data) => {
     };
   } catch {
     return { payee: "", payeeName: "", amount: "", description: "UPI Payment" };
+  }
+};
+
+const buildUpiUrl = (rawScanData, amount, description) => {
+  try {
+    let queryString = "";
+    if (rawScanData.startsWith("upi://")) {
+      const qIndex = rawScanData.indexOf("?");
+      if (qIndex !== -1) {
+        queryString = rawScanData.substring(qIndex + 1);
+      }
+    } else {
+      queryString = rawScanData;
+    }
+
+    const params = new URLSearchParams(queryString);
+    
+    if (amount) {
+      const formattedAmount = parseFloat(amount).toFixed(2);
+      params.set("am", formattedAmount);
+    }
+    
+    if (description) {
+      params.set("tn", description);
+    }
+    
+    if (!params.has("cu")) {
+      params.set("cu", "INR");
+    }
+
+    return `upi://pay?${params.toString()}`;
+  } catch (e) {
+    console.error("Error building UPI URL:", e);
+    return rawScanData.startsWith("upi://") ? rawScanData : `upi://pay?${rawScanData}`;
   }
 };
 
@@ -183,9 +224,7 @@ const Scanner = () => {
 
         // Small delay so listener is attached before tab hides
         setTimeout(() => {
-          const upiUrl = scannedUpiRaw.startsWith("upi://")
-            ? scannedUpiRaw
-            : `upi://pay?${scannedUpiRaw}`;
+          const upiUrl = buildUpiUrl(scannedUpiRaw, form.amount, form.description);
           window.location.href = upiUrl;
         }, 300);
       } else {

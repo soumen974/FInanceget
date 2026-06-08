@@ -26,6 +26,12 @@ export function ReportsData() {
     } catch (error) {
       setError('Error fetching transaction data');
       console.warn('Warning:', error.message);
+      setTransactionData([]);
+      setLifeTimeballence({
+        totalBalance: 0,
+        totalIncome: 0,
+        totalExpense: 0
+      });
     } finally {
       setLoadingReport(false);
     }

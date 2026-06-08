@@ -658,10 +658,15 @@ const PersonalizedBudgetAllocationForm = ({
       setIsExistingBudget(!!budget.allocations && Object.values(budget.allocations).some(val => val > 0));
       if (budget.allocations) setFinanceRule('Personalized');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || err.message || 'Failed to fetch budget';
-      setApiError(errorMsg);
-      setFormData(budgetPercentages13rd); // Fallback to parent data
-      setIsExistingBudget(false);
+      if (err.response?.status === 404) {
+        setFormData(budgetPercentages13rd);
+        setIsExistingBudget(false);
+      } else {
+        const errorMsg = err.response?.data?.error || err.message || 'Failed to fetch budget';
+        setApiError(errorMsg);
+        setFormData(budgetPercentages13rd); // Fallback to parent data
+        setIsExistingBudget(false);
+      }
     } finally {
       setLoading(false);
     }

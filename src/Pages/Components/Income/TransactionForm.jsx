@@ -3,7 +3,7 @@ import { api } from "../../../AxiosMeta/ApiAxios";
 import { ArrowUpCircle, ArrowDownCircle, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
 import { ReceiptIndianRupee } from "lucide-react";
 
-export default function TransactionForm({ type, setAction, action, editId, setEditId }) {
+export default function TransactionForm({ type, setAction, action, editId, setEditId, onUpdate }) {
   const categories = type === 'income' ? [
     { id: 1, name: 'Salary', icon: '💰' },
     { id: 2, name: 'Freelance', icon: '💻' },
@@ -70,12 +70,14 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           setMessage('Income added successfully');
           emptyForm();
           setAction('add');
+          if (onUpdate) onUpdate(updFormData);
         } else {
           await api.put(`/api/income/${editId}`, updFormData);
           setMessage('Income updated successfully');
           emptyForm();
           setAction('update');
           setEditId(null);
+          if (onUpdate) onUpdate(updFormData);
         }
       } else if (type === 'expense') {
         if (!editId) {
@@ -83,12 +85,14 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
           setMessage('Expense added successfully');
           emptyForm();
           setAction('add');
+          if (onUpdate) onUpdate(updFormData);
         } else {
           await api.put(`/api/expenses/${editId}`, updFormData);
           setMessage('Expense updated successfully');
           emptyForm();
           setAction('update');
           setEditId(null);
+          if (onUpdate) onUpdate(updFormData);
         }
       }
     } catch (err) {

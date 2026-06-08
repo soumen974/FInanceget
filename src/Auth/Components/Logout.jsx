@@ -8,12 +8,13 @@ export default function Logout() {
     const handleLogout = async () =>{
         try{
             const response = await api.post('/api/auth/logout');
-            // console.log(response.data);
-            window.location.href='/';
+            localStorage.removeItem('authData');
             localStorage.removeItem('rememberedEmail');
+            window.location.href='/';
         }catch(err){
-            // console.log(err.response?.data || err.message || 'Something went wrong');
+            localStorage.removeItem('authData');
+            window.location.href='/';
         }
     }
-  return { handleLogout , loading, error, message, loading };
+  return { handleLogout , loading, error, message };
 }

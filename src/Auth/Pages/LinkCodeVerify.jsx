@@ -47,7 +47,7 @@ const LinkCodeVerify = () => {
         return;
       }
 
-      setEmail(decodeURIComponent(emailParam));
+      setEmail(emailParam);
       setCode(codeParam);
       return { email: emailParam, code: codeParam };
     };
@@ -55,7 +55,7 @@ const LinkCodeVerify = () => {
     const verifyEmailCode = async (emailParam, codeParam) => {
       try {
         const response = await api.post('/api/auth/verifyEmail', { 
-          email: decodeURIComponent(emailParam), 
+          email: emailParam, 
           code: codeParam 
         });
         setMessage(response?.data);
