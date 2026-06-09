@@ -15,6 +15,7 @@ export function authCheck() {
   const [loading, setLoading] = useState(false);
   const [auth, setAuth] = useState(false);
   const [userType, setUserType] = useState('user');
+  const [isImpersonated, setIsImpersonated] = useState(false);
   const [isAction, setIsAction] = useState('');
 
   
@@ -50,6 +51,7 @@ export function authCheck() {
         setUserEmail(decodedData.email || '');
         setUserType(decodedData.userType || 'user');
         setUpdated_at(decodedData.updated_at || '');
+        setIsImpersonated(decodedData.isImpersonated || false);
 
         // ✅ SET APM USER EARLY (FIX)
         setApmUser(decodedData);
@@ -78,11 +80,13 @@ export function authCheck() {
         email: response.data.email || '',
         userType,
         name,
-        updated_at
+        updated_at,
+        isImpersonated: response.data.isImpersonated || false
       };
 
       setMessage(response.data.message || 'Authenticated');
       setUserEmail(authData.email);
+      setIsImpersonated(authData.isImpersonated);
       setAuth(true);
 
       localStorage.setItem('authData', encodeData(authData));
@@ -113,12 +117,14 @@ export function authCheck() {
         email: response.data.email || '',
         userType: response.data.type || 'user',
         updated_at: response.data.updated_at || '',
+        isImpersonated: response.data.isImpersonated || false
       };
 
       setName(profileData.name);
       setUserEmail(profileData.email);
       setUserType(profileData.userType);
       setUpdated_at(profileData.updated_at);
+      setIsImpersonated(profileData.isImpersonated);
       setMessage(response.data.message || 'Profile fetched');
       setAuth(true);
 
@@ -145,6 +151,7 @@ export function authCheck() {
         setUserEmail(decodedData.email);
         setUserType(decodedData.userType);
         setUpdated_at(decodedData.updated_at);
+        setIsImpersonated(decodedData.isImpersonated || false);
         setAuth(true);
 
         // ✅ IMPORTANT (again)
@@ -177,6 +184,7 @@ export function authCheck() {
     name,
     userEmail,
     userType,
+    isImpersonated,
     setIsAction,
     updated_at
   };

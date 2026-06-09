@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from "../../AxiosMeta/ApiAxios";
-import { Users, Shield, Crown, Trash2, Edit2, MoreVertical, X, TriangleAlert, UserMinus } from 'lucide-react';
+import { Users, Shield, Crown, Trash2, Edit2, MoreVertical, X, TriangleAlert, UserMinus, User, Search, LogIn } from 'lucide-react';
+import { authCheck } from "../../Auth/Components/ProtectedCheck";
 
 const Popupbox = ({ title, loading, hidePopup, setHidePopup, taskFunction, userId }) => (
   <>
@@ -41,6 +42,7 @@ const Popupbox = ({ title, loading, hidePopup, setHidePopup, taskFunction, userI
 );
 
 const AdminUsers = () => {
+  const { userEmail: currentAdminEmail } = authCheck();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -53,14 +55,27 @@ const AdminUsers = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [userCounts, setUserCounts] = useState({ admin: 0, premium: 0, standard: 0 });
+  const [searchVal, setSearchVal] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const menuRef = useRef(null);
 
-  // Fetch users based on current page
+  // Debounce search input
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setSearchQuery(searchVal);
+      setCurrentPage(1); // reset to page 1 on new search query
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchVal]);
+
+  // Fetch users based on current page, sortBy, and searchQuery
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/api/users?page=${currentPage}`);
+        const response = await api.get(
+          `/api/users?page=${currentPage}&sortBy=${sortBy}&search=${searchQuery}`
+        );
         setUsers(response.data.users || []); // Directly set users from backend
         setTotalUsers(response.data.pagination.totalUsers || 0);
         setTotalPages(response.data.pagination.totalPages || 0);
@@ -74,7 +89,7 @@ const AdminUsers = () => {
       }
     };
     fetchUsers();
-  }, [currentPage]); // Only re-fetch when currentPage changes
+  }, [currentPage, sortBy, searchQuery]); // Re-fetch on pagination, sorting, or search query change
 
   // Handle outside click to close menu
   useEffect(() => {
@@ -144,6 +159,18 @@ const AdminUsers = () => {
     }
   };
 
+  const handleImpersonate = async (id) => {
+    setLoading(true);
+    try {
+      await api.post(`/api/users/${id}/impersonate`);
+      localStorage.removeItem('authData');
+      window.location.href = '/';
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to login as user');
+      setLoading(false);
+    }
+  };
+
   const handleDeleteConfirm = async (id) => {
     setLoading(true);
     try {
@@ -201,8 +228,8 @@ const AdminUsers = () => {
         </p>
       </div>
 
-      {/* Sorting Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      {/* Sorting & Search */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex gap-2">
           <button
             onClick={() => setSortBy('date')}
@@ -218,6 +245,28 @@ const AdminUsers = () => {
           >
             Sort by Type
           </button>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative w-full md:w-72">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 dark:text-gray-500">
+            <Search size={18} />
+          </span>
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchVal}
+            onChange={(e) => setSearchVal(e.target.value)}
+            className="pl-10 pr-10 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-[#ffffff24] dark:bg-[#0a0a0a] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-white text-gray-900"
+          />
+          {searchVal && (
+            <button
+              onClick={() => setSearchVal('')}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -272,6 +321,15 @@ const AdminUsers = () => {
                       ref={menuRef}
                       className="absolute right-0 top-8 w-40 rounded-lg shadow-lg py-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-[#ffffff24] z-10 transition-all duration-150 ease-out transform origin-top-right scale-95 animate-in"
                     >
+                      {user.email !== currentAdminEmail && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleImpersonate(user._id); }}
+                          className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-600 dark:hover:bg-opacity-10 transition-all duration-150"
+                        >
+                          <LogIn size={16} className="shrink-0" />
+                          <span>Login as User</span>
+                        </button>
+                      )}
                       {user.type !== 'admin' && (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleMakeAdmin(user._id); }}
@@ -345,7 +403,7 @@ const AdminUsers = () => {
               </div>
               <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                 {Object.entries(selectedUser).map(([key, value]) => (
-                  <div key={key} className="flex justify-between">
+                  <div key={key} className="flex justify-between border-b border-gray-100 dark:border-[#ffffff09] pb-2">
                     <span className="font-medium capitalize">{key.replace('_', ' ')}:</span>
                     <span className="truncate max-w-[60%]">
                       {key === 'created_at' || key === 'last_login' 
@@ -354,6 +412,23 @@ const AdminUsers = () => {
                     </span>
                   </div>
                 ))}
+              </div>
+              <div className="mt-6 flex justify-end gap-3 border-t border-gray-100 dark:border-[#ffffff13] pt-4">
+                {selectedUser.email !== currentAdminEmail && (
+                  <button
+                    onClick={() => handleImpersonate(selectedUser._id)}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-150"
+                  >
+                    <LogIn size={16} />
+                    <span>Login as User</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleCloseDetails}
+                  className="px-4 py-2 border border-gray-300 dark:border-[#ffffff24] dark:text-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-[#ffffff17] transition-all duration-150"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </>

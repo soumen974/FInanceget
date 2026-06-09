@@ -5,8 +5,12 @@ import { useState ,useRef,useEffect} from 'react';
 import {useDarkMode } from '../theam/TheamColorsStyle'
 import { Link } from 'react-router-dom';
 import { Wallet,QrCode,ArrowUpCircle,ArrowDownCircle} from "lucide-react";
+import { authCheck } from '../Auth/Components/ProtectedCheck';
+import { api } from '../AxiosMeta/ApiAxios';
 
 const Layout = () => {
+  const { isImpersonated, userEmail } = authCheck();
+  const [exiting, setExiting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
         return localStorage.getItem('isCollapsed') === 'true';
   });
@@ -14,6 +18,19 @@ const Layout = () => {
   const {darkMode}  = useDarkMode() ;
   const [isballOpen, setballOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const handleExitImpersonation = async () => {
+    setExiting(true);
+    try {
+      await api.post('/api/users/impersonate/exit');
+      localStorage.removeItem('authData');
+      window.location.href = '/users';
+    } catch (err) {
+      console.error('Failed to exit impersonation:', err);
+      alert('Failed to return to admin session');
+      setExiting(false);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -26,13 +43,29 @@ const Layout = () => {
   }, []);
 
   return (
-    <div className={`flex min-h-screen dark:bg-[#0a0a0a] bg-white transition-all duration-300`}>
-      <div className="">
-        <Navigation setIsCollapsed={setIsCollapsed} isCollapsed={isCollapsed} />
-      </div>
-       
-      <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-[14rem]'}`}>
-      <Headder/>
+    <div className="flex flex-col min-h-screen">
+      {isImpersonated && (
+        <div className="bg-amber-600 dark:bg-amber-700 text-white text-sm px-4 py-2.5 flex items-center justify-between gap-4 sticky top-0 z-50 shadow-md">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">⚠️ Impersonation Mode:</span>
+            <span>You are viewing the account of <strong className="underline">{userEmail}</strong></span>
+          </div>
+          <button
+            onClick={handleExitImpersonation}
+            disabled={exiting}
+            className="bg-white hover:bg-gray-100 text-amber-900 font-semibold px-3 py-1 rounded text-xs transition-colors duration-150 shadow"
+          >
+            {exiting ? 'Returning...' : 'Return to Admin'}
+          </button>
+        </div>
+      )}
+      <div className={`flex min-h-screen dark:bg-[#0a0a0a] bg-white transition-all duration-300`}>
+        <div className="">
+          <Navigation setIsCollapsed={setIsCollapsed} isCollapsed={isCollapsed} />
+        </div>
+         
+        <main className={`flex-1 transition-all duration-300 ${isCollapsed ? 'lg:ml-20' : 'lg:ml-[14rem]'}`}>
+        <Headder/>
       <div className="   max-lg:pt-[5rem] mx-3 md:mx-5 lg:mt-6">
         <Outlet />
 
@@ -82,6 +115,7 @@ const Layout = () => {
     </footer>
       
       </main>
+    </div>
     </div>
   );
 };
