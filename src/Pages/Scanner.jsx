@@ -216,7 +216,12 @@ const Scanner = () => {
       });
 
       // Store the saved expense ID so we can delete it if payment fails
-      savedExpenseIdRef.current = response.data?._id || response.data?.id || null;
+      savedExpenseIdRef.current =
+        response.data?._id ||
+        response.data?.id ||
+        response.data?.expense?._id ||
+        response.data?.expense?.id ||
+        null;
 
       if (isUpi && scannedUpiRaw) {
         // Register visibilitychange listener BEFORE opening UPI app

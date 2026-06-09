@@ -223,8 +223,11 @@ const Reports = () => {
                        data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
-                        <YAxis stroke="#6B7280" />
-                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+                        <YAxis stroke="#6B7280" tickFormatter={(val) => formatCurrency(val)} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
+                          formatter={(value, name) => [formatCurrency(value), name === 'Net_Savings' ? 'Net Savings' : name.charAt(0).toUpperCase() + name.slice(1)]}
+                        />
                         <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
                         {reportType === 'whole' && (
                           <>
@@ -246,8 +249,11 @@ const Reports = () => {
                       }} data={TransactionData.length === 0 ? DemoTransactionData : TransactionData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
-                        <YAxis stroke="#6B7280" />
-                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+                        <YAxis stroke="#6B7280" tickFormatter={(val) => formatCurrency(val)} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
+                          formatter={(value, name) => [formatCurrency(value), name === 'Net_Savings' ? 'Net Savings' : name.charAt(0).toUpperCase() + name.slice(1)]}
+                        />
                         <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
                         {reportType === 'whole' && (
                           <>
@@ -341,7 +347,7 @@ const Reports = () => {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip />
+                        <Tooltip formatter={(value) => [formatCurrency(value)]} />
                       </RechartsPieChart>
                     ) : (
                       <BarChart
@@ -354,8 +360,11 @@ const Reports = () => {
                        data={Data}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                         <XAxis dataKey="name" stroke="#6B7280" />
-                        <YAxis stroke="#6B7280" />
-                        <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+                        <YAxis stroke="#6B7280" tickFormatter={(val) => formatCurrency(val)} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px' }}
+                          formatter={(value) => [formatCurrency(value)]}
+                        />
                         <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
                         <Bar dataKey="value" fill="#8884d8">
                           {Data.map((_, index) => (
