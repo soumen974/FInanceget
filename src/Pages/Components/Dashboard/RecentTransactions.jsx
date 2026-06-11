@@ -60,7 +60,9 @@ export default function RecentTransactions({ allTransactions, incomeData, expens
                   <div>
                     <p className="font-medium text-gray-900 dark:text-gray-100 max-md:truncate max-md:w-[5.7rem]">{transaction.description}</p>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-500 dark:text-gray-500 max-md:truncate max-md:w-[5.7rem]">{transaction.source}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-500 max-md:truncate max-md:w-[5.7rem]">
+                        {transaction.source || transaction.category}
+                      </span>
                       <span className="text-gray-300 dark:text-gray-700">•</span>
                       <div className="flex items-center  text-sm text-gray-500 dark:text-gray-500">
                         <Calendar className="w-4  h-4 mr-1 dark:text-gray-600 " />

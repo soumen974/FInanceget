@@ -3,7 +3,7 @@ import {
   DollarSign, PieChart, Edit2, Trash2, AlertCircle, CheckCircle, X,
   Coffee, Home, Smartphone, Users,Book, Gift, Shield, Sun, TrendingUp
 } from 'react-feather';
-import { Car, Crown, Twitter,LightbulbIcon, Percent, HeartHandshake, Lightbulb, Utensils, Tv, Package, BookOpen, PiggyBank } from "lucide-react";
+import { Car, Crown, Twitter,LightbulbIcon, Percent, HeartHandshake, Lightbulb, Utensils, Tv, Package, BookOpen, PiggyBank, ShoppingCart } from "lucide-react";
 import { ReportsData } from './Components/Reports/ReportsData';
 import { useGlobalTransactionData } from "../Pages/Components/Income/TransactionList";
 import { formatCurrency } from "./Components/Income/formatCurrency";
@@ -44,8 +44,10 @@ const Budget = () => {
   const budgetPercentages523 = {
     Needs: 50,
     Housing: 20,
-    Utilities: 5,
-    FoodAndDining: 10,
+    Utilities: 3,
+    Recharge: 2,
+    FoodAndDining: 5,
+    Grocery: 5,
     Healthcare: 5,
     Transportation: 5,
     Insurance: 5,
@@ -64,6 +66,8 @@ const Budget = () => {
     Healthcare: 0,
     Transportation: 0,
     Insurance: 0,
+    Grocery: 0,
+    Recharge: 0,
     Wants: 0,
     Entertainment: 0,
     OtherMiscellaneous: 0,
@@ -133,10 +137,12 @@ const Budget = () => {
     { id: 4, name: 'Healthcare', icon: <HeartHandshake />, percentageKey: 'Healthcare', type: 'Needs' },
     { id: 5, name: 'Transportation', icon: <Car />, percentageKey: 'Transportation', type: 'Needs' },
     { id: 6, name: 'Insurance', icon: <Shield />, percentageKey: 'Insurance', type: 'Needs' },
-    { id: 7, name: 'Entertainment', icon: <Tv />, percentageKey: 'Entertainment', type: 'Wants' },
-    { id: 8, name: 'Other Miscellaneous', icon: <Package />, percentageKey: 'OtherMiscellaneous', type: 'Wants' },
-    { id: 9, name: 'Education', icon: <BookOpen />, percentageKey: 'Education', type: 'Wants' },
-    { id: 10, name: 'Savings/Investments', icon: <TrendingUp />, percentageKey: 'SavingsInvestments', type: 'Investments' }
+    { id: 7, name: 'Grocery', icon: <ShoppingCart />, percentageKey: 'Grocery', type: 'Needs' },
+    { id: 8, name: 'Recharge', icon: <Smartphone />, percentageKey: 'Recharge', type: 'Needs' },
+    { id: 9, name: 'Entertainment', icon: <Tv />, percentageKey: 'Entertainment', type: 'Wants' },
+    { id: 10, name: 'Other Miscellaneous', icon: <Package />, percentageKey: 'OtherMiscellaneous', type: 'Wants' },
+    { id: 11, name: 'Education', icon: <BookOpen />, percentageKey: 'Education', type: 'Wants' },
+    { id: 12, name: 'Savings/Investments', icon: <TrendingUp />, percentageKey: 'SavingsInvestments', type: 'Investments' }
   ];
 
   const budgetPercentages = financeRule === '50/30/20' ? budgetPercentages523 : budgetPercentages13rd;
@@ -471,6 +477,8 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
         { name: 'Healthcare', icon: <HeartHandshake size={16} />, key: 'Healthcare' },
         { name: 'Transportation', icon: <Car size={16} />, key: 'Transportation' },
         { name: 'Insurance', icon: <Shield size={16} />, key: 'Insurance' },
+        { name: 'Grocery', icon: <ShoppingCart size={16} />, key: 'Grocery' },
+        { name: 'Recharge', icon: <Smartphone size={16} />, key: 'Recharge' },
       ],
     },
     {
@@ -577,10 +585,10 @@ const BudgetCategory = ({ title, percentage, children, error }) => (
 );
 
 // BudgetInput Component
-const BudgetInput = ({ label, emoji, name, value, onChange, error, disabled, max }) => (
+const BudgetInput = ({ label, icon: Icon, name, value, onChange, error, disabled, max }) => (
   <div className="relative">
-    <label className="block text-xs text-gray-700 dark:text-gray-300 mb-1">
-      <span className="mr-1">{emoji}</span>
+    <label className="block text-xs text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1.5">
+      {Icon && <Icon size={14} className="text-gray-500 dark:text-gray-400" />}
       {label}
     </label>
     <span className="absolute right-2 top-[60%] -translate-y-1/2">
@@ -624,6 +632,8 @@ const PersonalizedBudgetAllocationForm = ({
     Healthcare: 0,
     Transportation: 0,
     Insurance: 0,
+    Grocery: 0,
+    Recharge: 0,
     Wants: 0,
     Entertainment: 0,
     OtherMiscellaneous: 0,
@@ -700,7 +710,7 @@ const PersonalizedBudgetAllocationForm = ({
       newErrors.total = `Main categories must total 100% (Current: ${mainTotal.toFixed(2)}%)`;
     }
 
-    const needsSubcategories = ['Housing', 'Utilities', 'FoodAndDining', 'Healthcare', 'Transportation', 'Insurance'];
+    const needsSubcategories = ['Housing', 'Utilities', 'FoodAndDining', 'Healthcare', 'Transportation', 'Insurance', 'Grocery', 'Recharge'];
     const wantsSubcategories = ['Entertainment', 'OtherMiscellaneous', 'Education'];
 
     const needsSubTotal = needsSubcategories.reduce((sum, key) => sum + (formData[key] || 0), 0);
@@ -811,34 +821,38 @@ const PersonalizedBudgetAllocationForm = ({
             <div className="space-y-6">
               {/* Needs Section */}
               <BudgetCategory title="Needs" percentage={formData.Needs} error={errors.needsSub}>
-                <BudgetInput label="Needs" emoji="" name="Needs" value={formData.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} max="100" />
+                <BudgetInput label="Needs" icon={null} name="Needs" value={formData.Needs} onChange={handleChange} error={errors.Needs} disabled={loading} max="100" />
                 <div className="grid grid-cols-2 gap-2">
-                  <BudgetInput label="Housing" emoji="🏠" name="Housing" value={formData.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} max={formData.Needs} />
-                  <BudgetInput label="Utilities" emoji="💡" name="Utilities" value={formData.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Housing" icon={Home} name="Housing" value={formData.Housing} onChange={handleChange} error={errors.Housing} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Utilities" icon={Lightbulb} name="Utilities" value={formData.Utilities} onChange={handleChange} error={errors.Utilities} disabled={loading} max={formData.Needs} />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <BudgetInput label="Food" emoji="🍽️" name="FoodAndDining" value={formData.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} max={formData.Needs} />
-                  <BudgetInput label="Health" emoji="⚕️" name="Healthcare" value={formData.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Food" icon={Utensils} name="FoodAndDining" value={formData.FoodAndDining} onChange={handleChange} error={errors.FoodAndDining} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Health" icon={HeartHandshake} name="Healthcare" value={formData.Healthcare} onChange={handleChange} error={errors.Healthcare} disabled={loading} max={formData.Needs} />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <BudgetInput label="Transport" emoji="🚗" name="Transportation" value={formData.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} max={formData.Needs} />
-                  <BudgetInput label="Insurance" emoji="🛡️" name="Insurance" value={formData.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Transport" icon={Car} name="Transportation" value={formData.Transportation} onChange={handleChange} error={errors.Transportation} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Insurance" icon={Shield} name="Insurance" value={formData.Insurance} onChange={handleChange} error={errors.Insurance} disabled={loading} max={formData.Needs} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <BudgetInput label="Grocery" icon={ShoppingCart} name="Grocery" value={formData.Grocery} onChange={handleChange} error={errors.Grocery} disabled={loading} max={formData.Needs} />
+                  <BudgetInput label="Recharge" icon={Smartphone} name="Recharge" value={formData.Recharge} onChange={handleChange} error={errors.Recharge} disabled={loading} max={formData.Needs} />
                 </div>
               </BudgetCategory>
 
               {/* Wants Section */}
               <BudgetCategory title="Wants" percentage={formData.Wants} error={errors.wantsSub}>
-                <BudgetInput label="Wants" emoji="" name="Wants" value={formData.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} max="100" />
+                <BudgetInput label="Wants" icon={null} name="Wants" value={formData.Wants} onChange={handleChange} error={errors.Wants} disabled={loading} max="100" />
                 <div className="grid grid-cols-3 gap-2">
-                  <BudgetInput label="Fun" emoji="🎬" name="Entertainment" value={formData.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} max={formData.Wants} />
-                  <BudgetInput label="Misc" emoji="📦" name="OtherMiscellaneous" value={formData.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} max={formData.Wants} />
-                  <BudgetInput label="Edu" emoji="📚" name="Education" value={formData.Education} onChange={handleChange} error={errors.Education} disabled={loading} max={formData.Wants} />
+                  <BudgetInput label="Fun" icon={Tv} name="Entertainment" value={formData.Entertainment} onChange={handleChange} error={errors.Entertainment} disabled={loading} max={formData.Wants} />
+                  <BudgetInput label="Misc" icon={Package} name="OtherMiscellaneous" value={formData.OtherMiscellaneous} onChange={handleChange} error={errors.OtherMiscellaneous} disabled={loading} max={formData.Wants} />
+                  <BudgetInput label="Edu" icon={BookOpen} name="Education" value={formData.Education} onChange={handleChange} error={errors.Education} disabled={loading} max={formData.Wants} />
                 </div>
               </BudgetCategory>
 
               {/* Savings Section */}
               <BudgetCategory title="Savings" percentage={formData.SavingsInvestments}>
-                <BudgetInput label="Savings" emoji="💰" name="SavingsInvestments" value={formData.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} max="100" />
+                <BudgetInput label="Savings" icon={PiggyBank} name="SavingsInvestments" value={formData.SavingsInvestments} onChange={handleChange} error={errors.SavingsInvestments} disabled={loading} max="100" />
               </BudgetCategory>
             </div>
           </form>

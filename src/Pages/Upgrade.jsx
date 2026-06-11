@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, Check, Wallet, Lock, Mail, X } from 'lucide-react';
+import { ChevronRight, Check, Wallet, Lock, Mail, X, Crown, ShieldCheck, ArrowLeft } from 'lucide-react';
 import payme29  from "./assets/payme29qr.png";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { Link } from 'react-router-dom';
@@ -52,10 +52,69 @@ const Upgrade = () => {
     setShowQrPopup(false);
   };
 
-  if(userType==='premium'){
-    return <div className='dark:text-white'>Enjoy your premium</div>
-  }else if(userType==='admin'){
-    return <div className='dark:text-white'>Admin page is activated</div>
+  if (userType === 'premium' || userType === 'admin') {
+    return (
+      <div className="dark:bg-[#0a0a0a] text-[#1F2937] dark:text-white flex items-center justify-center min-h-[70vh] px-4">
+        <div className="max-w-md w-full bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-[#ffffff24] p-8 shadow-2xl text-center relative overflow-hidden">
+          {/* Subtle glowing radial background */}
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-amber-500/10 dark:bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Icon Badge */}
+          <div className="relative mx-auto w-20 h-20 bg-gradient-to-tr from-amber-400 to-yellow-500 dark:from-amber-600 dark:to-yellow-500 rounded-full flex items-center justify-center shadow-lg mb-6 animate-pulse">
+            {userType === 'admin' ? (
+              <ShieldCheck className="h-10 w-10 text-white animate-spin-slow" />
+            ) : (
+              <Crown className="h-10 w-10 text-white" />
+            )}
+            <span className="absolute -bottom-1 px-3 py-0.5 rounded-full text-[10px] font-extrabold tracking-widest text-amber-950 bg-white dark:bg-amber-400 uppercase shadow-sm">
+              {userType}
+            </span>
+          </div>
+
+          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
+            Welcome, {name || 'Valued User'}!
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            {userType === 'admin' 
+              ? 'Administrator Access Activated' 
+              : 'Thank you for supporting FinanceGet! Premium is fully active.'}
+          </p>
+
+          <div className="bg-gray-50 dark:bg-[#0a0a0a] border border-gray-100 dark:border-[#ffffff12] rounded-xl p-5 mb-8 text-left space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              Unlocked Features:
+            </h3>
+            <div className="grid grid-cols-2 gap-3 text-xs text-gray-700 dark:text-gray-300">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span>Previous Year Data</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span>Custom Budget Rules</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span>Forecasting Trends</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span>Priority support</span>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            to="/"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:bg-opacity-20 dark:text-indigo-400 dark:hover:bg-opacity-30 transition-all duration-200"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Go to Dashboard</span>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

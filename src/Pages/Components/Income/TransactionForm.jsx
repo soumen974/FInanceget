@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import { ArrowUpCircle, ArrowDownCircle, Plus, Save, X, AlertCircle, CheckCircle, Loader } from 'react-feather';
-import { ReceiptIndianRupee } from "lucide-react";
+import { 
+  ReceiptIndianRupee, Calendar, Briefcase, Laptop, TrendingUp, PiggyBank, Coins,
+  Utensils, Car, Lightbulb, Tv, Activity, Home, BookOpen, Shield, ShoppingCart, Smartphone, Package 
+} from "lucide-react";
 
 export default function TransactionForm({ type, setAction, action, editId, setEditId, onUpdate }) {
   const categories = type === 'income' ? [
-    { id: 1, name: 'Salary', icon: '💰' },
-    { id: 2, name: 'Freelance', icon: '💻' },
-    { id: 3, name: 'Investments', icon: '📈' },
-    { id: 4, name: 'Saving', icon: '🏦' },
-    { id: 5, name: 'Other Income', icon: '💵' }
+    { id: 1, name: 'Salary', icon: Briefcase },
+    { id: 2, name: 'Freelance', icon: Laptop },
+    { id: 3, name: 'Investments', icon: TrendingUp },
+    { id: 4, name: 'Saving', icon: PiggyBank },
+    { id: 5, name: 'Other Income', icon: Coins }
   ] : [
-    { id: 1, name: 'Food & Dining', icon: '🍽️' },
-    { id: 2, name: 'Transportation', icon: '🚗' },
-    { id: 3, name: 'Utilities', icon: '💡' },
-    { id: 4, name: 'Entertainment', icon: '🎬' },
-    { id: 5, name: 'Healthcare', icon: '⚕️' },
-    { id: 6, name: 'Housing', icon: '🏠' },
-    { id: 7, name: 'Education', icon: '📚' },
-    { id: 8, name: 'Insurance', icon: '🛡️' },
-    { id: 9, name: 'Savings/Investments', icon: '💰' },
-    { id: 10, name: 'Other Miscellaneous', icon: '📦' }
+    { id: 1, name: 'Food & Dining', icon: Utensils },
+    { id: 2, name: 'Transportation', icon: Car },
+    { id: 3, name: 'Utilities', icon: Lightbulb },
+    { id: 4, name: 'Entertainment', icon: Tv },
+    { id: 5, name: 'Healthcare', icon: Activity },
+    { id: 6, name: 'Housing', icon: Home },
+    { id: 7, name: 'Education', icon: BookOpen },
+    { id: 8, name: 'Insurance', icon: Shield },
+    { id: 9, name: 'Savings/Investments', icon: PiggyBank },
+    { id: 10, name: 'Grocery', icon: ShoppingCart },
+    { id: 11, name: 'Recharge', icon: Smartphone },
+    { id: 12, name: 'Other Miscellaneous', icon: Package }
   ];
 
   const formatDateToString = (date) => {
@@ -188,20 +193,25 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               {type === 'income' ? 'Source' : 'Category'}
             </label>
-            <select
-              name="source"
-              value={formData.source}
-              onChange={handleOnChange}
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
-              required
-            >
-              <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
-              {categories.map(category => (
-                <option key={category.id} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                {React.createElement(categories.find(c => c.name === formData.source)?.icon || (type === 'income' ? Coins : Package), { size: 18, className: "text-gray-400" })}
+              </span>
+              <select
+                name="source"
+                value={formData.source}
+                onChange={handleOnChange}
+                className="w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 appearance-none bg-white"
+                required
+              >
+                <option value="">Select {type === 'income' ? 'Source' : 'Category'}</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
          
@@ -227,13 +237,16 @@ export default function TransactionForm({ type, setAction, action, editId, setEd
             Date
           </label>
           <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+              <Calendar size={18} className="text-gray-400" />
+            </span>
             <input
               name="date"
               type="date"
               value={formData.date}
               onChange={handleOnChange}
               id="date"
-              className="w-full px-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+              className="w-full pl-12 pr-4 py-3 rounded-lg border dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
             />
           </div>
         </div>

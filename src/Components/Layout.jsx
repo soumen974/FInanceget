@@ -70,32 +70,32 @@ const Layout = () => {
         <Outlet />
 
 
-        <div className="fixed md:hidden flex flex-col-reverse gap-4 bottom-6 right-6">
+        <div className="fixed md:hidden flex flex-col-reverse gap-4 bottom-6 right-6 z-40">
           <div ref={menuRef} onClick={() => { setballOpen(!isballOpen) }}>
-            <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
-              <Wallet className="h-6 w-6" />
+            <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 transform">
+              <Wallet className={`h-6 w-6 transition-transform duration-300 ${isballOpen ? 'rotate-180' : ''}`} />
             </button>
           </div>
 
-          <div className={`${isballOpen ? 'opacity-100' : 'opacity-0'} transition-all duration-300`}>
+          <div className={`transition-all duration-300 transform ${isballOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-2 pointer-events-none'}`}>
             <Link to="/scanner">
-              <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
+              <button className="p-4 bg-blue-600 hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-900 text-white rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200">
                 <QrCode className="h-6 w-6" />
               </button>
             </Link>
           </div>
 
-          <div className={`${isballOpen ? 'opacity-100' : 'opacity-0'} transition-all duration-300`}>
+          <div className={`transition-all duration-300 transform ${isballOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-2 pointer-events-none'}`}>
             <Link to="/expenses">
-              <button className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
+              <button className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200">
                 <ArrowDownCircle className="h-6 w-6" />
               </button>
             </Link>
           </div>
 
-          <div className={`${isballOpen ? 'opacity-100' : 'opacity-0'} transition-all duration-300`}>
+          <div className={`transition-all duration-300 transform ${isballOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-2 pointer-events-none'}`}>
             <Link to="/income">
-              <button className="p-4 bg-green-50 dark:bg-green-900/30  text-green-600 dark:text-green-400 rounded-full shadow-lg hover:shadow-xl transition-all duration-200">
+              <button className="p-4 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200">
                 <ArrowUpCircle className="h-6 w-6" />
               </button>
             </Link>

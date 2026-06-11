@@ -17,6 +17,8 @@ const EXPENSE_CATEGORIES = [
   "Education",
   "Insurance",
   "Savings/Investments",
+  "Grocery",
+  "Recharge",
   "Other Miscellaneous",
 ];
 

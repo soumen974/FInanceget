@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { api } from "../../../AxiosMeta/ApiAxios";
 import { formatCurrency } from "../Income/formatCurrency";
 import ListBoxScalLoadder from "./lodders/ListBoxScalLoadder";
-import { TriangleAlert, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2, MoreVertical } from 'lucide-react';
+import { TriangleAlert, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2, MoreVertical, Search } from 'lucide-react';
 
 const Popupbox = ({ title, loading, HidePopup, setHidePopup, currentId, taskFunction, type }) => {
   return (
@@ -52,6 +52,38 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const [sortBy, setSortBy] = useState('date');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const processedTransactions = useMemo(() => {
+    let result = [...GetData];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(t => 
+        (t.description && t.description.toLowerCase().includes(q)) ||
+        (t.source && t.source.toLowerCase().includes(q)) ||
+        (t.category && t.category.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort logic
+    result.sort((a, b) => {
+      if (sortBy === 'amount') {
+        return b.amount - a.amount;
+      } else if (sortBy === 'category') {
+        const catA = (a.source || a.category || '').toLowerCase();
+        const catB = (b.source || b.category || '').toLowerCase();
+        return catA.localeCompare(catB);
+      } else { // default 'date'
+        return new Date(b.date) - new Date(a.date);
+      }
+    });
+
+    return result;
+  }, [GetData, sortBy, searchQuery]);
 
   useEffect(() => {
     getData();
@@ -114,7 +146,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const renderTransactions = GetData.map(transaction => (
+  const renderTransactions = processedTransactions.map(transaction => (
     <div
       key={transaction._id}
       className="group relative flex items-center justify-between p-3 md:p-4 md:pr-1 rounded-xl border border-gray-200 dark:border-[#ffffff24] hover:border-gray-100 hover:shadow-sm transition-all duration-200 dark:bg-[#0a0a0a] dark:hover:bg-[#ffffff06] bg-white"
@@ -205,11 +237,31 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
               </>
             )}
           </h2>
-          <select className="px-3 py-2 text-sm border border-[#00000014] dark:border-[#ffffff24] rounded-lg bg-gray-50 dark:bg-black dark:text-white hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option>Sort by Date</option>
-            <option>Sort by Amount</option>
-            <option>Sort by Category</option>
-          </select>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            {/* Search Input */}
+            <div className="relative w-full sm:w-60">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search size={16} className="text-gray-400" />
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={`Search ${type}...`}
+                className="pl-9 pr-4 py-2 w-full text-sm border border-[#00000014] dark:border-[#ffffff24] rounded-lg bg-gray-50 dark:bg-black dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            {/* Sort Select */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 w-full sm:w-auto text-sm border border-[#00000014] dark:border-[#ffffff24] rounded-lg bg-gray-50 dark:bg-black dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="date">Sort by Date</option>
+              <option value="amount">Sort by Amount</option>
+              <option value="category">Sort by Category</option>
+            </select>
+          </div>
         </div>
       </div>
       <div className="p-4 sm:p-6">
@@ -223,7 +275,7 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
               ))}
             </div>
           )}
-          {GetData.length === 0 && !loading && (
+          {processedTransactions.length === 0 && !loading && (
             <div className="flex flex-col items-center justify-center py-12 text-gray-400">
               <div className="h-16 w-16 mb-4">
                 {type === 'income' ? (
@@ -232,7 +284,9 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
                   <ArrowDownCircle className="w-full h-full text-gray-300" />
                 )}
               </div>
-              <p className="text-gray-500 font-medium">No {type} transactions found</p>
+              <p className="text-gray-500 font-medium">
+                {searchQuery ? 'No matching transactions found' : `No ${type} transactions found`}
+              </p>
             </div>
           )}
           {!loading && renderTransactions}
