@@ -81,8 +81,8 @@ const Headder = () => {
 
           {/* Mobile Menu */}
           {/* {isMenuOpen && ( */}
-            <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-              isMenuOpen ? 'max-h-[27rem] mb-4' : 'max-h-0'
+            <div className={`lg:hidden overflow-y-auto transition-all duration-300 ease-in-out ${
+              isMenuOpen ? 'max-h-[35rem] mb-4' : 'max-h-0'
             }`}>
               {/* User Badge */}
               <div className={`
