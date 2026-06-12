@@ -653,18 +653,18 @@ const Goals = () => {
                         </div>
                       </div>
 
-                      <div className="mt-4 grid grid-cols-4 md:grid-cols-5 gap-3">
+                      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                         {Array.from({ length: 4 }).map((_, index) => (
                           <div 
                             key={index} 
-                            className={`p-3 rounded-lg overflow-hidden ${
+                            className={`p-2.5 rounded-lg overflow-hidden ${
                               savings.daysLeft === 0 ? 'bg-red-500/10' :
                               percentage >= 95 ? 'bg-purple-500/10' : 
                               percentage >= 80 ? 'bg-amber-500/10' : 
                               'bg-emerald-500/10'
                             }`}
                           >
-                            <div className={`text-sm font-medium truncate md:w-[7rem] w-[5.6rem] ${
+                            <div className={`text-xs sm:text-sm font-semibold truncate w-full ${
                               savings.monthsLeft === 0 ? 'text-red-600 dark:text-red-400' :
                               percentage >= 95 ? 'text-purple-600 dark:text-purple-400' :
                               percentage >= 80 ? 'text-amber-600 dark:text-amber-400' :
@@ -675,7 +675,7 @@ const Goals = () => {
                               {index === 2 && `${savings.monthsLeft}`}
                               {index === 3 && `${savings.daysLeft}`}
                             </div>
-                            <div className="text-xs text-[#6B7280] dark:text-gray-400">
+                            <div className="text-[10px] text-[#6B7280] dark:text-gray-400 mt-0.5">
                               {index === 0 && 'per month'}
                               {index === 1 && 'per day'}
                               {index === 2 && 'months left'}

@@ -75,13 +75,14 @@ const Navigation = ({isCollapsed,setIsCollapsed}) => {
     }
    };
 
-   const NAV_ITEMS = [
+    const NAV_ITEMS = [
     { icon: <Home size={20} />, label: 'Dashboard', to: '/' },
     { icon: <ArrowUpCircle size={20} />, label: 'Income', to: '/income' },
     { icon: <ArrowDownCircle size={20} />, label: 'Expenses', to: '/expenses' },
     { icon: <CreditCard size={20} />, label: 'Budget', to: '/budget', isBeta: true },
     { icon: <PieChart size={20} />, label: 'Reports', to: '/reports' },
     { icon: <Goal size={20} />, label: 'Goal', to: '/goal', isBeta: true },
+    { icon: <Wallet size={20} />, label: 'Subscriptions', to: '/subscriptions' },
     // { icon: <Users size={20} />, label: 'Loan Calculator', to: '/users' , isBeta: true },
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
     { icon: <Users size={20} />, label: 'Users', to: '/users' ,admin:true },

@@ -87,10 +87,10 @@ const Budget = () => {
     setMonthForList(selectedMonth);
     // Update monthly income based on selected source
     setMonthlyIncome(incomeSource === 'current' ? totalIncomeFortheCurrentMonth : lifeTimeballence.totalBalance);
-    if (financeRule === 'Personalized' && isPremiumOrAdmin) {
+    if (financeRule === 'Personalized' && (isPremiumOrAdmin || selectedYear === currentYear)) {
       fetchBudget();
     }
-  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin, 
+  }, [selectedYear, selectedMonth, financeRule, isPremiumOrAdmin, currentYear, 
       setsearchYear, setMonth, setsearchYearForList, setMonthForList, 
       totalIncomeFortheCurrentMonth, lifeTimeballence.totalBalance, incomeSource]);
 
@@ -170,42 +170,40 @@ const Budget = () => {
               Track and manage your spending limits across categories
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             {totalIncomeFortheCurrentMonth===lifeTimeballence.totalBalance?
              <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500 dark:text-gray-400"> Total Budget by income :</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400"> Total Budget by income:</span>
               <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {formatCurrency(monthlyIncome)}
               </span>
             </div>
             :
-            <div className="flex  items-center gap-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300  md:w-fit w-[8rem]">
-                Total Budget by {incomeSource === 'current' ? 'Current Income:' : 'Lifetime Balance:'}
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                Total Budget by:
               </label>
               <select 
                 value={incomeSource} 
                 onChange={(e) => setIncomeSource(e.target.value)}
-                className="w-[26vw] truncate sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300"
+                className="w-full sm:w-auto min-w-[120px] max-w-[180px] truncate px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300 text-xs sm:text-sm"
               >
-                <option value="current">{formatCurrency(totalIncomeFortheCurrentMonth)}</option>
-                <option value="lifetime">{formatCurrency(lifeTimeballence.totalBalance)}</option>
+                <option value="current">Income ({formatCurrency(totalIncomeFortheCurrentMonth)})</option>
+                <option value="lifetime">Balance ({formatCurrency(lifeTimeballence.totalBalance)})</option>
               </select>
             </div>
             }
-            
-            
           </div>
         </div>
       </div>
 
-      <div className="mb-8 flex  sm:gap-4">
+      <div className="mb-8 grid grid-cols-3 gap-2 sm:gap-4">
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ">Select Month</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Select Month</label>
           <select 
             value={selectedMonth} 
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="w-[26vw] truncate sm:w-full   mt-1 px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300"
+            className="w-full truncate mt-1 px-3 sm:px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:bg-[#0a0a0a] dark:border-[#ffffff24] dark:text-gray-300 text-xs sm:text-sm"
           >
             {MONTH_NAMES.map((month, index) => (
               <option 
@@ -213,18 +211,18 @@ const Budget = () => {
                 value={index}
                 disabled={!monthsForIncome.includes(month) && TransactionData.length > 0}
               >
-                {month} {!monthsForIncome.includes(month) && TransactionData.length > 0 ? '' : ''}
+                {month}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Year</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Select Year</label>
           <select 
             value={selectedYear} 
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="w-[23vw]  sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
+            className="w-full mt-1 px-3 sm:px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300 text-xs sm:text-sm"
           >
             {years.map((year, index) => (
               <option key={index} value={year}>
@@ -235,15 +233,15 @@ const Budget = () => {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Select Finance Rule</label>
+          <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Select Finance Rule</label>
           <select 
             value={financeRule} 
             onChange={(e) => setFinanceRule(e.target.value)}
-            className="w-[29vw] sm:w-full mt-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300"
+            className="w-full mt-1 px-3 sm:px-4 py-2.5 rounded-lg border border-gray-200 dark:bg-[#0a0a0a] dark:border-[#ffffff24] focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 dark:text-gray-300 text-xs sm:text-sm"
           >
             <option value="50/30/20">50/30/20 Rule</option>
             <option value="Personalized">
-              Personalized {!isPremiumOrAdmin ? '💎' : ''}
+              Personalized {!isPremiumOrAdmin && selectedYear !== currentYear ? '💎' : ''}
             </option>
           </select>
         </div>
@@ -295,7 +293,7 @@ const Budget = () => {
               </div>
             ) : (
               <div className="divide-y relative divide-gray-100 dark:divide-[#ffffff24] overflow-hidden">
-                {(financeRule !== '50/30/20' || selectedYear !== currentYear) && !isPremiumOrAdmin ? (
+                {selectedYear !== currentYear && !isPremiumOrAdmin ? (
                   <div className="absolute inset-0 backdrop-blur-sm bg-opacity-75">
                     <div className="max-w-xl mx-auto p-6 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg shadow-lg">
                       <div className="flex items-center">
@@ -520,7 +518,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
           </svg>
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">Budget Allocation</h2>
         </div>
-        {financeRule !== '50/30/20' && isPremiumOrAdmin && (
+        {(financeRule === 'Personalized') && (isPremiumOrAdmin || selectedYear === currentYear) && (
           <button
             onClick={() => setEditPersonalBudget(true)}
             className="p-1 hover:bg-gray-100 dark:hover:bg-blue-700/30  rounded"
@@ -529,7 +527,7 @@ const BudgetAllocationTable = ({ financeRule, selectedYear, budgetPercentages13r
           </button>
         )}
       </div>
-      {(financeRule !== '50/30/20' || selectedYear !== currentYear) && !isPremiumOrAdmin ? (
+      {selectedYear !== currentYear && !isPremiumOrAdmin ? (
         <div className="p-4 bg-gradient-to-r from-blue-500 dark:bg-blue-500 dark:bg-opacity-20 to-blue-700 text-white rounded-b-lg">
           <div className="flex items-center gap-3">
             <Crown className="h-8 w-8" />
@@ -731,8 +729,8 @@ const PersonalizedBudgetAllocationForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isPremiumOrAdmin) {
-      setApiError('Unlock Premium Features');
+    if (selectedYear !== currentYear && !isPremiumOrAdmin) {
+      setApiError('Unlock Premium Features to edit budgets for other years');
       setSaveStatus('error');
       return;
     }

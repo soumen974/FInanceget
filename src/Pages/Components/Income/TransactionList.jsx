@@ -153,12 +153,14 @@ export default function TransactionList({ type, action, setAction, setEditId, ed
     >
       <Popupbox HidePopup={HidePopup} type={type} loading={loading} currentId={transaction._id} taskFunction={handleDelete} setHidePopup={setHidePopup} title={transaction.description} />
 
-      <div className="flex-1">
-        <p className="font-medium text-gray-900 dark:text-white max-sm:truncate max-sm:w-[6.2rem]">{transaction.description}</p>
-        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 truncate">
-          <span className='max-md:truncate max-md:w-[4rem]'>{transaction.source || transaction.category}</span>
-          <span>•</span>
-          <span className='max-md:truncate max-md:w-[4rem]'>{(new Date(transaction.date).toLocaleDateString() === new Date().toLocaleDateString() ? 'Today' : new Date(transaction.date).toLocaleDateString())}</span>
+      <div className="flex-1 min-w-0 pr-2">
+        <p className="font-medium text-gray-900 dark:text-white truncate max-w-[14rem] sm:max-w-none" title={transaction.description}>
+          {transaction.description}
+        </p>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-gray-500 truncate">
+          <span className="truncate max-w-[8rem] sm:max-w-none">{transaction.source || transaction.category}</span>
+          <span className="text-gray-300 dark:text-gray-700">•</span>
+          <span>{(new Date(transaction.date).toLocaleDateString() === new Date().toLocaleDateString() ? 'Today' : new Date(transaction.date).toLocaleDateString())}</span>
         </div>
       </div>
       <div className="text-right flex max-md:flex-col justify-center items-center md:gap-1">

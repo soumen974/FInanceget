@@ -34,6 +34,7 @@ const Headder = () => {
     { icon: <CreditCard size={18} />, label: 'Budget', to: '/budget',isBeta: true },
     { icon: <PieChart size={18} />, label: 'Reports', to: '/reports' },
     { icon: <Goal size={18} />, label: 'Goal', to: '/goal',isBeta: true },
+    { icon: <Wallet size={18} />, label: 'Subscriptions', to: '/subscriptions' },
     { icon: <Settings size={18} />, label: 'Settings', to: '/settings' },
     { icon: <Users size={18} />, label: 'Users', to: '/Users',admin:true },
   ];

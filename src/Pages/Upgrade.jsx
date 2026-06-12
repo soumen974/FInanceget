@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ChevronRight, Check, Wallet, Lock, Mail, X, Crown, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { ChevronRight, Check, Wallet, Lock, Mail, X, Crown, ShieldCheck, ArrowLeft, Clock } from 'lucide-react';
 import payme29  from "./assets/payme29qr.png";
 import { authCheck } from "../Auth/Components/ProtectedCheck";
 import { Link } from 'react-router-dom';
+import { api } from "../AxiosMeta/ApiAxios";
 
 const COLORS = {
   primary: '#6366F1',    // Modern Indigo for Premium
@@ -40,6 +41,10 @@ const Upgrade = () => {
   const [selectedPlan, setSelectedPlan] = useState('Premium');
   const [paymentMethod] = useState('upi'); // Fixed to UPI
   const [showQrPopup, setShowQrPopup] = useState(false);
+  const [showAdminWaitPopup, setShowAdminWaitPopup] = useState(false);
+  const [utrNumber, setUtrNumber] = useState('');
+  const [verificationStatus, setVerificationStatus] = useState(null); // 'pending', 'success', 'error'
+  const [verificationMessage, setVerificationMessage] = useState('');
   const { name , userEmail ,userType,setIsAction,updated_at }= authCheck();
   
 
@@ -50,6 +55,37 @@ const Upgrade = () => {
 
   const closeQrPopup = () => {
     setShowQrPopup(false);
+    setUtrNumber('');
+    setVerificationStatus(null);
+    setVerificationMessage('');
+  };
+
+  const handleVerifyUpi = async (e) => {
+    e.preventDefault();
+    if (!utrNumber || utrNumber.trim().length < 6) {
+      setVerificationStatus('error');
+      setVerificationMessage('Please enter a valid Transaction UTR / Ref Number (minimum 6 characters).');
+      return;
+    }
+    setVerificationStatus('pending');
+    try {
+      const response = await api.post('/api/payment/verify-upi', { utr: utrNumber });
+      
+      // Close the payment QR code modal
+      setShowQrPopup(false);
+      
+      // Clear inputs and verification status
+      setUtrNumber('');
+      setVerificationStatus(null);
+      setVerificationMessage('');
+      
+      // Show the waiting for admin permission popup
+      setShowAdminWaitPopup(true);
+    } catch (err) {
+      setVerificationStatus('error');
+      const errorMsg = err.response?.data?.error || err.message || 'Verification failed';
+      setVerificationMessage(errorMsg);
+    }
   };
 
   if (userType === 'premium' || userType === 'admin') {
@@ -256,10 +292,38 @@ const Upgrade = () => {
             </p>
             <div className="bg-yellow-50 dark:bg-[#ffffff0a] p-3 rounded-lg">
               <p className="text-xs text-yellow-700 dark:text-yellow-500 text-center font-medium">
-                Important: Please include your account email with the payment note for successful verification.
+                Important: Please enter your Transaction Ref/UTR below for instant verification.
               </p>
             </div>
           </div>
+
+          {/* UTR Verification Form */}
+          <form onSubmit={handleVerifyUpi} className="mt-6 border-t border-gray-200 dark:border-[#ffffff1a] pt-4 space-y-3">
+            <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400">
+              Already paid? Enter UPI Transaction Ref/UTR Number:
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={utrNumber}
+                onChange={(e) => setUtrNumber(e.target.value)}
+                placeholder="e.g. 123456789012"
+                className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-gray-200 dark:bg-black dark:border-[#ffffff24] dark:text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              />
+              <button
+                type="submit"
+                disabled={verificationStatus === 'pending'}
+                className="px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 text-xs font-medium rounded-lg disabled:bg-gray-400 transition-colors"
+              >
+                {verificationStatus === 'pending' ? 'Verifying...' : 'Verify'}
+              </button>
+            </div>
+            {verificationMessage && (
+              <p className={`text-xs text-center font-medium ${verificationStatus === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                {verificationMessage}
+              </p>
+            )}
+          </form>
       
           {/* Security Badge */}
           <div className="mt-4 flex items-center justify-center gap-2 p-2 bg-[#f8fafc] dark:bg-[#ffffff0a] rounded-lg">
@@ -281,6 +345,42 @@ const Upgrade = () => {
           </div>
         </div>
       </div>
+      )}
+
+      {showAdminWaitPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#0a0a0a] border border-[#ffffff24] rounded-2xl p-8 w-full max-w-sm relative shadow-2xl text-center space-y-6">
+            <button
+              onClick={() => setShowAdminWaitPopup(false)}
+              className="absolute top-3 right-3 p-2 rounded-full bg-gray-200 dark:bg-[#ffffff17] text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-[#ffffff24] transition-colors duration-150"
+            >
+              <X size={20} />
+            </button>
+            
+            <div className="mx-auto w-16 h-16 bg-indigo-50 dark:bg-[#ffffff0f] rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+              <Clock className="w-8 h-8 animate-pulse" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                Waiting for Admin Permission
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Your payment transaction reference has been sent to the admin for verification.
+              </p>
+              <p className="text-xs text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-[#ffffff0a] p-2.5 rounded-lg font-medium">
+                Please wait. Your account will be upgraded to Premium once verified.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowAdminWaitPopup(false)}
+              className="w-full py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 text-sm font-medium rounded-lg transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

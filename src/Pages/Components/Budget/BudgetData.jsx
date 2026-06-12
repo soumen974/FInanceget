@@ -36,8 +36,9 @@ export const BudgetData = () => {
 
   // Add budget data
   const addBudget = useCallback(async (budgetData) => {
-    if (!isPremiumOrAdmin) {
-      setError('Unlock Premium Features');
+    const currentYear = new Date().getFullYear();
+    if (budgetYear !== currentYear && !isPremiumOrAdmin) {
+      setError('Unlock Premium Features to edit budgets for other years');
       console.warn('[BudgetData] Non-premium user attempted to add budget');
       return;
     }
@@ -66,8 +67,9 @@ export const BudgetData = () => {
 
   // Update budget data
   const updateBudget = useCallback(async (budgetData) => {
-    if (!isPremiumOrAdmin) {
-      setError('Unlock Premium Features');
+    const currentYear = new Date().getFullYear();
+    if (budgetYear !== currentYear && !isPremiumOrAdmin) {
+      setError('Unlock Premium Features to edit budgets for other years');
       console.warn('[BudgetData] Non-premium user attempted to update budget');
       return;
     }

@@ -23,8 +23,7 @@ export default function Dashboard() {
   const { isAuthenticated, userType,name } = authCheck();
   const [streak, setStreak] = useState(0);
   const [downloading, setDownloading] = useState(false);
-
-  
+  const [subs, setSubs] = useState([]);
 
   const getStreaks = async () => {
     try {
@@ -35,8 +34,18 @@ export default function Dashboard() {
     }
   };
 
+  const fetchSubs = async () => {
+    try {
+      const response = await api.get('/api/subscriptions');
+      setSubs(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch subscriptions', error);
+    }
+  };
+
   useEffect(() => {
     getStreaks();
+    fetchSubs();
   }, []);
 
   // Calculate daily expenses for the current month only
@@ -243,6 +252,64 @@ export default function Dashboard() {
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      {/* Subscriptions Tracker Card */}
+      <div className="bg-white dark:bg-[#0a0a0a] rounded-xl border border-gray-200 dark:border-[#ffffff24] p-6 mb-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-indigo-500" />
+              Active Subscriptions
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Overview of your recurring monthly bills
+            </p>
+          </div>
+          <Link
+            to="/subscriptions"
+            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+          >
+            Manage
+            <ChevronRight size={14} />
+          </Link>
+        </div>
+
+        {subs.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400 py-2">
+            No recurring bills added. <Link to="/subscriptions" className="text-indigo-500 underline">Add one now</Link> to start tracking.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-gray-50 dark:bg-[#ffffff04] p-4 rounded-lg">
+              <span className="text-xs text-gray-400 font-medium uppercase">Monthly Total</span>
+              <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">
+                {formatCurrency(subs.reduce((sum, s) => {
+                  if (s.status !== 'active') return sum;
+                  let amt = s.amount;
+                  if (s.frequency === 'yearly') amt = s.amount / 12;
+                  else if (s.frequency === 'weekly') amt = s.amount * 4.33;
+                  return sum + amt;
+                }, 0))}
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 dark:bg-[#ffffff04] p-4 rounded-lg sm:col-span-2">
+              <span className="text-xs text-gray-400 font-medium uppercase">Upcoming Bill</span>
+              {(() => {
+                const activeSubs = subs.filter(s => s.status === 'active');
+                if (activeSubs.length === 0) return <p className="text-xs text-gray-500 mt-1">None active</p>;
+                const nextSub = activeSubs.sort((a, b) => new Date(a.nextBillingDate) - new Date(b.nextBillingDate))[0];
+                return (
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{nextSub.name}</p>
+                    <p className="text-sm font-bold text-red-500">{formatCurrency(nextSub.amount)} on {new Date(nextSub.nextBillingDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Monetization: Affiliate Links - Enhanced styling */}
